@@ -27,7 +27,11 @@ function items.get_tile_items_string(map, x, y)
     end
     local item_list = {}
     for item, qty in pairs(tile_items) do
-        table.insert(item_list, item .. " (" .. qty .. ")")
+        if qty == 1 then
+            table.insert(item_list, item)
+        else
+            table.insert(item_list, item .. " (" .. qty .. ")")
+        end
     end
     return "Here you see: " .. table.concat(item_list, ", ") .. ".\n"
 end
@@ -35,12 +39,25 @@ end
 function items.find_item_key(item_table, name)
     if not item_table or not name or name == "" then return nil end
     local lower_name = string.lower(name)
+    local matches = {}
+    
     for key in pairs(item_table) do
         if string.lower(key) == lower_name then
-            return key
+            return key -- Точна відповідність має пріоритет
+        elseif string.find(string.lower(key), lower_name, 1, true) then
+            table.insert(matches, key)
         end
     end
-    return nil
+    
+    if #matches == 0 then
+        return nil
+    elseif #matches == 1 then
+        return matches[1]
+    else
+        output.clear()
+        output.add("Multiple items match '" .. name .. "': " .. table.concat(matches, ", ") .. ". Please specify.\n")
+        return nil
+    end
 end
 
 function items.get_item_data(items_data, item_name)
@@ -54,6 +71,7 @@ function items.get_item_data(items_data, item_name)
 end
 
 function items.pick_item(player, map, item_name, quantity)
+    -- Перевірка базових умов
     if not player or not player.alive then
         output.clear()
         output.add("You are dead and cannot pick up items.\nStart a new game with the 'new' command.\n")
@@ -69,10 +87,13 @@ function items.pick_item(player, map, item_name, quantity)
         output.add("Please specify a valid item name.\n")
         return
     end
-    if not quantity or type(quantity) ~= "number" or quantity < 1 then
-        quantity = 1
+    if not quantity or type(quantity) ~= "number" or quantity <= 0 then
+        output.clear()
+        output.add("Invalid item quantity specified.\n")
+        return
     end
 
+    -- Отримання таблиці предметів на тайлі
     local tile_items = map.items[player.y][player.x]
     if not next(tile_items) then
         output.clear()
@@ -80,13 +101,17 @@ function items.pick_item(player, map, item_name, quantity)
         return
     end
 
+    -- Пошук ключа предмета
     local item_key = items.find_item_key(tile_items, item_name)
     if not item_key then
-        output.clear()
-        output.add("No " .. item_name .. " found here.\n")
+        if not output.text:match("Multiple items match") then
+            output.clear()
+            output.add("No " .. item_name .. " found here.\n")
+        end
         return
     end
 
+    -- Перевірка кількості предмета
     local available_qty = tile_items[item_key]
     if not available_qty or type(available_qty) ~= "number" or available_qty <= 0 then
         output.clear()
@@ -94,13 +119,22 @@ function items.pick_item(player, map, item_name, quantity)
         return
     end
 
-    local pickup_qty = math.min(math.floor(quantity), available_qty)
+    -- Перевірка, чи достатньо предметів для підбирання
+    if quantity > available_qty then
+        output.clear()
+        output.add("There aren't enough " .. item_key .. " to pick up that amount.\n")
+        return
+    end
+
+    -- Оновлення інвентарю гравця та тайла
+    local pickup_qty = math.floor(quantity)
     player.inventory[item_key] = (player.inventory[item_key] or 0) + pickup_qty
     tile_items[item_key] = tile_items[item_key] - pickup_qty
     if tile_items[item_key] <= 0 then
         tile_items[item_key] = nil
     end
 
+    -- Виведення результату
     output.clear()
     output.add("You picked up " .. pickup_qty .. " " .. item_key .. ".\n")
 end
@@ -120,13 +154,17 @@ function items.drop_item(player, map, item_name, quantity)
     
     local item_key = items.find_item_key(player.inventory, item_name)
     if not item_key then
-        output.clear()
-        output.add("You don't have " .. item_name .. " in your inventory.\n")
+        if not output.text:match("Multiple items match") then
+            output.clear()
+            output.add("You don't have " .. item_name .. " in your inventory.\n")
+        end
         return
     end
     
-    if not quantity or type(quantity) ~= "number" or quantity < 1 then
-        quantity = 1
+    if not quantity or type(quantity) ~= "number" or quantity <= 0 then
+        output.clear()
+        output.add("Invalid item quantity specified.\n")
+        return
     end
     
     local available_qty = player.inventory[item_key]
@@ -155,8 +193,10 @@ function items.eat_item(player, items_data, item_name)
     
     local item_key = items.find_item_key(player.inventory, item_name)
     if not item_key then
-        output.clear()
-        output.add("You don't have " .. item_name .. " in your inventory.\n")
+        if not output.text:match("Multiple items match") then
+            output.clear()
+            output.add("You don't have " .. item_name .. " in your inventory.\n")
+        end
         return
     end
     
@@ -204,8 +244,10 @@ function items.drink_item(player, items_data, item_name)
     
     local item_key = items.find_item_key(player.inventory, item_name)
     if not item_key then
-        output.clear()
-        output.add("You don't have " .. item_name .. " in your inventory.\n")
+        if not output.text:match("Multiple items match") then
+            output.clear()
+            output.add("You don't have " .. item_name .. " in your inventory.\n")
+        end
         return
     end
     
@@ -218,11 +260,14 @@ function items.drink_item(player, items_data, item_name)
     
     local drinkable_value = nil
     local healing_value = nil
+    local mana_restore_value = nil
     for _, tag in ipairs(item_data.tags) do
         if tag:match("^drinkable=") then
             drinkable_value = tonumber(tag:match("^drinkable=(%S+)"))
         elseif tag:match("^healing=") then
             healing_value = tonumber(tag:match("^healing=(%S+)"))
+        elseif tag:match("^MANA_RESTORE=") then
+            mana_restore_value = tonumber(tag:match("^MANA_RESTORE=(%S+)"))
         end
     end
     
@@ -238,6 +283,10 @@ function items.drink_item(player, items_data, item_name)
     if healing_value then
         player.health = math.min(100, math.max(0, player.health + healing_value))
         output.add("Your health is restored.\n")
+    end
+    if mana_restore_value then
+        player.mana = math.min(100, math.max(0, player.mana + mana_restore_value))
+        output.add("Your mana is restored.\n")
     end
     player.inventory[item_key] = player.inventory[item_key] - 1
     if player.inventory[item_key] <= 0 then

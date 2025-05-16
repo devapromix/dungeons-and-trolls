@@ -14,6 +14,6 @@ look - Displays the current location.
 items - Display player's inventory and gold.
 eat <item> - Eats an item.
 drink <item> - Drinks an item.
-pick <item> [quantity] - Pick up an item
-drop <item> [quantity] - Drop an item
+pick [quantity] <item> - Pick up an item
+drop [quantity] <item> - Drop an item
 quit - Exit the game.

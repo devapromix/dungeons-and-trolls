@@ -29,12 +29,14 @@ function love.load()
         output.add(location_desc .. "\n")
         local items_string = items.get_tile_items_string(map, player.x, player.y)
         output.add(items_string)
+        output.add("Type 'help' to see a list of available commands.\n")
     else
         output.add("Created new game.\n")
         local location_desc = get_location_description(map.tiles[player.y][player.x])
         output.add(location_desc .. "\n")
         local items_string = items.get_tile_items_string(map, player.x, player.y)
         output.add(items_string)
+        output.add("Type 'help' to see a list of available commands.\n")
     end
 end
 
@@ -81,13 +83,7 @@ function initialize_game()
         thirst = 0,
         alive = true,
         gold = 0,
-        inventory = {
-            ["Apple"] = 5,
-            ["Sword"] = 1,
-            ["Potion"] = 3,
-            ["Rope"] = 2,
-            ["Shield"] = 1
-        }
+        inventory = {}
     }
     
     game_time = {
@@ -106,6 +102,12 @@ function initialize_game()
             map.tiles[y][x] = math.random() < 0.7 and "s" or "f"
             map.visited[y][x] = false
             map.items[y][x] = {}
+            -- Генерація предметів з ймовірністю 10%
+            if items_data.items and #items_data.items > 0 and math.random() < 0.1 then
+                local item = items_data.items[math.random(1, #items_data.items)]
+                local quantity = math.random(1, 3)
+                map.items[y][x][item.name] = quantity
+            end
         end
     end
     
@@ -113,6 +115,7 @@ function initialize_game()
     input.history = {}
     input.history_index = 0
     output.clear()
+	output.add("Welcome to " .. config.game.name .. " v." .. config.game.version .. "\n")
 end
 
 function save_game_to_json()
@@ -283,7 +286,7 @@ function love.keypressed(key)
             output.add(location_desc .. "\n")
             local items_string = items.get_tile_items_string(map, player.x, player.y)
             output.add(items_string)
-            output.add("Type 'map' to see the map.\n")
+            output.add("Type 'help' to see a list of available commands.\n")
         elseif command_parts[1] == "save" then
             save_game_to_json()
             output.clear()
@@ -297,6 +300,7 @@ function love.keypressed(key)
                 output.add(location_desc .. "\n")
                 local items_string = items.get_tile_items_string(map, player.x, player.y)
                 output.add(items_string)
+                output.add("Type 'help' to see a list of available commands.\n")
             else
                 output.add("No saved game found.\n")
             end
@@ -403,9 +407,9 @@ function love.keypressed(key)
                 else
                     for item, quantity in pairs(player.inventory) do
                         if quantity > 1 then
-                            output.add("  " .. item .. " (" .. quantity .. ")\n")
+                            output.add(item .. " (" .. quantity .. ")\n")
                         else
-                            output.add("  " .. item .. "\n")
+                            output.add(item .. "\n")
                         end
                     end
                 end
@@ -418,15 +422,26 @@ function love.keypressed(key)
         elseif command_parts[1] == "pick" then
             output.clear()
             if #command_parts < 2 then
-                output.add("Please specify an item to pick up.\n")
+                output.add("Please specify a quantity and item to pick up (e.g., 'pick 2 Healing Potion').\n")
             else
                 local quantity = 1
-                local last_part = command_parts[#command_parts]
-                if tonumber(last_part) and #command_parts > 2 then
-                    quantity = math.max(1, math.floor(tonumber(last_part)))
-                    table.remove(command_parts, #command_parts)
+                local item_name
+                if tonumber(command_parts[2]) then
+                    quantity = math.floor(tonumber(command_parts[2]))
+                    if #command_parts >= 3 then
+                        item_name = table.concat(command_parts, " ", 3)
+                    else
+                        output.add("Please specify an item name after the quantity.\n")
+                        if not table_contains(input.history, command) then
+                            table.insert(input.history, 1, command)
+                        end
+                        input.text = ">"
+                        input.history_index = 0
+                        return
+                    end
+                else
+                    item_name = table.concat(command_parts, " ", 2)
                 end
-                local item_name = table.concat(command_parts, " ", 2)
                 items.pick_item(player, map, item_name, quantity)
             end
             
@@ -436,15 +451,26 @@ function love.keypressed(key)
         elseif command_parts[1] == "drop" then
             output.clear()
             if #command_parts < 2 then
-                output.add("Please specify an item to drop.\n")
+                output.add("Please specify a quantity and item to drop (e.g., 'drop 2 Healing Potion').\n")
             else
                 local quantity = 1
-                local last_part = command_parts[#command_parts]
-                if tonumber(last_part) and #command_parts > 2 then
-                    quantity = math.max(1, math.floor(tonumber(last_part)))
-                    table.remove(command_parts, #command_parts)
+                local item_name
+                if tonumber(command_parts[2]) then
+                    quantity = math.floor(tonumber(command_parts[2]))
+                    if #command_parts >= 3 then
+                        item_name = table.concat(command_parts, " ", 3)
+                    else
+                        output.add("Please specify an item name after the quantity.\n")
+                        if not table_contains(input.history, command) then
+                            table.insert(input.history, 1, command)
+                        end
+                        input.text = ">"
+                        input.history_index = 0
+                        return
+                    end
+                else
+                    item_name = table.concat(command_parts, " ", 2)
                 end
-                local item_name = table.concat(command_parts, " ", 2)
                 items.drop_item(player, map, item_name, quantity)
             end
             
