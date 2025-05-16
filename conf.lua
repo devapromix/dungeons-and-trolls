@@ -1,17 +1,4 @@
 config = {
-	font = {
-		width = 25,
-		height = 40,
-	},
-	
-	text = {
-		width = 55,
-	},
-	
-	panel = {
-		left = 1350,
-	},
-	
 	inventory = {
 		max_slots = 12,
 	},
@@ -27,8 +14,9 @@ config = {
 		version = '0.1',
 	},
 	
-	gui = {
-		scale = 4,
+	map = {
+        width = 127,
+        height = 37,
 	}
 }
 

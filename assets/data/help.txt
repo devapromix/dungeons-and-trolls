@@ -1,0 +1,12 @@
+help - Show this help message
+new - Starts a new game
+save - Saves a game
+load - Loads a saved game
+map - Display the game map
+status - Display player's stats
+rest - Rest to restore health and mana
+north (or n) - Move player north
+south (or s) - Move player south
+east (or e) - Move player east
+west (or w) - Move player west
+quit - Exit the game

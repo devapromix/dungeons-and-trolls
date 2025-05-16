@@ -1,6 +1,7 @@
+json = require("libraries.json")
+output = require("output")
+
 function love.load()
-    json = require("libraries.json")
-    
     input = {
         text = ">",
         x = 5,
@@ -15,37 +16,25 @@ function love.load()
         history_index = 0
     }
     
-    output = {
-        text = "",
-        x = 5,
-        y = 5,
-        width = love.graphics.getWidth() - 10,
-        height = love.graphics.getHeight() - 50,
-        font = love.graphics.newFont("assets/fonts/UbuntuMono-R.ttf", 20)
-    }
-    
-    if output.font == nil then
-        output.font = love.graphics.newFont(16)
-    end
-    
     initializeGame()
     
     if love.filesystem.getInfo("game.json") then
         loadGameFromJson()
+        output.add("Loaded saved game.\n")
+    else
+        output.add("Created new game.\n")
     end
 end
 
 function initializeGame()
     map = {
-        width = 127,
-        height = 37,
         tiles = {},
         visited = {}
     }
     
     player = {
-        x = math.floor(map.width / 2),
-        y = math.floor(map.height / 2), 
+        x = math.floor(config.map.width / 2),
+        y = math.floor(config.map.height / 2), 
         symbol = "@",
         health = 100,
         max_health = 100,
@@ -56,10 +45,10 @@ function initializeGame()
         alive = true
     }
     
-    for y = 1, map.height do
+    for y = 1, config.map.height do
         map.tiles[y] = {}
         map.visited[y] = {}
-        for x = 1, map.width do
+        for x = 1, config.map.width do
             map.tiles[y][x] = "s"
             map.visited[y][x] = false
         end
@@ -68,6 +57,7 @@ function initializeGame()
     map.visited[player.y][player.x] = true
     input.history = {}
     input.history_index = 0
+    output.clear()
 end
 
 function saveGameToJson()
@@ -115,68 +105,45 @@ function checkPlayerStatus()
 end
 
 function movePlayer(direction)
-    local moved = false
-    output.text = ""
-    
     if not player.alive then
-        output.text = "You are dead and cannot move. Start a new game with the 'new' command.\n"
+        output.clear()
+        output.add("You are DEAD and cannot move.\n\nStart a new game with the 'new' command.\n")
         return false
     end
     
-    if direction == "north" then
-        if player.y > 1 then
-            player.y = player.y - 1
-            map.visited[player.y][player.x] = true
-            output.text = output.text .. "You moved north.\n"
-            moved = true
-        else
-            output.text = output.text .. "You can't move further north.\n"
-        end
-    elseif direction == "south" then
-        if player.y < map.height then
-            player.y = player.y + 1
-            map.visited[player.y][player.x] = true
-            output.text = output.text .. "You moved south.\n"
-            moved = true
-        else
-            output.text = output.text .. "You can't move further south.\n"
-        end
-    elseif direction == "east" then
-        if player.x < map.width then
-            player.x = player.x + 1
-            map.visited[player.y][player.x] = true
-            output.text = output.text .. "You moved east.\n"
-            moved = true
-        else
-            output.text = output.text .. "You can't move further east.\n"
-        end
-    elseif direction == "west" then
-        if player.x > 1 then
-            player.x = player.x - 1
-            map.visited[player.y][player.x] = true
-            output.text = output.text .. "You moved west.\n"
-            moved = true
-        else
-            output.text = output.text .. "You can't move further west.\n"
-        end
-    end
+    local moves = {
+        north = {y = -1, x_min = 1, x_max = config.map.width, y_min = 2, y_max = config.map.height, dir = "north"},
+        south = {y = 1, x_min = 1, x_max = config.map.width, y_min = 1, y_max = config.map.height - 1, dir = "south"},
+        east = {x = 1, x_min = 1, x_max = config.map.width - 1, y_min = 1, y_max = config.map.height, dir = "east"},
+        west = {x = -1, x_min = 2, x_max = config.map.width, y_min = 1, y_max = config.map.height, dir = "west"}
+    }
     
-    if moved then
-        local fatigue_modifier = 1
-        if player.mana <= 0 then
-            fatigue_modifier = 2
-        end
+    local move = moves[direction]
+    if not move then return false end
+    
+    local new_x = player.x + (move.x or 0)
+    local new_y = player.y + (move.y or 0)
+    
+    if new_x >= move.x_min and new_x <= move.x_max and new_y >= move.y_min and new_y <= move.y_max then
+        player.x = new_x
+        player.y = new_y
+        map.visited[player.y][player.x] = true
+        output.clear()
+        output.add("You moved " .. move.dir .. ".\n")
         
-        player.fatigue = math.max(0, player.fatigue - (1 * fatigue_modifier))
+        player.fatigue = math.max(0, player.fatigue - (player.mana <= 0 and 2 or 1))
         player.hunger = math.max(0, player.hunger - 0.5)
         
         local statusMessage = checkPlayerStatus()
         if statusMessage ~= "" then
-            output.text = output.text .. statusMessage
+            output.add(statusMessage)
         end
+        return true
+    else
+        output.clear()
+        output.add("You can't move further " .. move.dir .. ".\n")
+        return false
     end
-    
-    return moved
 end
 
 function love.update(dt)
@@ -200,88 +167,93 @@ function love.keypressed(key)
     if key == "return" and #input.text > 1 then
         local command = input.text:sub(2)
         if command == "help" then
-            output.text = ""
+            output.clear()
             
             if love.filesystem.getInfo("assets/data/help.txt") then
                 local content = love.filesystem.read("assets/data/help.txt")
                 if content then
-                    output.text = content
+                    output.add(content)
                 else
-                    output.text = "Failed to read help file.\n"
+                    output.add("Failed to read help file.\n")
                 end
             else
-                output.text = "Help file not found.\n"
+                output.add("Help file not found.\n")
             end
             
             table.insert(input.history, 1, command)
         elseif command == "new" then
-            output.text = "Starting a new game...\n"
+            output.clear()
+            output.add("Starting a new game...\n")
             initializeGame()
-            output.text = output.text .. "New game initialized. Type 'map' to see the map.\n"
+            output.add("New game initialized.\nType 'map' to see the map.\n")
             table.insert(input.history, 1, command)
         elseif command == "save" then
             saveGameToJson()
-            output.text = "Game saved to game.json\n"
+            output.clear()
+            output.add("Game saved.\n")
             table.insert(input.history, 1, command)
         elseif command == "load" then
+            output.clear()
             if love.filesystem.getInfo("game.json") then
                 loadGameFromJson()
-                output.text = "Game loaded from game.json\n"
+                output.add("Game loaded.\n")
             else
-                output.text = "No saved game file found\n"
+                output.add("No saved game file found.\n")
             end
             table.insert(input.history, 1, command)
         elseif command == "status" then
-            output.text = "Player Status:\n\n"
-            output.text = output.text .. "Health: " .. player.health .. "/" .. player.max_health .. " (0 = death)\n"
-            output.text = output.text .. "Mana: " .. player.mana .. "/" .. player.max_mana .. " (0 = faster fatigue)\n"
-            output.text = output.text .. "Hunger: " .. player.hunger .. "/100" .. " (0 = death)\n"
-            output.text = output.text .. "Fatigue: " .. player.fatigue .. "/100" .. " (0 = death)\n"
-            output.text = output.text .. "Position: X=" .. player.x .. ", Y=" .. player.y .. "\n"
+            output.clear()
+            output.add("Health: " .. player.health .. "/" .. player.max_health .. "\n")
+            output.add("Mana: " .. player.mana .. "/" .. player.max_mana .. "\n")
+            output.add("Hunger: " .. player.hunger .. "/100" .. "\n")
+            output.add("Fatigue: " .. player.fatigue .. "/100" .. "\n")
+            output.add("Position: " .. player.x .. ", " .. player.y .. "\n")
             
             if not player.alive then
-                output.text = output.text .. "\nStatus: DEAD. Use 'new' command to start a new game.\n"
+                output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
             end
             
             table.insert(input.history, 1, command)
         elseif command == "rest" then
+            output.clear()
             if not player.alive then
-                output.text = "You are dead and cannot rest. Start a new game with the 'new' command.\n"
+                output.add("You are DEAD and cannot rest.\nStart a new game with the 'new' command.\n")
             else
-                output.text = "You rest for a while...\n"
+                output.add("You rest for a while...\n")
                 player.health = player.max_health
                 player.mana = player.max_mana
                 player.fatigue = math.min(100, player.fatigue + 50)
                 player.hunger = math.max(0, player.hunger - 10)
                 
-                output.text = output.text .. "Your health and mana are fully restored.\n"
-                output.text = output.text .. "Your fatigue has decreased.\n"
-                output.text = output.text .. "You feel hungrier.\n"
+                output.add("Your health and mana are fully restored.\n")
+                output.add("Your fatigue has decreased.\n")
+                output.add("You feel hungrier.\n")
                 
                 local statusMessage = checkPlayerStatus()
                 if statusMessage ~= "" then
-                    output.text = output.text .. statusMessage
+                    output.add(statusMessage)
                 end
             end
             
             table.insert(input.history, 1, command)
         elseif command == "eat" then
+            output.clear()
             if not player.alive then
-                output.text = "You are dead and cannot eat. Start a new game with the 'new' command.\n"
+                output.add("You are dead and cannot eat.\nStart a new game with the 'new' command.\n")
             else
-                output.text = "You eat some food...\n"
+                output.add("You eat some food...\n")
                 player.hunger = math.min(100, player.hunger + 30)
                 
-                output.text = output.text .. "You feel less hungry now.\n"
+                output.add("You feel less hungry now.\n")
             end
             
             table.insert(input.history, 1, command)
         elseif command == "map" then
-            output.text = ""
+            output.clear()
             
-            for y = 1, map.height do
+            for y = 1, config.map.height do
                 local line = ""
-                for x = 1, map.width do
+                for x = 1, config.map.width do
                     if x == player.x and y == player.y then
                         if player.alive then
                             line = line .. player.symbol
@@ -294,7 +266,7 @@ function love.keypressed(key)
                         line = line .. " "
                     end
                 end
-                output.text = output.text .. line .. "\n"
+                output.add(line .. "\n")
             end
             
             table.insert(input.history, 1, command)
@@ -311,12 +283,13 @@ function love.keypressed(key)
             movePlayer("west")
             table.insert(input.history, 1, command)
         elseif command == "quit" then
+            saveGameToJson()
             love.event.quit()
             table.insert(input.history, 1, command)
         else
-            output.text = ""
-            output.text = output.text .. "Unknown command: '" .. command .. "'\n"
-            output.text = output.text .. "Type 'help' for a list of available commands\n"
+            output.clear()
+            output.add("Unknown command: '" .. command .. "'.\n")
+            output.add("Type 'help' for a list of available commands.\n")
         end
         input.text = ">"
         input.history_index = 0
@@ -362,4 +335,8 @@ function love.resize(w, h)
     input.width = w - 10
     output.width = w - 10
     output.height = h - 50
+end
+
+function love.quit()
+    saveGameToJson()
 end
