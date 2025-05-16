@@ -1,0 +1,14 @@
+{
+  "locations": [
+    {
+      "symbol": "s",
+      "name": "Desert",
+      "description": "A vast, arid expanse of sand and scorching sun."
+    },
+    {
+      "symbol": "f",
+      "name": "Forest",
+      "description": "A dense woodland filled with towering trees and wildlife."
+    }
+  ]
+}

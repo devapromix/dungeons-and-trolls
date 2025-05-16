@@ -1,6 +1,7 @@
 json = require("libraries.json")
 output = require("output")
 time = require("time")
+items = require("items")
 
 function love.load()
     input = {
@@ -17,31 +18,49 @@ function love.load()
         history_index = 0
     }
     
-    load_items()
+    items_data = items.load_items()
+    locations_data = load_locations()
     initialize_game()
     
     if love.filesystem.getInfo("game.json") then
         load_game_from_json()
         output.add("Loaded saved game.\n")
+        local location_desc = get_location_description(map.tiles[player.y][player.x])
+        output.add(location_desc .. "\n")
+        local items_string = items.get_tile_items_string(map, player.x, player.y)
+        output.add(items_string)
     else
         output.add("Created new game.\n")
+        local location_desc = get_location_description(map.tiles[player.y][player.x])
+        output.add(location_desc .. "\n")
+        local items_string = items.get_tile_items_string(map, player.x, player.y)
+        output.add(items_string)
     end
 end
 
-function load_items()
-    local items_file = "assets/data/items.json"
-    if love.filesystem.getInfo(items_file) then
-        local content = love.filesystem.read(items_file)
+function load_locations()
+    local locations_file = "assets/data/locations.json"
+    if love.filesystem.getInfo(locations_file) then
+        local content = love.filesystem.read(locations_file)
         if content then
-            items_data = json.decode(content)
+            return json.decode(content)
         else
-            output.add("Failed to read items file.\n")
-            items_data = {}
+            output.add("Failed to read locations file.\n")
+            return { locations = {} }
         end
     else
-        output.add("Items file not found.\n")
-        items_data = {}
+        output.add("Locations file not found.\n")
+        return { locations = {} }
     end
+end
+
+function get_location_description(symbol)
+    for _, location in ipairs(locations_data.locations or {}) do
+        if location.symbol == symbol then
+            return location.description
+        end
+    end
+    return "An unknown location."
 end
 
 function initialize_game()
@@ -84,7 +103,7 @@ function initialize_game()
         map.visited[y] = {}
         map.items[y] = {}
         for x = 1, config.map.width do
-            map.tiles[y][x] = "s"
+            map.tiles[y][x] = math.random() < 0.7 and "s" or "f"
             map.visited[y][x] = false
             map.items[y][x] = {}
         end
@@ -129,7 +148,6 @@ function load_game_from_json()
             if player.alive == nil then
                 player.alive = (player.hunger < 100 and player.fatigue < 100 and player.health > 0 and player.thirst < 100)
             end
-            
             for y = 1, config.map.height do
                 map.items[y] = map.items[y] or {}
                 for x = 1, config.map.width do
@@ -166,198 +184,6 @@ function check_player_status()
     return ""
 end
 
-function get_tile_items_string(x, y)
-    local items = map.items[y][x]
-    if next(items) == nil then
-        return "There are no items here.\n"
-    else
-        local item_list = {}
-        for item, quantity in pairs(items) do
-            table.insert(item_list, item .. " (" .. quantity .. ")")
-        end
-        return "Here you see: " .. table.concat(item_list, ", ") .. ".\n"
-    end
-end
-
-function find_item_key(table, item_name)
-    local lower_item_name = string.lower(item_name)
-    for key in pairs(table) do
-        if string.lower(key) == lower_item_name then
-            return key
-        end
-    end
-    return nil
-end
-
-function get_item_data(item_name)
-    for _, item in ipairs(items_data.items or {}) do
-        if string.lower(item.name) == string.lower(item_name) then
-            return item
-        end
-    end
-    return nil
-end
-
-function pick_item(item_name, quantity)
-    if not player.alive then
-        output.clear()
-        output.add("You are dead and cannot pick up items.\nStart a new game with the 'new' command.\n")
-        return
-    end
-    
-    local items = map.items[player.y][player.x]
-    local item_key = find_item_key(items, item_name)
-    if not item_key then
-        output.clear()
-        output.add("No " .. item_name .. " found here.\n")
-        return
-    end
-    
-    quantity = math.min(quantity, items[item_key])
-    player.inventory[item_key] = (player.inventory[item_key] or 0) + quantity
-    items[item_key] = items[item_key] - quantity
-    if items[item_key] <= 0 then
-        items[item_key] = nil
-    end
-    
-    output.clear()
-    output.add("You picked up " .. quantity .. " " .. item_key .. ".\n")
-end
-
-function drop_item(item_name, quantity)
-    if not player.alive then
-        output.clear()
-        output.add("You are dead and cannot drop items.\nStart a new game with the 'new' command.\n")
-        return
-    end
-    
-    local item_key = find_item_key(player.inventory, item_name)
-    if not item_key then
-        output.clear()
-        output.add("You don't have " .. item_name .. " in your inventory.\n")
-        return
-    end
-    
-    quantity = math.min(quantity, player.inventory[item_key])
-    map.items[player.y][player.x][item_key] = (map.items[player.y][player.x][item_key] or 0) + quantity
-    player.inventory[item_key] = player.inventory[item_key] - quantity
-    if player.inventory[item_key] <= 0 then
-        player.inventory[item_key] = nil
-    end
-    
-    output.clear()
-    output.add("You dropped " .. quantity .. " " .. item_key .. ".\n")
-end
-
-function eat_item(item_name)
-    if not player.alive then
-        output.clear()
-        output.add("You are dead and cannot eat.\nStart a new game with the 'new' command.\n")
-        return
-    end
-    
-    local item_key = find_item_key(player.inventory, item_name)
-    if not item_key then
-        output.clear()
-        output.add("You don't have " .. item_name .. " in your inventory.\n")
-        return
-    end
-    
-    local item_data = get_item_data(item_key)
-    if not item_data then
-        output.clear()
-        output.add("No data found for " .. item_key .. ".\n")
-        return
-    end
-    
-    local edible_value = nil
-    for _, tag in ipairs(item_data.tags) do
-        if tag:match("^edible=") then
-            edible_value = tonumber(tag:match("^edible=(%S+)"))
-            break
-        end
-    end
-    
-    if not edible_value then
-        output.clear()
-        output.add(item_key .. " is not edible.\n")
-        return
-    end
-    
-    output.clear()
-    output.add("You eat one " .. item_key .. "...\n")
-    player.hunger = math.min(100, math.max(0, player.hunger + edible_value))
-    player.thirst = math.min(100, math.max(0, player.thirst + 1))
-    player.inventory[item_key] = player.inventory[item_key] - 1
-    if player.inventory[item_key] <= 0 then
-        player.inventory[item_key] = nil
-    end
-    time.tick_time(15)
-    output.add("You feel less hungry but slightly thirstier.\n")
-    
-    local status_message = check_player_status()
-    if status_message ~= "" then
-        output.add(status_message)
-    end
-end
-
-function drink_item(item_name)
-    if not player.alive then
-        output.clear()
-        output.add("You are dead and cannot drink.\nStart a new game with the 'new' command.\n")
-        return
-    end
-    
-    local item_key = find_item_key(player.inventory, item_name)
-    if not item_key then
-        output.clear()
-        output.add("You don't have " .. item_name .. " in your inventory.\n")
-        return
-    end
-    
-    local item_data = get_item_data(item_key)
-    if not item_data then
-        output.clear()
-        output.add("No data found for " .. item_key .. ".\n")
-        return
-    end
-    
-    local drinkable_value = nil
-    local healing_value = nil
-    for _, tag in ipairs(item_data.tags) do
-        if tag:match("^drinkable=") then
-            drinkable_value = tonumber(tag:match("^drinkable=(%S+)"))
-        elseif tag:match("^healing=") then
-            healing_value = tonumber(tag:match("^healing=(%S+)"))
-        end
-    end
-    
-    if not drinkable_value then
-        output.clear()
-        output.add(item_key .. " is not drinkable.\n")
-        return
-    end
-    
-    output.clear()
-    output.add("You drink one " .. item_key .. "...\n")
-    player.thirst = math.min(100, math.max(0, player.thirst + drinkable_value))
-    if healing_value then
-        player.health = math.min(100, math.max(0, player.health + healing_value))
-        output.add("Your health is restored.\n")
-    end
-    player.inventory[item_key] = player.inventory[item_key] - 1
-    if player.inventory[item_key] <= 0 then
-        player.inventory[item_key] = nil
-    end
-    time.tick_time(15)
-    output.add("You feel less thirsty.\n")
-    
-    local status_message = check_player_status()
-    if status_message ~= "" then
-        output.add(status_message)
-    end
-end
-
 function move_player(direction)
     if not player.alive then
         output.clear()
@@ -384,7 +210,9 @@ function move_player(direction)
         map.visited[player.y][player.x] = true
         output.clear()
         output.add("You moved " .. move.dir .. ".\n")
-        local items_string = get_tile_items_string(player.x, player.y)
+        local location_desc = get_location_description(map.tiles[player.y][player.x])
+        output.add(location_desc .. "\n")
+        local items_string = items.get_tile_items_string(map, player.x, player.y)
         output.add(items_string)
         
         time.tick_time(120)
@@ -450,7 +278,12 @@ function love.keypressed(key)
             output.clear()
             output.add("Starting a new game...\n")
             initialize_game()
-            output.add("New game initialized.\nType 'map' to see the map.\n")
+            output.add("New game initialized.\n")
+            local location_desc = get_location_description(map.tiles[player.y][player.x])
+            output.add(location_desc .. "\n")
+            local items_string = items.get_tile_items_string(map, player.x, player.y)
+            output.add(items_string)
+            output.add("Type 'map' to see the map.\n")
         elseif command_parts[1] == "save" then
             save_game_to_json()
             output.clear()
@@ -460,6 +293,10 @@ function love.keypressed(key)
             if love.filesystem.getInfo("game.json") then
                 load_game_from_json()
                 output.add("Game loaded.\n")
+                local location_desc = get_location_description(map.tiles[player.y][player.x])
+                output.add(location_desc .. "\n")
+                local items_string = items.get_tile_items_string(map, player.x, player.y)
+                output.add(items_string)
             else
                 output.add("No saved game found.\n")
             end
@@ -537,7 +374,7 @@ function love.keypressed(key)
                 output.add("Please specify an item to eat.\n")
             else
                 local item_name = table.concat(command_parts, " ", 2)
-                eat_item(item_name)
+                player = items.eat_item(player, items_data, item_name) or player
             end
             
             if not table_contains(input.history, command) then
@@ -549,7 +386,7 @@ function love.keypressed(key)
                 output.add("Please specify an item to drink.\n")
             else
                 local item_name = table.concat(command_parts, " ", 2)
-                drink_item(item_name)
+                player = items.drink_item(player, items_data, item_name) or player
             end
             
             if not table_contains(input.history, command) then
@@ -565,7 +402,11 @@ function love.keypressed(key)
                     output.add("(empty)\n")
                 else
                     for item, quantity in pairs(player.inventory) do
-                        output.add("  " .. item .. ": " .. quantity .. "\n")
+                        if quantity > 1 then
+                            output.add("  " .. item .. " (" .. quantity .. ")\n")
+                        else
+                            output.add("  " .. item .. "\n")
+                        end
                     end
                 end
                 output.add("Gold: " .. player.gold .. "\n")
@@ -586,7 +427,7 @@ function love.keypressed(key)
                     table.remove(command_parts, #command_parts)
                 end
                 local item_name = table.concat(command_parts, " ", 2)
-                pick_item(item_name, quantity)
+                items.pick_item(player, map, item_name, quantity)
             end
             
             if not table_contains(input.history, command) then
@@ -604,7 +445,7 @@ function love.keypressed(key)
                     table.remove(command_parts, #command_parts)
                 end
                 local item_name = table.concat(command_parts, " ", 2)
-                drop_item(item_name, quantity)
+                items.drop_item(player, map, item_name, quantity)
             end
             
             if not table_contains(input.history, command) then
@@ -615,7 +456,9 @@ function love.keypressed(key)
             if not player.alive then
                 output.add("You are dead and cannot look around.\nStart a new game with the 'new' command.\n")
             else
-                local items_string = get_tile_items_string(player.x, player.y)
+                local location_desc = get_location_description(map.tiles[player.y][player.x])
+                output.add(location_desc .. "\n")
+                local items_string = items.get_tile_items_string(map, player.x, player.y)
                 output.add(items_string)
             end
             
