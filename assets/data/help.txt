@@ -10,6 +10,10 @@ south (or s) - Move player south.
 east (or e) - Move player east.
 west (or w) - Move player west.
 time - Displays the current time.
-eat - Eats an item.
-drink - Drinks an item.
+look - .
+items - Display player's inventory and gold.
+eat <item> - Eats an item.
+drink <item> - Drinks an item.
+pick <item> [quantity] - Pick up an item
+drop <item> [quantity] - Drop an item
 quit - Exit the game.
