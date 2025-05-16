@@ -1,0 +1,24 @@
+{
+  "items": [
+    {
+      "name": "Apple",
+      "tags": ["edible=-10", "healing=5"]
+    },
+    {
+      "name": "Sword",
+      "tags": ["weapon"]
+    },
+    {
+      "name": "Potion",
+      "tags": ["drinkable=-10", "healing=10"]
+    },
+    {
+      "name": "Orb",
+      "tags": ["tool"]
+    },
+    {
+      "name": "Shield",
+      "tags": ["armor"]
+    }
+  ]
+}

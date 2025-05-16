@@ -17,6 +17,7 @@ function love.load()
         history_index = 0
     }
     
+    load_items()
     initialize_game()
     
     if love.filesystem.getInfo("game.json") then
@@ -24,6 +25,22 @@ function love.load()
         output.add("Loaded saved game.\n")
     else
         output.add("Created new game.\n")
+    end
+end
+
+function load_items()
+    local items_file = "assets/data/items.json"
+    if love.filesystem.getInfo(items_file) then
+        local content = love.filesystem.read(items_file)
+        if content then
+            items_data = json.decode(content)
+        else
+            output.add("Failed to read items file.\n")
+            items_data = {}
+        end
+    else
+        output.add("Items file not found.\n")
+        items_data = {}
     end
 end
 
@@ -172,6 +189,15 @@ function find_item_key(table, item_name)
     return nil
 end
 
+function get_item_data(item_name)
+    for _, item in ipairs(items_data.items or {}) do
+        if string.lower(item.name) == string.lower(item_name) then
+            return item
+        end
+    end
+    return nil
+end
+
 function pick_item(item_name, quantity)
     if not player.alive then
         output.clear()
@@ -221,6 +247,115 @@ function drop_item(item_name, quantity)
     
     output.clear()
     output.add("You dropped " .. quantity .. " " .. item_key .. ".\n")
+end
+
+function eat_item(item_name)
+    if not player.alive then
+        output.clear()
+        output.add("You are dead and cannot eat.\nStart a new game with the 'new' command.\n")
+        return
+    end
+    
+    local item_key = find_item_key(player.inventory, item_name)
+    if not item_key then
+        output.clear()
+        output.add("You don't have " .. item_name .. " in your inventory.\n")
+        return
+    end
+    
+    local item_data = get_item_data(item_key)
+    if not item_data then
+        output.clear()
+        output.add("No data found for " .. item_key .. ".\n")
+        return
+    end
+    
+    local edible_value = nil
+    for _, tag in ipairs(item_data.tags) do
+        if tag:match("^edible=") then
+            edible_value = tonumber(tag:match("^edible=(%S+)"))
+            break
+        end
+    end
+    
+    if not edible_value then
+        output.clear()
+        output.add(item_key .. " is not edible.\n")
+        return
+    end
+    
+    output.clear()
+    output.add("You eat one " .. item_key .. "...\n")
+    player.hunger = math.min(100, math.max(0, player.hunger + edible_value))
+    player.thirst = math.min(100, math.max(0, player.thirst + 1))
+    player.inventory[item_key] = player.inventory[item_key] - 1
+    if player.inventory[item_key] <= 0 then
+        player.inventory[item_key] = nil
+    end
+    time.tick_time(15)
+    output.add("You feel less hungry but slightly thirstier.\n")
+    
+    local status_message = check_player_status()
+    if status_message ~= "" then
+        output.add(status_message)
+    end
+end
+
+function drink_item(item_name)
+    if not player.alive then
+        output.clear()
+        output.add("You are dead and cannot drink.\nStart a new game with the 'new' command.\n")
+        return
+    end
+    
+    local item_key = find_item_key(player.inventory, item_name)
+    if not item_key then
+        output.clear()
+        output.add("You don't have " .. item_name .. " in your inventory.\n")
+        return
+    end
+    
+    local item_data = get_item_data(item_key)
+    if not item_data then
+        output.clear()
+        output.add("No data found for " .. item_key .. ".\n")
+        return
+    end
+    
+    local drinkable_value = nil
+    local healing_value = nil
+    for _, tag in ipairs(item_data.tags) do
+        if tag:match("^drinkable=") then
+            drinkable_value = tonumber(tag:match("^drinkable=(%S+)"))
+        elseif tag:match("^healing=") then
+            healing_value = tonumber(tag:match("^healing=(%S+)"))
+        end
+    end
+    
+    if not drinkable_value then
+        output.clear()
+        output.add(item_key .. " is not drinkable.\n")
+        return
+    end
+    
+    output.clear()
+    output.add("You drink one " .. item_key .. "...\n")
+    player.thirst = math.min(100, math.max(0, player.thirst + drinkable_value))
+    if healing_value then
+        player.health = math.min(100, math.max(0, player.health + healing_value))
+        output.add("Your health is restored.\n")
+    end
+    player.inventory[item_key] = player.inventory[item_key] - 1
+    if player.inventory[item_key] <= 0 then
+        player.inventory[item_key] = nil
+    end
+    time.tick_time(15)
+    output.add("You feel less thirsty.\n")
+    
+    local status_message = check_player_status()
+    if status_message ~= "" then
+        output.add(status_message)
+    end
 end
 
 function move_player(direction)
@@ -398,16 +533,11 @@ function love.keypressed(key)
             end
         elseif command_parts[1] == "eat" then
             output.clear()
-            if not player.alive then
-                output.add("You are dead and cannot eat.\nStart a new game with the 'new' command.\n")
-            elseif player.hunger <= 0 then
-                output.add("You don't need to eat.\n")
+            if #command_parts < 2 then
+                output.add("Please specify an item to eat.\n")
             else
-                output.add("You eat some food...\n")
-                player.hunger = math.min(100, math.max(0, player.hunger - 30))
-                player.thirst = math.min(100, math.max(0, player.thirst + 1))
-                time.tick_time(15)
-                output.add("You feel less hungry but slightly thirstier.\n")
+                local item_name = table.concat(command_parts, " ", 2)
+                eat_item(item_name)
             end
             
             if not table_contains(input.history, command) then
@@ -415,15 +545,11 @@ function love.keypressed(key)
             end
         elseif command_parts[1] == "drink" then
             output.clear()
-            if not player.alive then
-                output.add("You are dead and cannot drink.\nStart a new game with the 'new' command.\n")
-            elseif player.thirst <= 0 then
-                output.add("You don't need to drink.\n")
+            if #command_parts < 2 then
+                output.add("Please specify an item to drink.\n")
             else
-                output.add("You drink some water...\n")
-                player.thirst = math.min(100, math.max(0, player.thirst - 10))
-                time.tick_time(15)
-                output.add("You feel less thirsty.\n")
+                local item_name = table.concat(command_parts, " ", 2)
+                drink_item(item_name)
             end
             
             if not table_contains(input.history, command) then
