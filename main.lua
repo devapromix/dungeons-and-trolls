@@ -2,6 +2,7 @@ json = require("libraries.json")
 output = require("output")
 time = require("time")
 items = require("items")
+player_module = require("player")
 
 function love.load()
     input = {
@@ -25,14 +26,14 @@ function love.load()
     if love.filesystem.getInfo("game.json") then
         load_game_from_json()
         output.add("Loaded saved game.\n")
-        local location_desc = get_location_description(map.tiles[player.y][player.x])
+        local location_desc = player_module.get_location_description(map.tiles[player.y][player.x], locations_data)
         output.add(location_desc .. "\n")
         local items_string = items.get_tile_items_string(map, player.x, player.y)
         output.add(items_string)
         output.add("Type 'help' to see a list of available commands.\n")
     else
         output.add("Created new game.\n")
-        local location_desc = get_location_description(map.tiles[player.y][player.x])
+        local location_desc = player_module.get_location_description(map.tiles[player.y][player.x], locations_data)
         output.add(location_desc .. "\n")
         local items_string = items.get_tile_items_string(map, player.x, player.y)
         output.add(items_string)
@@ -56,15 +57,6 @@ function load_locations()
     end
 end
 
-function get_location_description(symbol)
-    for _, location in ipairs(locations_data.locations or {}) do
-        if location.symbol == symbol then
-            return location.description
-        end
-    end
-    return "An unknown location."
-end
-
 function initialize_game()
     map = {
         tiles = {},
@@ -72,19 +64,7 @@ function initialize_game()
         items = {}
     }
     
-    player = {
-        x = math.floor(config.map.width / 2),
-        y = math.floor(config.map.height / 2), 
-        symbol = "@",
-        health = 100,
-        mana = 100,
-        hunger = 0,
-        fatigue = 0,
-        thirst = 0,
-        alive = true,
-        gold = 0,
-        inventory = {}
-    }
+    player = player_module.initialize()
     
     game_time = {
         year = 1280,
@@ -102,7 +82,7 @@ function initialize_game()
             map.tiles[y][x] = math.random() < 0.7 and "s" or "f"
             map.visited[y][x] = false
             map.items[y][x] = {}
-            -- Генерація предметів з ймовірністю 10%
+            -- Generate items with 10% probability
             if items_data.items and #items_data.items > 0 and math.random() < 0.1 then
                 local item = items_data.items[math.random(1, #items_data.items)]
                 local quantity = math.random(1, 3)
@@ -161,80 +141,6 @@ function load_game_from_json()
     end
 end
 
-function check_player_status()
-    player.hunger = math.min(100, math.max(0, player.hunger))
-    player.fatigue = math.min(100, math.max(0, player.fatigue))
-    player.health = math.min(100, math.max(0, player.health))
-    player.thirst = math.min(100, math.max(0, player.thirst))
-    
-    if player.hunger >= 100 then
-        player.hunger = 100
-        player.alive = false
-        return "You died from starvation.\n"
-    elseif player.fatigue >= 100 then
-        player.fatigue = 100
-        player.alive = false
-        return "You died from exhaustion.\n"
-    elseif player.health <= 0 then
-        player.health = 0
-        player.alive = false
-        return "You died from your injuries.\n"
-    elseif player.thirst >= 100 then
-        player.thirst = 100
-        player.alive = false
-        return "You died from thirst.\n"
-    end
-    return ""
-end
-
-function move_player(direction)
-    if not player.alive then
-        output.clear()
-        output.add("You are DEAD and cannot move.\n\nStart a new game with the 'new' command.\n")
-        return false
-    end
-    
-    local moves = {
-        north = {y = -1, x_min = 1, x_max = config.map.width, y_min = 2, y_max = config.map.height, dir = "north"},
-        south = {y = 1, x_min = 1, x_max = config.map.width, y_min = 1, y_max = config.map.height - 1, dir = "south"},
-        east = {x = 1, x_min = 1, x_max = config.map.width - 1, y_min = 1, y_max = config.map.height, dir = "east"},
-        west = {x = -1, x_min = 2, x_max = config.map.width, y_min = 1, y_max = config.map.height, dir = "west"}
-    }
-    
-    local move = moves[direction]
-    if not move then return false end
-    
-    local new_x = player.x + (move.x or 0)
-    local new_y = player.y + (move.y or 0)
-    
-    if new_x >= move.x_min and new_x <= move.x_max and new_y >= move.y_min and new_y <= move.y_max then
-        player.x = new_x
-        player.y = new_y
-        map.visited[player.y][player.x] = true
-        output.clear()
-        output.add("You moved " .. move.dir .. ".\n")
-        local location_desc = get_location_description(map.tiles[player.y][player.x])
-        output.add(location_desc .. "\n")
-        local items_string = items.get_tile_items_string(map, player.x, player.y)
-        output.add(items_string)
-        
-        time.tick_time(120)
-        player.fatigue = math.min(100, math.max(0, player.fatigue + (player.mana <= 0 and 2 or 1)))
-        player.hunger = math.min(100, math.max(0, player.hunger + 0.5))
-        player.thirst = math.min(100, math.max(0, player.thirst + 2))
-        
-        local status_message = check_player_status()
-        if status_message ~= "" then
-            output.add(status_message)
-        end
-        return true
-    else
-        output.clear()
-        output.add("You can't move further " .. move.dir .. ".\n")
-        return false
-    end
-end
-
 function love.update(dt)
     input.cursor_timer = input.cursor_timer + dt
     if input.cursor_timer >= input.cursor_blink_speed then
@@ -282,7 +188,7 @@ function love.keypressed(key)
             output.add("Starting a new game...\n")
             initialize_game()
             output.add("New game initialized.\n")
-            local location_desc = get_location_description(map.tiles[player.y][player.x])
+            local location_desc = player_module.get_location_description(map.tiles[player.y][player.x], locations_data)
             output.add(location_desc .. "\n")
             local items_string = items.get_tile_items_string(map, player.x, player.y)
             output.add(items_string)
@@ -296,7 +202,7 @@ function love.keypressed(key)
             if love.filesystem.getInfo("game.json") then
                 load_game_from_json()
                 output.add("Game loaded.\n")
-                local location_desc = get_location_description(map.tiles[player.y][player.x])
+                local location_desc = player_module.get_location_description(map.tiles[player.y][player.x], locations_data)
                 output.add(location_desc .. "\n")
                 local items_string = items.get_tile_items_string(map, player.x, player.y)
                 output.add(items_string)
@@ -305,17 +211,7 @@ function love.keypressed(key)
                 output.add("No saved game found.\n")
             end
         elseif command_parts[1] == "status" then
-            output.clear()
-            output.add("Health: " .. player.health .. "\n")
-            output.add("Mana: " .. player.mana .. "\n")
-            output.add("Hunger: " .. player.hunger .. "\n")
-            output.add("Fatigue: " .. player.fatigue .. "\n")
-            output.add("Thirst: " .. player.thirst .. "\n")
-            output.add("Position: " .. player.x .. ", " .. player.y .. "\n")
-            
-            if not player.alive then
-                output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
-            end
+            player_module.show_status(player)
             
             if not table_contains(input.history, command) then
                 table.insert(input.history, 1, command)
@@ -328,46 +224,7 @@ function love.keypressed(key)
                 table.insert(input.history, 1, command)
             end
         elseif command_parts[1] == "rest" then
-            output.clear()
-            if not player.alive then
-                output.add("You are DEAD and cannot rest.\nStart a new game with the 'new' command.\n")
-            elseif player.health >= 100 and player.mana >= 100 and player.fatigue <= 0 then
-                output.add("You don't need to rest.\n")
-            else
-                local hours_to_full = math.max(
-                    math.ceil((100 - player.health) / 10),
-                    math.ceil((100 - player.mana) / 10),
-                    math.ceil(player.fatigue / 10)
-                )
-                local hours_to_morning = 0
-                if game_time.hour >= 18 then
-                    hours_to_morning = (24 - game_time.hour) + 6
-                elseif game_time.hour < 6 then
-                    hours_to_morning = 6 - game_time.hour
-                end
-                local rest_hours = hours_to_full
-                if hours_to_morning > 0 then
-                    rest_hours = math.min(hours_to_full, hours_to_morning)
-                end
-                
-                output.add("You rest for " .. rest_hours .. " hour(s)...\n")
-                player.health = math.min(100, math.max(0, player.health + rest_hours * 10))
-                player.mana = math.min(100, math.max(0, player.mana + rest_hours * 10))
-                player.fatigue = math.min(100, math.max(0, player.fatigue - rest_hours * 10))
-                player.hunger = math.min(100, math.max(0, player.hunger + rest_hours * 0.5))
-                player.thirst = math.min(100, math.max(0, player.thirst + rest_hours * 5))
-                time.tick_time(rest_hours * 60)
-                
-                output.add("Your health, mana, and fatigue have been restored.\n")
-                if rest_hours > 0 then
-                    output.add("You feel hungrier and thirstier.\n")
-                end
-                
-                local status_message = check_player_status()
-                if status_message ~= "" then
-                    output.add(status_message)
-                end
-            end
+            player_module.rest(player, game_time)
             
             if not table_contains(input.history, command) then
                 table.insert(input.history, 1, command)
@@ -397,24 +254,7 @@ function love.keypressed(key)
                 table.insert(input.history, 1, command)
             end
         elseif command_parts[1] == "items" then
-            output.clear()
-            if not player.alive then
-                output.add("You are dead and cannot check your inventory.\nStart a new game with the 'new' command.\n")
-            else
-                output.add("Inventory (" .. table_count(player.inventory) .. "/" .. config.inventory.max_slots .. "):\n")
-                if next(player.inventory) == nil then
-                    output.add("(empty)\n")
-                else
-                    for item, quantity in pairs(player.inventory) do
-                        if quantity > 1 then
-                            output.add(item .. " (" .. quantity .. ")\n")
-                        else
-                            output.add(item .. "\n")
-                        end
-                    end
-                end
-                output.add("Gold: " .. player.gold .. "\n")
-            end
+            player_module.show_inventory(player)
             
             if not table_contains(input.history, command) then
                 table.insert(input.history, 1, command)
@@ -478,15 +318,7 @@ function love.keypressed(key)
                 table.insert(input.history, 1, command)
             end
         elseif command_parts[1] == "look" then
-            output.clear()
-            if not player.alive then
-                output.add("You are dead and cannot look around.\nStart a new game with the 'new' command.\n")
-            else
-                local location_desc = get_location_description(map.tiles[player.y][player.x])
-                output.add(location_desc .. "\n")
-                local items_string = items.get_tile_items_string(map, player.x, player.y)
-                output.add(items_string)
-            end
+            player_module.look(player, map, locations_data)
             
             if not table_contains(input.history, command) then
                 table.insert(input.history, 1, command)
@@ -516,22 +348,22 @@ function love.keypressed(key)
                 table.insert(input.history, 1, command)
             end
         elseif command_parts[1] == "north" or command_parts[1] == "n" then
-            move_player("north")
+            player_module.move(player, map, "north", locations_data)
             if not table_contains(input.history, command) then
                 table.insert(input.history, 1, command)
             end
         elseif command_parts[1] == "south" or command_parts[1] == "s" then
-            move_player("south")
+            player_module.move(player, map, "south", locations_data)
             if not table_contains(input.history, command) then
                 table.insert(input.history, 1, command)
             end
         elseif command_parts[1] == "east" or command_parts[1] == "e" then
-            move_player("east")
+            player_module.move(player, map, "east", locations_data)
             if not table_contains(input.history, command) then
                 table.insert(input.history, 1, command)
             end
         elseif command_parts[1] == "west" or command_parts[1] == "w" then
-            move_player("west")
+            player_module.move(player, map, "west", locations_data)
             if not table_contains(input.history, command) then
                 table.insert(input.history, 1, command)
             end
@@ -568,14 +400,6 @@ function table_contains(table, element)
         end
     end
     return false
-end
-
-function table_count(table)
-    local count = 0
-    for _ in pairs(table) do
-        count = count + 1
-    end
-    return count
 end
 
 function love.draw()
