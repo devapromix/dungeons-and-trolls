@@ -5,8 +5,8 @@ items = require("items")
 map = require("map")
 
 function display_location_and_items()
-    local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])
-    output.add(location_desc .. "\n")
+    local location = map.get_location_description(map_data.tiles[player.y][player.x])
+    output.add("You are in " .. location.name .. ". " .. location.description .. "\n")
     local items_string = items.get_tile_items_string(map_data, player.x, player.y)
     output.add(items_string)
 end

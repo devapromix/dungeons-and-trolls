@@ -34,10 +34,10 @@ end
 function map.get_location_description(symbol)
     for _, location in ipairs(locations_data.locations or {}) do
         if location.symbol == symbol then
-            return location.description
+            return { name = location.name, description = location.description }
         end
     end
-    return "An unknown location."
+    return { name = "Unknown", description = "An unknown location." }
 end
 
 function map.noise(x, y, scale)

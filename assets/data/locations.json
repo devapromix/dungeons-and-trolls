@@ -1,12 +1,12 @@
 {
     "locations": [
-        { "symbol": "f", "description": "A dense forest with tall trees and abundant wildlife." },
-        { "symbol": "g", "description": "Lush grasslands teeming with wildflowers and gentle breezes." },
-        { "symbol": "p", "description": "Open plains with scattered shrubs and rolling fields." },
-        { "symbol": "s", "description": "A vast steppe with rolling hills and sparse vegetation." },
-        { "symbol": "v", "description": "A dry savanna with acacia trees and roaming wildlife." },
-        { "symbol": "d", "description": "A scorching desert with endless dunes and little life." },
-        { "symbol": "m", "description": "Rugged mountains with steep cliffs and rocky paths." },
-        { "symbol": "r", "description": "A flowing river with clear water and fertile banks." }
+        { "symbol": "f", "name": "Forest", "description": "A dense forest with tall trees and abundant wildlife." },
+        { "symbol": "g", "name": "Grasslands", "description": "Lush grasslands teeming with wildflowers and gentle breezes." },
+        { "symbol": "p", "name": "Plains", "description": "Open plains with scattered shrubs and rolling fields." },
+        { "symbol": "s", "name": "Steppe", "description": "A vast steppe with rolling hills and sparse vegetation." },
+        { "symbol": "v", "name": "Savanna", "description": "A dry savanna with acacia trees and roaming wildlife." },
+        { "symbol": "d", "name": "Desert", "description": "A scorching desert with endless dunes and little life." },
+        { "symbol": "m", "name": "Mountains", "description": "Rugged mountains with steep cliffs and rocky paths." },
+        { "symbol": "r", "name": "River", "description": "A flowing river with clear water and fertile banks." }
     ]
 }
