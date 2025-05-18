@@ -1,14 +1,12 @@
 {
-  "locations": [
-    {
-      "symbol": "s",
-      "name": "Desert",
-      "description": "A vast, arid expanse of sand and scorching sun."
-    },
-    {
-      "symbol": "f",
-      "name": "Forest",
-      "description": "A dense woodland filled with towering trees and wildlife."
-    }
-  ]
+    "locations": [
+        { "symbol": "f", "description": "A dense forest with tall trees and abundant wildlife." },
+        { "symbol": "g", "description": "Lush grasslands teeming with wildflowers and gentle breezes." },
+        { "symbol": "p", "description": "Open plains with scattered shrubs and rolling fields." },
+        { "symbol": "s", "description": "A vast steppe with rolling hills and sparse vegetation." },
+        { "symbol": "v", "description": "A dry savanna with acacia trees and roaming wildlife." },
+        { "symbol": "d", "description": "A scorching desert with endless dunes and little life." },
+        { "symbol": "m", "description": "Rugged mountains with steep cliffs and rocky paths." },
+        { "symbol": "r", "description": "A flowing river with clear water and fertile banks." }
+    ]
 }

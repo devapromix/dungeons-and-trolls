@@ -1,5 +1,3 @@
--- MAIN
-
 json = require("libraries.json")
 output = require("output")
 time = require("time")
@@ -103,7 +101,7 @@ function check_player_status()
     elseif player.health <= 0 then
         player.health = 0
         player.alive = false
-        return "You died from your injuries.\n"
+        return "You died from injuries.\n"
     elseif player.thirst >= 100 then
         player.thirst = 100
         player.alive = false
@@ -143,10 +141,23 @@ function move_player(direction)
         local items_string = items.get_tile_items_string(map_data, player.x, player.y)
         output.add(items_string)
         
+        local biome_effects = {
+            f = { thirst = 2, hunger = 0.5, fatigue = 1 },
+            g = { thirst = 1.5, hunger = 0.4, fatigue = 0.8 },
+            p = { thirst = 2.5, hunger = 0.5, fatigue = 1 },
+            s = { thirst = 3, hunger = 0.5, fatigue = 1 },
+            v = { thirst = 4, hunger = 0.6, fatigue = 1.2 },
+            d = { thirst = 5, hunger = 0.8, fatigue = 1.5 },
+            m = { thirst = 2.5, hunger = 0.6, fatigue = 2 },
+            r = { thirst = -3, hunger = 0.5, fatigue = 1.2 }
+        }
+        local current_biome = map_data.tiles[player.y][player.x]
+        local effects = biome_effects[current_biome] or biome_effects.f
+        
         time.tick_time(120)
-        player.fatigue = math.min(100, math.max(0, player.fatigue + (player.mana <= 0 and 2 or 1)))
-        player.hunger = math.min(100, math.max(0, player.hunger + 0.5))
-        player.thirst = math.min(100, math.max(0, player.thirst + 2))
+        player.fatigue = math.min(100, math.max(0, player.fatigue + (player.mana <= 0 and effects.fatigue * 2 or effects.fatigue)))
+        player.hunger = math.min(100, math.max(0, player.hunger + effects.hunger))
+        player.thirst = math.min(100, math.max(0, player.thirst + effects.thirst))
         
         local status_message = check_player_status()
         if status_message ~= "" then
