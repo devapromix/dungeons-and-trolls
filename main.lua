@@ -4,6 +4,13 @@ time = require("time")
 items = require("items")
 map = require("map")
 
+function display_location_and_items()
+    local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])
+    output.add(location_desc .. "\n")
+    local items_string = items.get_tile_items_string(map_data, player.x, player.y)
+    output.add(items_string)
+end
+
 function love.load()
     input = {
         text = ">",
@@ -26,17 +33,11 @@ function love.load()
     if love.filesystem.getInfo("game.json") then
         load_game_from_json()
         output.add("Loaded saved game.\n")
-        local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])
-        output.add(location_desc .. "\n")
-        local items_string = items.get_tile_items_string(map_data, player.x, player.y)
-        output.add(items_string)
+        display_location_and_items()
         output.add("Type 'help' to see a list of available commands.\n")
     else
         output.add("Created new game.\n")
-        local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])
-        output.add(location_desc .. "\n")
-        local items_string = items.get_tile_items_string(map_data, player.x, player.y)
-        output.add(items_string)
+        display_location_and_items()
         output.add("Type 'help' to see a list of available commands.\n")
     end
 end
@@ -166,10 +167,7 @@ function move_player(direction)
         end
         
         output.add("You moved " .. move.dir .. ".\n")
-        local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])
-        output.add(location_desc .. "\n")
-        local items_string = items.get_tile_items_string(map_data, player.x, player.y)
-        output.add(items_string)
+        display_location_and_items()
         
         local current_biome = map_data.tiles[player.y][player.x]
         local effects = map.get_biome_effects(current_biome)
@@ -231,10 +229,7 @@ function love.keypressed(key)
             output.add("Starting a new game...\n")
             map.initialize_game()
             output.add("New game initialized.\n")
-            local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])
-            output.add(location_desc .. "\n")
-            local items_string = items.get_tile_items_string(map_data, player.x, player.y)
-            output.add(items_string)
+            display_location_and_items()
             output.add("Type 'help' to see a list of available commands.\n")
         elseif command_parts[1] == "save" then
             save_game_to_json()
@@ -243,10 +238,7 @@ function love.keypressed(key)
             if love.filesystem.getInfo("game.json") then
                 load_game_from_json()
                 output.add("Game loaded.\n")
-                local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])
-                output.add(location_desc .. "\n")
-                local items_string = items.get_tile_items_string(map_data, player.x, player.y)
-                output.add(items_string)
+                display_location_and_items()
                 output.add("Type 'help' to see a list of available commands.\n")
             else
                 output.add("No saved game found.\n")
@@ -357,10 +349,7 @@ function love.keypressed(key)
             if not check_player_alive("look around") then
                 return
             end
-            local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])
-            output.add(location_desc .. "\n")
-            local items_string = items.get_tile_items_string(map_data, player.x, player.y)
-            output.add(items_string)
+            display_location_and_items()
         elseif command_parts[1] == "map" then
             for y = 1, config.map.height do
                 local line = ""
