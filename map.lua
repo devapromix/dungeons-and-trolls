@@ -59,7 +59,8 @@ function map.initialize_game()
         thirst = 0,
         alive = true,
         gold = 0,
-        inventory = {}
+        inventory = {},
+        radius = 3
     }
     
     game_time = {
@@ -73,13 +74,13 @@ function map.initialize_game()
     local scale = 0.08
     local river_scale = 0.05
     local biomes = {
-        { symbol = "f", threshold = 0.15, item_chance = 0.25, effects = { thirst = 2, hunger = 0.5, fatigue = 1 } }, -- forest
-        { symbol = "g", threshold = 0.30, item_chance = 0.20, effects = { thirst = 1.5, hunger = 0.4, fatigue = 0.8 } }, -- grassland
-        { symbol = "p", threshold = 0.45, item_chance = 0.15, effects = { thirst = 2.5, hunger = 0.5, fatigue = 1 } }, -- plain
-        { symbol = "s", threshold = 0.60, item_chance = 0.10, effects = { thirst = 3, hunger = 0.5, fatigue = 1 } }, -- steppe
-        { symbol = "v", threshold = 0.75, item_chance = 0.08, effects = { thirst = 4, hunger = 0.6, fatigue = 1.2 } }, -- savanna
-        { symbol = "d", threshold = 0.85, item_chance = 0.05, effects = { thirst = 5, hunger = 0.8, fatigue = 1.5 } }, -- desert
-        { symbol = "m", threshold = 1.0, item_chance = 0.08, effects = { thirst = 2.5, hunger = 0.6, fatigue = 2 } } -- mountain
+        { symbol = "f", threshold = 0.15, item_chance = 0.25, effects = { thirst = 2, hunger = 0.5, fatigue = 1 } },
+        { symbol = "g", threshold = 0.30, item_chance = 0.20, effects = { thirst = 1.5, hunger = 0.4, fatigue = 0.8 } },
+        { symbol = "p", threshold = 0.45, item_chance = 0.15, effects = { thirst = 2.5, hunger = 0.5, fatigue = 1 } },
+        { symbol = "s", threshold = 0.60, item_chance = 0.10, effects = { thirst = 3, hunger = 0.5, fatigue = 1 } },
+        { symbol = "v", threshold = 0.75, item_chance = 0.08, effects = { thirst = 4, hunger = 0.6, fatigue = 1.2 } },
+        { symbol = "d", threshold = 0.85, item_chance = 0.05, effects = { thirst = 5, hunger = 0.8, fatigue = 1.5 } },
+        { symbol = "m", threshold = 1.0, item_chance = 0.08, effects = { thirst = 2.5, hunger = 0.6, fatigue = 2 } }
     }
     
     for y = 1, config.map.height do
@@ -90,7 +91,7 @@ function map.initialize_game()
             local river_value = map.river_noise(x, y, river_scale)
             local symbol
             if river_value < 0.1 then
-                symbol = "r" -- river
+                symbol = "r"
             else
                 local noise_value = map.noise(x, y, scale)
                 local biome = biomes[#biomes]
@@ -114,7 +115,14 @@ function map.initialize_game()
         end
     end
     
-    map_data.visited[player.y][player.x] = true
+    for y = math.max(1, player.y - player.radius), math.min(config.map.height, player.y + player.radius) do
+        for x = math.max(1, player.x - player.radius), math.min(config.map.width, player.x + player.radius) do
+            if math.sqrt((x - player.x)^2 + (y - player.y)^2) <= player.radius then
+                map_data.visited[y][x] = true
+            end
+        end
+    end
+    
     input.history = {}
     input.history_index = 0
     output.clear()

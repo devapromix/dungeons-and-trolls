@@ -133,7 +133,15 @@ function move_player(direction)
     if new_x >= move.x_min and new_x <= move.x_max and new_y >= move.y_min and new_y <= move.y_max then
         player.x = new_x
         player.y = new_y
-        map_data.visited[player.y][player.x] = true
+        
+        for y = math.max(1, player.y - player.radius), math.min(config.map.height, player.y + player.radius) do
+            for x = math.max(1, player.x - player.radius), math.min(config.map.width, player.x + player.radius) do
+                if math.sqrt((x - player.x)^2 + (y - player.y)^2) <= player.radius then
+                    map_data.visited[y][x] = true
+                end
+            end
+        end
+        
         output.clear()
         output.add("You moved " .. move.dir .. ".\n")
         local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])

@@ -38,5 +38,5 @@ function love.conf (t)
 	t.window.title = config.game.name
 	t.window.width = window.width
 	t.window.height = window.height
-	--t.window.icon = "assets/icons/game.png"
+	t.window.icon = "assets/icons/game.png"
 end
