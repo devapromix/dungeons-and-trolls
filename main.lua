@@ -171,18 +171,8 @@ function move_player(direction)
         local items_string = items.get_tile_items_string(map_data, player.x, player.y)
         output.add(items_string)
         
-        local biome_effects = {
-            f = { thirst = 2, hunger = 0.5, fatigue = 1 },
-            g = { thirst = 1.5, hunger = 0.4, fatigue = 0.8 },
-            p = { thirst = 2.5, hunger = 0.5, fatigue = 1 },
-            s = { thirst = 3, hunger = 0.5, fatigue = 1 },
-            v = { thirst = 4, hunger = 0.6, fatigue = 1.2 },
-            d = { thirst = 5, hunger = 0.8, fatigue = 1.5 },
-            m = { thirst = 2.5, hunger = 0.6, fatigue = 2 },
-            r = { thirst = -3, hunger = 0.5, fatigue = 1.2 }
-        }
         local current_biome = map_data.tiles[player.y][player.x]
-        local effects = biome_effects[current_biome] or biome_effects.f
+        local effects = map.get_biome_effects(current_biome)
         
         time.tick_time(120)
         player.fatigue = math.min(100, math.max(0, player.fatigue + (player.mana <= 0 and effects.fatigue * 2 or effects.fatigue)))

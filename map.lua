@@ -4,6 +4,17 @@ local items = require("items")
 
 local map = {}
 
+local biomes = {
+    { symbol = "f", threshold = 0.15, item_chance = 0.25, effects = { thirst = 2, hunger = 0.5, fatigue = 1 } },
+    { symbol = "g", threshold = 0.30, item_chance = 0.20, effects = { thirst = 1.5, hunger = 0.4, fatigue = 0.8 } },
+    { symbol = "p", threshold = 0.45, item_chance = 0.15, effects = { thirst = 2.5, hunger = 0.5, fatigue = 1 } },
+    { symbol = "s", threshold = 0.60, item_chance = 0.10, effects = { thirst = 3, hunger = 0.5, fatigue = 1 } },
+    { symbol = "v", threshold = 0.75, item_chance = 0.08, effects = { thirst = 4, hunger = 0.6, fatigue = 1.2 } },
+    { symbol = "d", threshold = 0.85, item_chance = 0.05, effects = { thirst = 5, hunger = 0.8, fatigue = 1.5 } },
+    { symbol = "m", threshold = 1.0, item_chance = 0.08, effects = { thirst = 2.5, hunger = 0.6, fatigue = 2 } },
+    { symbol = "r", effects = { thirst = -3, hunger = 0.5, fatigue = 1.2 } }
+}
+
 function map.load_locations()
     local locations_file = "assets/data/locations.json"
     if love.filesystem.getInfo(locations_file) then
@@ -41,6 +52,15 @@ function map.river_noise(x, y, scale)
     return (value + 1) / 2
 end
 
+function map.get_biome_effects(symbol)
+    for _, biome in ipairs(biomes) do
+        if biome.symbol == symbol then
+            return biome.effects
+        end
+    end
+    return { thirst = 2, hunger = 0.5, fatigue = 1 }
+end
+
 function map.initialize_game()
     map_data = {
         tiles = {},
@@ -73,15 +93,6 @@ function map.initialize_game()
     
     local scale = 0.08
     local river_scale = 0.05
-    local biomes = {
-        { symbol = "f", threshold = 0.15, item_chance = 0.25, effects = { thirst = 2, hunger = 0.5, fatigue = 1 } },
-        { symbol = "g", threshold = 0.30, item_chance = 0.20, effects = { thirst = 1.5, hunger = 0.4, fatigue = 0.8 } },
-        { symbol = "p", threshold = 0.45, item_chance = 0.15, effects = { thirst = 2.5, hunger = 0.5, fatigue = 1 } },
-        { symbol = "s", threshold = 0.60, item_chance = 0.10, effects = { thirst = 3, hunger = 0.5, fatigue = 1 } },
-        { symbol = "v", threshold = 0.75, item_chance = 0.08, effects = { thirst = 4, hunger = 0.6, fatigue = 1.2 } },
-        { symbol = "d", threshold = 0.85, item_chance = 0.05, effects = { thirst = 5, hunger = 0.8, fatigue = 1.5 } },
-        { symbol = "m", threshold = 1.0, item_chance = 0.08, effects = { thirst = 2.5, hunger = 0.6, fatigue = 2 } }
-    }
     
     for y = 1, config.map.height do
         map_data.tiles[y] = {}
