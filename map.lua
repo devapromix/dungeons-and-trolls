@@ -123,8 +123,6 @@ function map.initialize_game()
         end
     end
     
-    input.history = {}
-    input.history_index = 0
     output.clear()
     output.add("Welcome to " .. config.game.name .. " v." .. config.game.version .. "\n")
 end

@@ -110,10 +110,33 @@ function check_player_status()
     return ""
 end
 
-function move_player(direction)
+function check_player_alive(action)
     if not player.alive then
-        output.clear()
-        output.add("You are DEAD and cannot move.\n\nStart a new game with the 'new' command.\n")
+        output.add("You are dead and cannot " .. action .. ".\nStart a new game with the 'new' command.\n")
+        return false
+    end
+    return true
+end
+
+function parse_item_command(command_parts, start_index)
+    local quantity = 1
+    local item_name
+    if tonumber(command_parts[start_index]) then
+        quantity = math.floor(tonumber(command_parts[start_index]))
+        if #command_parts >= start_index + 1 then
+            item_name = table.concat(command_parts, " ", start_index + 1)
+        else
+            output.add("Please specify an item name after the quantity.\n")
+            return nil, nil
+        end
+    else
+        item_name = table.concat(command_parts, " ", start_index)
+    end
+    return quantity, item_name
+end
+
+function move_player(direction)
+    if not check_player_alive("move") then
         return false
     end
     
@@ -142,7 +165,6 @@ function move_player(direction)
             end
         end
         
-        output.clear()
         output.add("You moved " .. move.dir .. ".\n")
         local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])
         output.add(location_desc .. "\n")
@@ -173,7 +195,6 @@ function move_player(direction)
         end
         return true
     else
-        output.clear()
         output.add("You can't move further " .. move.dir .. ".\n")
         return false
     end
@@ -198,6 +219,7 @@ function love.keypressed(key)
         input.history_index = 0
     end
     if key == "return" and #input.text > 1 then
+        output.clear()
         local command = input.text:sub(2)
         local command_parts = {}
         for part in command:gmatch("%S+") do
@@ -205,8 +227,6 @@ function love.keypressed(key)
         end
         
         if command_parts[1] == "help" then
-            output.clear()
-            
             if love.filesystem.getInfo("assets/data/help.txt") then
                 local content = love.filesystem.read("assets/data/help.txt")
                 if content then
@@ -217,12 +237,7 @@ function love.keypressed(key)
             else
                 output.add("Help file not found.\n")
             end
-            
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
         elseif command_parts[1] == "new" then
-            output.clear()
             output.add("Starting a new game...\n")
             map.initialize_game()
             output.add("New game initialized.\n")
@@ -233,10 +248,8 @@ function love.keypressed(key)
             output.add("Type 'help' to see a list of available commands.\n")
         elseif command_parts[1] == "save" then
             save_game_to_json()
-            output.clear()
             output.add("Game saved.\n")
         elseif command_parts[1] == "load" then
-            output.clear()
             if love.filesystem.getInfo("game.json") then
                 load_game_from_json()
                 output.add("Game loaded.\n")
@@ -249,7 +262,6 @@ function love.keypressed(key)
                 output.add("No saved game found.\n")
             end
         elseif command_parts[1] == "status" then
-            output.clear()
             output.add("Health: " .. player.health .. "\n")
             output.add("Mana: " .. player.mana .. "\n")
             output.add("Hunger: " .. player.hunger .. "\n")
@@ -260,21 +272,11 @@ function love.keypressed(key)
             if not player.alive then
                 output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
             end
-            
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
         elseif command_parts[1] == "time" then
-            output.clear()
             output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
-            
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
         elseif command_parts[1] == "rest" then
-            output.clear()
-            if not player.alive then
-                output.add("You are DEAD and cannot rest.\nStart a new game with the 'new' command.\n")
+            if not check_player_alive("rest") then
+                return
             elseif player.health >= 100 and player.mana >= 100 and player.fatigue <= 0 then
                 output.add("You don't need to rest.\n")
             else
@@ -312,132 +314,64 @@ function love.keypressed(key)
                     output.add(status_message)
                 end
             end
-            
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
         elseif command_parts[1] == "eat" then
-            output.clear()
             if #command_parts < 2 then
                 output.add("Please specify an item to eat.\n")
             else
                 local item_name = table.concat(command_parts, " ", 2)
                 player = items.eat_item(player, items_data, item_name) or player
             end
-            
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
         elseif command_parts[1] == "drink" then
-            output.clear()
             if #command_parts < 2 then
                 output.add("Please specify an item to drink.\n")
             else
                 local item_name = table.concat(command_parts, " ", 2)
                 player = items.drink_item(player, items_data, item_name) or player
             end
-            
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
         elseif command_parts[1] == "items" then
-            output.clear()
-            if not player.alive then
-                output.add("You are dead and cannot check your inventory.\nStart a new game with the 'new' command.\n")
+            if not check_player_alive("check your inventory") then
+                return
+            end
+            output.add("Inventory (" .. table_count(player.inventory) .. "/" .. config.inventory.max_slots .. "):\n")
+            if next(player.inventory) == nil then
+                output.add("(empty)\n")
             else
-                output.add("Inventory (" .. table_count(player.inventory) .. "/" .. config.inventory.max_slots .. "):\n")
-                if next(player.inventory) == nil then
-                    output.add("(empty)\n")
-                else
-                    for item, quantity in pairs(player.inventory) do
-                        if quantity > 1 then
-                            output.add(item .. " (" .. quantity .. ")\n")
-                        else
-                            output.add(item .. "\n")
-                        end
+                for item, quantity in pairs(player.inventory) do
+                    if quantity > 1 then
+                        output.add(item .. " (" .. quantity .. ")\n")
+                    else
+                        output.add(item .. "\n")
                     end
                 end
-                output.add("Gold: " .. player.gold .. "\n")
             end
-            
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
+            output.add("Gold: " .. player.gold .. "\n")
         elseif command_parts[1] == "pick" then
-            output.clear()
             if #command_parts < 2 then
                 output.add("Please specify a quantity and item to pick up (e.g., 'pick 2 Healing Potion').\n")
             else
-                local quantity = 1
-                local item_name
-                if tonumber(command_parts[2]) then
-                    quantity = math.floor(tonumber(command_parts[2]))
-                    if #command_parts >= 3 then
-                        item_name = table.concat(command_parts, " ", 3)
-                    else
-                        output.add("Please specify an item name after the quantity.\n")
-                        if not table_contains(input.history, command) then
-                            table.insert(input.history, 1, command)
-                        end
-                        input.text = ">"
-                        input.history_index = 0
-                        return
-                    end
-                else
-                    item_name = table.concat(command_parts, " ", 2)
+                local quantity, item_name = parse_item_command(command_parts, 2)
+                if quantity and item_name then
+                    items.pick_item(player, map_data, item_name, quantity)
                 end
-                items.pick_item(player, map_data, item_name, quantity)
-            end
-            
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
             end
         elseif command_parts[1] == "drop" then
-            output.clear()
             if #command_parts < 2 then
                 output.add("Please specify a quantity and item to drop (e.g., 'drop 2 Healing Potion').\n")
             else
-                local quantity = 1
-                local item_name
-                if tonumber(command_parts[2]) then
-                    quantity = math.floor(tonumber(command_parts[2]))
-                    if #command_parts >= 3 then
-                        item_name = table.concat(command_parts, " ", 3)
-                    else
-                        output.add("Please specify an item name after the quantity.\n")
-                        if not table_contains(input.history, command) then
-                            table.insert(input.history, 1, command)
-                        end
-                        input.text = ">"
-                        input.history_index = 0
-                        return
-                    end
-                else
-                    item_name = table.concat(command_parts, " ", 2)
+                local quantity, item_name = parse_item_command(command_parts, 2)
+                if quantity and item_name then
+                    items.drop_item(player, map_data, item_name, quantity)
                 end
-                items.drop_item(player, map_data, item_name, quantity)
-            end
-            
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
             end
         elseif command_parts[1] == "look" then
-            output.clear()
-            if not player.alive then
-                output.add("You are dead and cannot look around.\nStart a new game with the 'new' command.\n")
-            else
-                local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])
-                output.add(location_desc .. "\n")
-                local items_string = items.get_tile_items_string(map_data, player.x, player.y)
-                output.add(items_string)
+            if not check_player_alive("look around") then
+                return
             end
-            
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
+            local location_desc = map.get_location_description(map_data.tiles[player.y][player.x])
+            output.add(location_desc .. "\n")
+            local items_string = items.get_tile_items_string(map_data, player.x, player.y)
+            output.add(items_string)
         elseif command_parts[1] == "map" then
-            output.clear()
-            
             for y = 1, config.map.height do
                 local line = ""
                 for x = 1, config.map.width do
@@ -455,37 +389,23 @@ function love.keypressed(key)
                 end
                 output.add(line .. "\n")
             end
-            
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
         elseif command_parts[1] == "north" or command_parts[1] == "n" then
             move_player("north")
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
         elseif command_parts[1] == "south" or command_parts[1] == "s" then
             move_player("south")
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
         elseif command_parts[1] == "east" or command_parts[1] == "e" then
             move_player("east")
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
         elseif command_parts[1] == "west" or command_parts[1] == "w" then
             move_player("west")
-            if not table_contains(input.history, command) then
-                table.insert(input.history, 1, command)
-            end
         elseif command_parts[1] == "quit" then
             save_game_to_json()
             love.event.quit()
         else
-            output.clear()
             output.add("Unknown command: '" .. command_parts[1] .. "'.\n")
             output.add("Type 'help' for a list of available commands.\n")
+        end
+        if not table_contains(input.history, command) then
+            table.insert(input.history, 1, command)
         end
         input.text = ">"
         input.history_index = 0
