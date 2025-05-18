@@ -43,27 +43,25 @@ function items.find_item_key(item_table, name)
     
     for key in pairs(item_table) do
         if string.lower(key) == lower_name then
-            return key -- Точна відповідність має пріоритет
+            return key
         elseif string.find(string.lower(key), lower_name, 1, true) then
             table.insert(matches, key)
         end
     end
     
-    if #matches == 0 then
-        return nil
-    elseif #matches == 1 then
+    if #matches > 0 then
         return matches[1]
-    else
-        output.clear()
-        output.add("Multiple items match '" .. name .. "': " .. table.concat(matches, ", ") .. ". Please specify.\n")
-        return nil
     end
+    
+    output.clear()
+    output.add("No " .. name .. " found in your inventory.\n")
+    return nil
 end
 
-function items.get_item_data(items_data, item_name)
-    if not items_data or not items_data.items or not item_name then return nil end
+function items.get_item_data(items_data, item_key)
+    if not items_data or not items_data.items or not item_key then return nil end
     for _, item in ipairs(items_data.items) do
-        if string.lower(item.name) == string.lower(item_name) then
+        if item.name == item_key then
             return item
         end
     end
@@ -71,7 +69,6 @@ function items.get_item_data(items_data, item_name)
 end
 
 function items.pick_item(player, map, item_name, quantity)
-    -- Перевірка базових умов
     if not player or not player.alive then
         output.clear()
         output.add("You are dead and cannot pick up items.\nStart a new game with the 'new' command.\n")
@@ -93,7 +90,6 @@ function items.pick_item(player, map, item_name, quantity)
         return
     end
 
-    -- Отримання таблиці предметів на тайлі
     local tile_items = map.items[player.y][player.x]
     if not next(tile_items) then
         output.clear()
@@ -101,17 +97,13 @@ function items.pick_item(player, map, item_name, quantity)
         return
     end
 
-    -- Пошук ключа предмета
     local item_key = items.find_item_key(tile_items, item_name)
     if not item_key then
-        if not output.text:match("Multiple items match") then
-            output.clear()
-            output.add("No " .. item_name .. " found here.\n")
-        end
+        output.clear()
+        output.add("No " .. item_name .. " found here.\n")
         return
     end
 
-    -- Перевірка кількості предмета
     local available_qty = tile_items[item_key]
     if not available_qty or type(available_qty) ~= "number" or available_qty <= 0 then
         output.clear()
@@ -119,14 +111,12 @@ function items.pick_item(player, map, item_name, quantity)
         return
     end
 
-    -- Перевірка, чи достатньо предметів для підбирання
     if quantity > available_qty then
         output.clear()
         output.add("There aren't enough " .. item_key .. " to pick up that amount.\n")
         return
     end
 
-    -- Оновлення інвентарю гравця та тайла
     local pickup_qty = math.floor(quantity)
     player.inventory[item_key] = (player.inventory[item_key] or 0) + pickup_qty
     tile_items[item_key] = tile_items[item_key] - pickup_qty
@@ -134,7 +124,6 @@ function items.pick_item(player, map, item_name, quantity)
         tile_items[item_key] = nil
     end
 
-    -- Виведення результату
     output.clear()
     output.add("You picked up " .. pickup_qty .. " " .. item_key .. ".\n")
 end
@@ -154,10 +143,8 @@ function items.drop_item(player, map, item_name, quantity)
     
     local item_key = items.find_item_key(player.inventory, item_name)
     if not item_key then
-        if not output.text:match("Multiple items match") then
-            output.clear()
-            output.add("You don't have " .. item_name .. " in your inventory.\n")
-        end
+        output.clear()
+        output.add("You don't have " .. item_name .. " in your inventory.\n")
         return
     end
     
@@ -182,6 +169,7 @@ function items.drop_item(player, map, item_name, quantity)
     
     output.clear()
     output.add("You dropped " .. quantity .. " " .. item_key .. ".\n")
+    output.add(items.get_tile_items_string(map, player.x, player.y))
 end
 
 function items.eat_item(player, items_data, item_name)
@@ -193,14 +181,12 @@ function items.eat_item(player, items_data, item_name)
     
     local item_key = items.find_item_key(player.inventory, item_name)
     if not item_key then
-        if not output.text:match("Multiple items match") then
-            output.clear()
-            output.add("You don't have " .. item_name .. " in your inventory.\n")
-        end
+        output.clear()
+        output.add("You don't have " .. item_name .. " in your inventory.\n")
         return
     end
     
-    local item_data = items.get_item_data(items_data, item_name)
+    local item_data = items.get_item_data(items_data, item_key)
     if not item_data then
         output.clear()
         output.add("No data found for " .. item_key .. ".\n")
@@ -244,14 +230,12 @@ function items.drink_item(player, items_data, item_name)
     
     local item_key = items.find_item_key(player.inventory, item_name)
     if not item_key then
-        if not output.text:match("Multiple items match") then
-            output.clear()
-            output.add("You don't have " .. item_name .. " in your inventory.\n")
-        end
+        output.clear()
+        output.add("You don't have " .. item_name .. " in your inventory.\n")
         return
     end
     
-    local item_data = items.get_item_data(items_data, item_name)
+    local item_data = items.get_item_data(items_data, item_key)
     if not item_data then
         output.clear()
         output.add("No data found for " .. item_key .. ".\n")
