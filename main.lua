@@ -32,7 +32,6 @@ function love.load()
     
     if love.filesystem.getInfo("game.json") then
         load_game_from_json()
-        display_location_and_items()
         output.add("Type 'help' to see a list of available commands.\n")
     else
         output.add("Created new game.\n")
@@ -87,6 +86,7 @@ function load_game_from_json()
                 end
             end
             output.add("Loaded saved game.\n")
+            display_location_and_items()
         end
     end
 end
@@ -243,7 +243,6 @@ function love.keypressed(key)
         elseif command_parts[1] == "load" then
             if love.filesystem.getInfo("game.json") then
                 load_game_from_json()
-                display_location_and_items()
                 output.add("Type 'help' to see a list of available commands.\n")
             else
                 output.add("No saved game found.\n")

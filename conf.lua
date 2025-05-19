@@ -34,7 +34,7 @@ function love.conf (t)
 	t.window.display = 1
 	t.window.resizable = false
 	t.window.vsync = false
-	t.identity = 'Dungeons_and_Trolls_v. '..config.game.version
+	t.identity = "Dungeons_and_Trolls"
 	t.window.title = config.game.name
 	t.window.width = window.width
 	t.window.height = window.height
