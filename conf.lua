@@ -11,7 +11,7 @@ config = {
 	
 	game = {
 		name = 'Dungeons and Trolls',
-		version = '0.1',
+		version = '0.1.0',
 	},
 	
 	map = {
@@ -34,7 +34,7 @@ function love.conf (t)
 	t.window.display = 1
 	t.window.resizable = false
 	t.window.vsync = false
-	t.identity = 'Dungeons_and_Trolls_v.'..config.game.version
+	t.identity = 'Dungeons_and_Trolls_v. '..config.game.version
 	t.window.title = config.game.name
 	t.window.width = window.width
 	t.window.height = window.height

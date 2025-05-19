@@ -32,7 +32,6 @@ function love.load()
     
     if love.filesystem.getInfo("game.json") then
         load_game_from_json()
-        output.add("Loaded saved game.\n")
         display_location_and_items()
         output.add("Type 'help' to see a list of available commands.\n")
     else
@@ -47,7 +46,8 @@ function save_game_to_json()
         map = map_data,
         player = player,
         history = input.history,
-        time = game_time
+        time = game_time,
+        version = config.game.version
     }
     
     local save_string = json.encode(save_data)
@@ -59,6 +59,11 @@ function load_game_from_json()
     if save_string then
         local save_data = json.decode(save_string)
         if save_data then
+            if save_data.version ~= config.game.version then
+                output.add("Saved game version (" .. (save_data.version or "unknown") .. ") is incompatible with current game version (" .. config.game.version .. ").\n")
+                output.add("Please start a new game with the 'new' command.\n")
+                return
+            end
             map_data = save_data.map
             player = save_data.player
             game_time = save_data.time or { year = 1280, month = 4, day = 1, hour = 6, minute = 0 }
@@ -81,6 +86,7 @@ function load_game_from_json()
                     map_data.items[y][x] = map_data.items[y][x] or {}
                 end
             end
+            output.add("Loaded saved game.\n")
         end
     end
 end
@@ -237,7 +243,6 @@ function love.keypressed(key)
         elseif command_parts[1] == "load" then
             if love.filesystem.getInfo("game.json") then
                 load_game_from_json()
-                output.add("Game loaded.\n")
                 display_location_and_items()
                 output.add("Type 'help' to see a list of available commands.\n")
             else
