@@ -67,6 +67,11 @@ function items.get_item_data(items_data, item_key)
     return nil
 end
 
+function items.is_item_equipped(player, item_name)
+    if not player.equipment then return false end
+    return (player.equipment.weapon == item_name or player.equipment.armor == item_name)
+end
+
 function items.pick_item(player, map, item_name, quantity)
     if not check_player_alive("pick up items") then
         return
@@ -132,6 +137,11 @@ function items.drop_item(player, map, item_name, quantity)
         output.add("You don't have " .. item_name .. " in your inventory.\n")
         return
     end
+
+    if items.is_item_equipped(player, item_key) then
+        output.add("You cannot drop " .. item_key .. " because it is equipped.\n")
+        return
+    end
     
     if not quantity or type(quantity) ~= "number" or quantity <= 0 then
         output.add("Invalid item quantity specified.\n")
@@ -162,6 +172,11 @@ function items.eat_item(player, items_data, item_name)
     local item_key = items.find_item_key(player.inventory, item_name)
     if not item_key then
         output.add("You don't have " .. item_name .. " in your inventory.\n")
+        return
+    end
+    
+    if items.is_item_equipped(player, item_key) then
+        output.add("You cannot eat " .. item_key .. " because it is equipped.\n")
         return
     end
     
@@ -205,6 +220,11 @@ function items.drink_item(player, items_data, item_name)
     local item_key = items.find_item_key(player.inventory, item_name)
     if not item_key then
         output.add("You don't have " .. item_name .. " in your inventory.\n")
+        return
+    end
+    
+    if items.is_item_equipped(player, item_key) then
+        output.add("You cannot drink " .. item_key .. " because it is equipped.\n")
         return
     end
     

@@ -3,6 +3,7 @@ output = require("output")
 time = require("time")
 items = require("items")
 map = require("map")
+player_module = require("player")
 
 function display_location_and_items()
     local location = map.get_location_description(map_data.tiles[player.y][player.x])
@@ -68,13 +69,9 @@ function load_game_from_json()
             game_time = save_data.time or { year = 1280, month = 4, day = 1, hour = 6, minute = 0 }
             input.history = save_data.history or {}
             
-            player.health = math.min(100, math.max(0, player.health))
-            player.mana = math.min(100, math.max(0, player.mana))
-            player.hunger = math.min(100, math.max(0, player.hunger or 0))
-            player.fatigue = math.min(100, math.max(0, player.fatigue or 0))
-            player.thirst = math.min(100, math.max(0, player.thirst or 0))
-            player.gold = math.max(0, player.gold or 0)
+            player = player_module.clamp_player_stats(player)
             player.inventory = player.inventory or {}
+            player.equipment = player.equipment or { weapon = nil, armor = nil }
             
             if player.alive == nil then
                 player.alive = (player.hunger < 100 and player.fatigue < 100 and player.health > 0 and player.thirst < 100)
@@ -92,10 +89,7 @@ function load_game_from_json()
 end
 
 function check_player_status()
-    player.hunger = math.min(100, math.max(0, player.hunger))
-    player.fatigue = math.min(100, math.max(0, player.fatigue))
-    player.health = math.min(100, math.max(0, player.health))
-    player.thirst = math.min(100, math.max(0, player.thirst))
+    player = player_module.clamp_player_stats(player)
     
     if player.hunger >= 100 then
         player.hunger = 100
@@ -253,7 +247,12 @@ function love.keypressed(key)
             output.add("Hunger: " .. player.hunger .. "\n")
             output.add("Fatigue: " .. player.fatigue .. "\n")
             output.add("Thirst: " .. player.thirst .. "\n")
+            output.add("Attack: " .. player.attack .. "\n")
+            output.add("Defense: " .. player.defense .. "\n")
             output.add("Position: " .. player.x .. ", " .. player.y .. "\n")
+            output.add("Equipment:\n")
+            output.add("  Weapon: " .. (player.equipment and player.equipment.weapon or "None") .. "\n")
+            output.add("  Armor: " .. (player.equipment and player.equipment.armor or "None") .. "\n")
             
             if not player.alive then
                 output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
@@ -323,10 +322,11 @@ function love.keypressed(key)
                 output.add("(empty)\n")
             else
                 for item, quantity in pairs(player.inventory) do
+                    local equipped = items.is_item_equipped(player, item) and " (equipped)" or ""
                     if quantity > 1 then
-                        output.add(item .. " (" .. quantity .. ")\n")
+                        output.add(item .. " (" .. quantity .. ")" .. equipped .. "\n")
                     else
-                        output.add(item .. "\n")
+                        output.add(item .. equipped .. "\n")
                     end
                 end
             end
@@ -348,6 +348,20 @@ function love.keypressed(key)
                 if quantity and item_name then
                     items.drop_item(player, map_data, item_name, quantity)
                 end
+            end
+        elseif command_parts[1] == "equip" then
+            if #command_parts < 2 then
+                output.add("Please specify an item to equip (e.g., 'equip Sword').\n")
+            else
+                local item_name = table.concat(command_parts, " ", 2)
+                player = player_module.equip_item(player, items_data, item_name)
+            end
+        elseif command_parts[1] == "unequip" then
+            if #command_parts < 2 then
+                output.add("Please specify an item or slot to unequip (e.g., 'unequip Sword' or 'unequip weapon').\n")
+            else
+                local identifier = table.concat(command_parts, " ", 2)
+                player = player_module.unequip_item(player, items_data, identifier)
             end
         elseif command_parts[1] == "look" then
             if not check_player_alive("look around") then

@@ -77,9 +77,12 @@ function map.initialize_game()
         hunger = 0,
         fatigue = 0,
         thirst = 0,
+        attack = 0,
+        defense = 0,
         alive = true,
         gold = 0,
         inventory = {},
+        equipment = { weapon = nil, armor = nil },
         radius = 3
     }
     
