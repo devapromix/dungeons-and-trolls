@@ -1,0 +1,28 @@
+{
+  "enemies": [
+    {
+      "name": "Goblin",
+      "health": 50,
+      "attack": 10,
+      "defense": 5,
+      "description": "A small, sneaky creature with a crude weapon.",
+      "tags": ["hostile", "melee"]
+    },
+    {
+      "name": "Wolf",
+      "health": 40,
+      "attack": 15,
+      "defense": 3,
+      "description": "A fierce wild animal with sharp teeth.",
+      "tags": ["hostile", "animal"]
+    },
+    {
+      "name": "Bandit",
+      "health": 60,
+      "attack": 12,
+      "defense": 8,
+      "description": "A rogue human preying on travelers.",
+      "tags": ["hostile", "human"]
+    }
+  ]
+}
