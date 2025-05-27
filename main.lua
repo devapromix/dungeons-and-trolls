@@ -2,6 +2,7 @@ json = require("libraries.json")
 output = require("output")
 time = require("time")
 items = require("items")
+enemies = require("enemies")
 map = require("map")
 player_module = require("player")
 
@@ -29,6 +30,7 @@ function love.load()
     
     items_data = items.load_items()
     locations_data = map.load_locations()
+	enemies_data = enemies.load_enemies()
     map.initialize_game()
     
     if love.filesystem.getInfo("game.json") then
