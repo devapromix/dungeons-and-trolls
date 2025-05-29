@@ -5,24 +5,39 @@
       "health": 50,
       "attack": 10,
       "defense": 5,
+      "experience": 20,
       "description": "A small, sneaky creature with a crude weapon.",
-      "tags": ["hostile", "melee"]
+      "tags": ["hostile", "melee"],
+      "drops": [
+        {"name": "Short Sword", "chance": 0.3},
+        {"name": "Gold", "chance": 0.5, "quantity": [10, 20]}
+      ]
     },
     {
       "name": "Wolf",
       "health": 40,
       "attack": 15,
       "defense": 3,
+      "experience": 15,
       "description": "A fierce wild animal with sharp teeth.",
-      "tags": ["hostile", "animal"]
+      "tags": ["hostile", "animal"],
+      "drops": [
+        {"name": "Leather Armor", "chance": 0.2},
+        {"name": "Gold", "chance": 0.4, "quantity": [5, 12]}
+      ]
     },
     {
       "name": "Bandit",
       "health": 60,
       "attack": 12,
       "defense": 8,
+      "experience": 25,
       "description": "A rogue human preying on travelers.",
-      "tags": ["hostile", "human"]
+      "tags": ["hostile", "human"],
+      "drops": [
+        {"name": "Short Sword", "chance": 0.25},
+        {"name": "Gold", "chance": 0.6, "quantity": [12, 25]}
+      ]
     }
   ]
 }

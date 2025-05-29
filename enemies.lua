@@ -34,4 +34,14 @@ function enemies.get_tile_enemies_string(map_data, x, y)
     return enemies_string
 end
 
+function enemies.get_enemy_data(enemies_data, enemy_name)
+    if not enemies_data or not enemies_data.enemies or not enemy_name then return nil end
+    for _, enemy in ipairs(enemies_data.enemies) do
+        if enemy.name == enemy_name then
+            return enemy
+        end
+    end
+    return nil
+end
+
 return enemies

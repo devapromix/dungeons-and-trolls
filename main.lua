@@ -76,6 +76,8 @@ function load_game_from_json()
             player = player_module.clamp_player_stats(player)
             player.inventory = player.inventory or {}
             player.equipment = player.equipment or { weapon = nil, armor = nil }
+            player.level = player.level or 1
+            player.experience = player.experience or 0
             
             if player.alive == nil then
                 player.alive = (player.hunger < 100 and player.fatigue < 100 and player.health > 0 and player.thirst < 100)
@@ -140,6 +142,88 @@ function parse_item_command(command_parts, start_index)
         item_name = table.concat(command_parts, " ", start_index)
     end
     return quantity, item_name
+end
+
+function combat_round(enemy_name, enemy_data)
+    local enemy_health = enemy_data.health
+    while player.health > 0 and enemy_health > 0 do
+        local player_damage = math.max(0, player.attack - enemy_data.defense)
+        if player_damage > 0 then
+            enemy_health = enemy_health - player_damage
+            output.add("You hit " .. enemy_name .. " for " .. player_damage .. " damage.\n")
+        else
+            output.add("Your attack is blocked by " .. enemy_name .. ".\n")
+        end
+        
+        if enemy_health <= 0 then
+            output.add("You defeated " .. enemy_name .. "!\n")
+            player.experience = player.experience + enemy_data.experience
+            output.add("Gained " .. enemy_data.experience .. " experience.\n")
+            
+            if enemy_data.drops then
+                for _, drop in ipairs(enemy_data.drops) do
+                    if math.random() < drop.chance then
+                        local quantity = drop.quantity and math.random(drop.quantity[1], drop.quantity[2]) or 1
+                        map_data.items[player.y][player.x][drop.name] = (map_data.items[player.y][player.x][drop.name] or 0) + quantity
+                        output.add(drop.name .. " (" .. quantity .. ") dropped on the ground.\n")
+                    end
+                end
+            end
+            
+            map_data.enemies[player.y][player.x][enemy_name] = map_data.enemies[player.y][player.x][enemy_name] - 1
+            if map_data.enemies[player.y][player.x][enemy_name] <= 0 then
+                map_data.enemies[player.y][player.x][enemy_name] = nil
+            end
+            display_location_and_items()
+            return true
+        end
+        
+        local enemy_damage = math.max(0, enemy_data.attack - player.defense)
+        if enemy_damage > 0 then
+            player.health = player.health - enemy_damage
+            output.add(enemy_name .. " hits you for " .. enemy_damage .. " damage.\n")
+        else
+            output.add(enemy_name .. "'s attack is blocked.\n")
+        end
+        
+        if player.health <= 0 then
+            player.alive = false
+            output.add("You were defeated by " .. enemy_name .. ".\n")
+            output.add("Game over. Start a new game with the 'new' command.\n")
+            save_game_to_json()
+            return false
+        end
+        
+        time.tick_time(10)
+    end
+    return false
+end
+
+function attack_enemy(enemy_name)
+    if not check_player_alive("attack") then
+        return
+    end
+    
+    if not enemy_name or enemy_name == "" then
+        output.add("Please specify an enemy to attack.\n")
+        return
+    end
+    
+    local enemy_list = map_data.enemies[player.y][player.x]
+    local enemy_key = items.find_item_key(enemy_list, enemy_name)
+    if not enemy_key then
+        output.add("No " .. enemy_name .. " found here.\n")
+        return
+    end
+    
+    local enemy_data = enemies.get_enemy_data(enemies_data, enemy_key)
+    if not enemy_data then
+        output.add("No data found for " .. enemy_key .. ".\n")
+        return
+    end
+    
+    output.add("You engage " .. enemy_key .. " in combat!\n")
+    combat_round(enemy_key, enemy_data)
 end
 
 function move_player(direction)
@@ -255,6 +339,8 @@ function love.keypressed(key)
             output.add("Thirst: " .. player.thirst .. "\n")
             output.add("Attack: " .. player.attack .. "\n")
             output.add("Defense: " .. player.defense .. "\n")
+            output.add("Level: " .. player.level .. "\n")
+            output.add("Experience: " .. player.experience .. "\n")
             output.add("Position: " .. player.x .. ", " .. player.y .. "\n")
             output.add("Equipment:\n")
             output.add("  Weapon: " .. (player.equipment and player.equipment.weapon or "None") .. "\n")
@@ -391,6 +477,13 @@ function love.keypressed(key)
                     end
                 end
                 output.add(line .. "\n")
+            end
+        elseif command_parts[1] == "attack" then
+            if #command_parts < 2 then
+                output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
+            else
+                local enemy_name = table.concat(command_parts, " ", 2)
+                attack_enemy(enemy_name)
             end
         elseif command_parts[1] == "north" or command_parts[1] == "n" then
             move_player("north")

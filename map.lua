@@ -84,7 +84,9 @@ function map.initialize_game()
         gold = 0,
         inventory = {},
         equipment = { weapon = nil, armor = nil },
-        radius = 3
+        radius = 3,
+        level = 1,
+        experience = 0
     }
     
     game_time = {

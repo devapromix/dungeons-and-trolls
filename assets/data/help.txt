@@ -16,4 +16,5 @@ eat <item> - Eats an item.
 drink <item> - Drinks an item.
 pick [quantity] <item> - Pick up an item
 drop [quantity] <item> - Drop an item
+attack <enemy> - Attack an enemy to engage in combat
 quit - Exit the game.
