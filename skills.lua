@@ -59,4 +59,11 @@ function skills.upgrade_skill(player, skills_data, item_data)
     output.add(skill_name .. " skill increased to " .. player.skills[skill_name] .. ".\n")
 end
 
+function skills.draw()
+    for _, skill in ipairs(skills_data.skills) do
+        local level = player.skills and player.skills[skill.name] or 0
+        output.add(skill.name .. ": " .. level .. "\n")
+    end
+end
+
 return skills

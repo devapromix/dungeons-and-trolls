@@ -84,6 +84,7 @@ function map.initialize_game()
         gold = 0,
         inventory = { ["Short Sword"] = 1, ["Leather Armor"] = 1 },
         equipment = { weapon = "Short Sword", armor = "Leather Armor" },
+		skills = {},
         radius = 3,
         level = 1,
         experience = 0
@@ -147,9 +148,6 @@ function map.initialize_game()
             end
         end
     end
-    
-    output.clear()
-    output.add("Welcome to " .. config.game.name .. " v." .. config.game.version .. "\n")
 end
 
 return map

@@ -30,6 +30,21 @@
             "skill": "Swords"
         },
         {
+            "name": "Hand Axe",
+            "tags": ["weapon=4"],
+            "skill": "Axes"
+        },
+        {
+            "name": "Spiked Club",
+            "tags": ["weapon=3"],
+            "skill": "Maces"
+        },
+        {
+            "name": "Spear",
+            "tags": ["weapon=6"],
+            "skill": "Spears"
+        },
+        {
             "name": "Leather Armor",
             "tags": ["armor=3"]
         }

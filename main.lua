@@ -16,6 +16,13 @@ function display_location_and_items()
     output.add(enemies_string)
 end
 
+function initialize_new_game()
+    map.initialize_game()
+    output.add("Created new game.\n")
+    display_location_and_items()
+    output.add("Type 'help' to see a list of available commands.\n")
+end
+
 function love.load()
     input = {
         text = ">",
@@ -35,15 +42,13 @@ function love.load()
     locations_data = map.load_locations()
     enemies_data = enemies.load_enemies()
     skills_data = skills.load_skills()
-    map.initialize_game()
     
+    output.add("Welcome to " .. config.game.name .. " v." .. config.game.version .. "\n")
     if love.filesystem.getInfo("game.json") then
         load_game_from_json()
         output.add("Type 'help' to see a list of available commands.\n")
     else
-        output.add("Created new game.\n")
-        display_location_and_items()
-        output.add("Type 'help' to see a list of available commands.\n")
+        initialize_new_game()
     end
 end
 
@@ -79,7 +84,10 @@ function load_game_from_json()
             player = player_module.clamp_player_skills(player, skills_data)
             player.inventory = player.inventory or {}
             player.equipment = player.equipment or { weapon = nil, armor = nil }
-            player.skills = player.skills or { Swords = skills_data.skills[1].initial_level }
+            player.skills = player.skills or {}
+            for _, skill in ipairs(skills_data.skills) do
+                player.skills[skill.name] = player.skills[skill.name] or skill.initial_level
+            end
             player.level = player.level or 1
             player.experience = player.experience or 0
             
@@ -333,12 +341,7 @@ function love.keypressed(key)
                 output.add("Help file not found.\n")
             end
         elseif command_parts[1] == "new" then
-            output.add("Starting a new game...\n")
-            map.initialize_game()
-            player.skills = {Swords = 5}
-            output.add("New game initialized.\n")
-            display_location_and_items()
-            output.add("Type 'help' to see a list of available commands.\n")
+            initialize_new_game()
         elseif command_parts[1] == "save" then
             save_game_to_json()
             output.add("Game saved.\n")
@@ -361,13 +364,13 @@ function love.keypressed(key)
             output.add("Experience: " .. player.experience .. "\n")
             output.add("Gold: " .. player.gold .. "\n")
             output.add("Position: " .. player.x .. ", " .. player.y .. "\n")
-            output.add("Skills:\n")
-            for skill, level in pairs(player.skills or {}) do
-                output.add(skill .. ": " .. level .. "\n")
-            end
-            output.add("Equipment:\n")
+
+            output.add("\nEquipment:\n")
             output.add("Weapon: " .. (player.equipment and player.equipment.weapon or "None") .. "\n")
             output.add("Armor: " .. (player.equipment and player.equipment.armor or "None") .. "\n")
+
+            output.add("\nSkills:\n")
+			skills.draw()
             
             if not player.alive then
                 output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
@@ -377,10 +380,7 @@ function love.keypressed(key)
                 return
             end
             output.add("Skills:\n")
-            for _, skill in ipairs(skills_data.skills) do
-                local level = player.skills and player.skills[skill.name] or 0
-                output.add(skill.name .. ": " .. level .. "\n")
-            end
+			skills.draw()
         elseif command_parts[1] == "time" then
             output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
         elseif command_parts[1] == "rest" then

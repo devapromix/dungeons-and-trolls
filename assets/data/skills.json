@@ -3,6 +3,18 @@
         {
             "name": "Swords",
             "max_level": 50
+        },
+        {
+            "name": "Axes",
+            "max_level": 50
+        },
+        {
+            "name": "Maces",
+            "max_level": 50
+        },
+        {
+            "name": "Spears",
+            "max_level": 50
         }
     ]
 }
