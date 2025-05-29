@@ -9,6 +9,10 @@
             "tags": ["edible=35"]
         },
         {
+            "name": "Raw Meat",
+            "tags": ["edible=5"]
+        },
+        {
             "name": "Healing Potion",
             "tags": ["drinkable=20", "healing=15"]
         },
