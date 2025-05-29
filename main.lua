@@ -164,8 +164,13 @@ function combat_round(enemy_name, enemy_data)
                 for _, drop in ipairs(enemy_data.drops) do
                     if math.random() < drop.chance then
                         local quantity = drop.quantity and math.random(drop.quantity[1], drop.quantity[2]) or 1
-                        map_data.items[player.y][player.x][drop.name] = (map_data.items[player.y][player.x][drop.name] or 0) + quantity
-                        output.add(drop.name .. " (" .. quantity .. ") dropped on the ground.\n")
+                        if drop.type == "gold" then
+                            player.gold = player.gold + quantity
+                            output.add("Gained " .. quantity .. " gold.\n")
+                        elseif drop.type == "item" then
+                            map_data.items[player.y][player.x][drop.name] = (map_data.items[player.y][player.x][drop.name] or 0) + quantity
+                            output.add(drop.name .. " (" .. quantity .. ") dropped on the ground.\n")
+                        end
                     end
                 end
             end
@@ -341,10 +346,11 @@ function love.keypressed(key)
             output.add("Defense: " .. player.defense .. "\n")
             output.add("Level: " .. player.level .. "\n")
             output.add("Experience: " .. player.experience .. "\n")
+            output.add("Gold: " .. player.gold .. "\n")
             output.add("Position: " .. player.x .. ", " .. player.y .. "\n")
             output.add("Equipment:\n")
-            output.add("  Weapon: " .. (player.equipment and player.equipment.weapon or "None") .. "\n")
-            output.add("  Armor: " .. (player.equipment and player.equipment.armor or "None") .. "\n")
+            output.add("Weapon: " .. (player.equipment and player.equipment.weapon or "None") .. "\n")
+            output.add("Armor: " .. (player.equipment and player.equipment.armor or "None") .. "\n")
             
             if not player.alive then
                 output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
@@ -509,8 +515,7 @@ function love.keypressed(key)
     if key == "up" and input.history_index < #input.history then
         input.history_index = input.history_index + 1
         input.text = ">" .. input.history[input.history_index]
-    end
-    if key == "down" then
+    elseif key == "down" then
         if input.history_index > 1 then
             input.history_index = input.history_index - 1
             input.text = ">" .. input.history[input.history_index]
