@@ -253,7 +253,7 @@ function items.drink_item(player, items_data, item_name)
     end
     
     output.add("You drink one " .. item_key .. "...\n")
-    player.thirst = math.min(100, math.max(0, player.thirst + drinkable_value))
+    player.thirst = math.min(100, math.max(0, player.thirst - drinkable_value))
     if healing_value then
         player.health = math.min(100, math.max(0, player.health + healing_value))
         output.add("Your health is restored.\n")
