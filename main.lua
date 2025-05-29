@@ -5,6 +5,7 @@ items = require("items")
 enemies = require("enemies")
 map = require("map")
 player_module = require("player")
+skills = require("skills")
 
 function display_location_and_items()
     local location = map.get_location_description(map_data.tiles[player.y][player.x])
@@ -33,6 +34,7 @@ function love.load()
     items_data = items.load_items()
     locations_data = map.load_locations()
     enemies_data = enemies.load_enemies()
+    skills_data = skills.load_skills()
     map.initialize_game()
     
     if love.filesystem.getInfo("game.json") then
@@ -74,8 +76,10 @@ function load_game_from_json()
             input.history = save_data.history or {}
             
             player = player_module.clamp_player_stats(player)
+            player = player_module.clamp_player_skills(player, skills_data)
             player.inventory = player.inventory or {}
             player.equipment = player.equipment or { weapon = nil, armor = nil }
+            player.skills = player.skills or { Swords = skills_data.skills[1].initial_level }
             player.level = player.level or 1
             player.experience = player.experience or 0
             
@@ -148,6 +152,7 @@ function combat_round(enemy_name, enemy_data)
     local enemy_health = enemy_data.health
     while player.health > 0 and enemy_health > 0 do
         local player_damage = math.max(0, player.attack - enemy_data.defense)
+        player_damage = skills.apply_skill_effects(player, skills_data, player_damage)
         if player_damage > 0 then
             enemy_health = enemy_health - player_damage
             output.add("You hit " .. enemy_name .. " for " .. player_damage .. " damage.\n")
@@ -159,6 +164,17 @@ function combat_round(enemy_name, enemy_data)
             output.add("You defeated " .. enemy_name .. "!\n")
             player.experience = player.experience + enemy_data.experience
             output.add("Gained " .. enemy_data.experience .. " experience.\n")
+            
+            if player.equipment and player.equipment.weapon then
+                local item_data = items.get_item_data(items_data, player.equipment.weapon)
+                if item_data then
+                    for _, tag in ipairs(item_data.tags) do
+                        if tag:match("^weapon=") then
+                            skills.upgrade_skill(player, skills_data, "Swords")
+                        end
+                    end
+                end
+            end
             
             if enemy_data.drops then
                 for _, drop in ipairs(enemy_data.drops) do
@@ -323,6 +339,7 @@ function love.keypressed(key)
         elseif command_parts[1] == "new" then
             output.add("Starting a new game...\n")
             map.initialize_game()
+            player.skills = { Swords = skills_data.skills[1].initial_level }
             output.add("New game initialized.\n")
             display_location_and_items()
             output.add("Type 'help' to see a list of available commands.\n")
@@ -348,6 +365,10 @@ function love.keypressed(key)
             output.add("Experience: " .. player.experience .. "\n")
             output.add("Gold: " .. player.gold .. "\n")
             output.add("Position: " .. player.x .. ", " .. player.y .. "\n")
+            output.add("Skills:\n")
+            for skill, level in pairs(player.skills or {}) do
+                output.add(skill .. ": " .. level .. "\n")
+            end
             output.add("Equipment:\n")
             output.add("Weapon: " .. (player.equipment and player.equipment.weapon or "None") .. "\n")
             output.add("Armor: " .. (player.equipment and player.equipment.armor or "None") .. "\n")

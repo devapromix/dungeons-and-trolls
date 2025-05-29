@@ -1,4 +1,7 @@
 local player = {}
+local output = require("output")
+local items = require("items")
+local skills = require("skills")
 
 function player.clamp_player_stats(player_data)
     player_data.health = math.min(100, math.max(0, player_data.health))
@@ -9,6 +12,16 @@ function player.clamp_player_stats(player_data)
     player_data.gold = math.max(0, player_data.gold or 0)
     player_data.attack = math.max(0, player_data.attack or 0)
     player_data.defense = math.max(0, player_data.defense or 0)
+    return player_data
+end
+
+function player.clamp_player_skills(player_data, skills_data)
+    if not player_data.skills then
+        player_data.skills = {}
+    end
+    for _, skill in ipairs(skills_data.skills) do
+        player_data.skills[skill.name] = math.min(skill.max_level, math.max(0, player_data.skills[skill.name] or skill.initial_level))
+    end
     return player_data
 end
 

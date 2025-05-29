@@ -4,6 +4,7 @@ save - Saves a game.
 load - Loads a saved game.
 map - Display the game map.
 status - Display player's stats.
+skills - Display player's skills.
 rest - Rest to restore health and mana.
 north (or n) - Move player north.
 south (or s) - Move player south.

@@ -1,0 +1,9 @@
+{
+    "skills": [
+        {
+            "name": "Swords",
+            "initial_level": 5,
+            "max_level": 50
+        }
+    ]
+}
