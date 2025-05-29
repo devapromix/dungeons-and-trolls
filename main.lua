@@ -11,6 +11,8 @@ function display_location_and_items()
     output.add("You are in " .. location.name .. ". " .. location.description .. "\n")
     local items_string = items.get_tile_items_string(map_data, player.x, player.y)
     output.add(items_string)
+    local enemies_string = enemies.get_tile_enemies_string(map_data, player.x, player.y)
+    output.add(enemies_string)
 end
 
 function love.load()
@@ -30,7 +32,7 @@ function love.load()
     
     items_data = items.load_items()
     locations_data = map.load_locations()
-	enemies_data = enemies.load_enemies()
+    enemies_data = enemies.load_enemies()
     map.initialize_game()
     
     if love.filesystem.getInfo("game.json") then
@@ -80,8 +82,10 @@ function load_game_from_json()
             end
             for y = 1, config.map.height do
                 map_data.items[y] = map_data.items[y] or {}
+                map_data.enemies[y] = map_data.enemies[y] or {}
                 for x = 1, config.map.width do
                     map_data.items[y][x] = map_data.items[y][x] or {}
+                    map_data.enemies[y][x] = map_data.enemies[y][x] or {}
                 end
             end
             output.add("Loaded saved game.\n")

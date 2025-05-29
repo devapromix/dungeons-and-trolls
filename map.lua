@@ -5,14 +5,14 @@ local items = require("items")
 local map = {}
 
 local biomes = {
-    { symbol = "f", threshold = 0.15, item_chance = 0.25, effects = { thirst = 2, hunger = 0.5, fatigue = 1 } },
-    { symbol = "g", threshold = 0.30, item_chance = 0.20, effects = { thirst = 1.5, hunger = 0.4, fatigue = 0.8 } },
-    { symbol = "p", threshold = 0.45, item_chance = 0.15, effects = { thirst = 2.5, hunger = 0.5, fatigue = 1 } },
-    { symbol = "s", threshold = 0.60, item_chance = 0.10, effects = { thirst = 3, hunger = 0.5, fatigue = 1 } },
-    { symbol = "v", threshold = 0.75, item_chance = 0.08, effects = { thirst = 4, hunger = 0.6, fatigue = 1.2 } },
-    { symbol = "d", threshold = 0.85, item_chance = 0.05, effects = { thirst = 5, hunger = 0.8, fatigue = 1.5 } },
-    { symbol = "m", threshold = 1.0, item_chance = 0.08, effects = { thirst = 2.5, hunger = 0.6, fatigue = 2 } },
-    { symbol = "r", effects = { thirst = -3, hunger = 0.5, fatigue = 1.2 } }
+    { symbol = "f", threshold = 0.15, item_chance = 0.25, enemy_chance = 0.2, effects = { thirst = 2, hunger = 0.5, fatigue = 1 } },
+    { symbol = "g", threshold = 0.30, item_chance = 0.20, enemy_chance = 0.2, effects = { thirst = 1.5, hunger = 0.4, fatigue = 0.8 } },
+    { symbol = "p", threshold = 0.45, item_chance = 0.15, enemy_chance = 0.2, effects = { thirst = 2.5, hunger = 0.5, fatigue = 1 } },
+    { symbol = "s", threshold = 0.60, item_chance = 0.10, enemy_chance = 0.2, effects = { thirst = 3, hunger = 0.5, fatigue = 1 } },
+    { symbol = "v", threshold = 0.75, item_chance = 0.08, enemy_chance = 0.2, effects = { thirst = 4, hunger = 0.6, fatigue = 1.2 } },
+    { symbol = "d", threshold = 0.85, item_chance = 0.05, enemy_chance = 0.2, effects = { thirst = 5, hunger = 0.8, fatigue = 1.5 } },
+    { symbol = "m", threshold = 1.0, item_chance = 0.08, enemy_chance = 0.2, effects = { thirst = 2.5, hunger = 0.6, fatigue = 2 } },
+    { symbol = "r", item_chance = 0.3, enemy_chance = 0, effects = { thirst = -3, hunger = 0.5, fatigue = 1.2 } }
 }
 
 function map.load_locations()
@@ -65,7 +65,8 @@ function map.initialize_game()
     map_data = {
         tiles = {},
         visited = {},
-        items = {}
+        items = {},
+        enemies = {}
     }
     
     player = {
@@ -101,6 +102,7 @@ function map.initialize_game()
         map_data.tiles[y] = {}
         map_data.visited[y] = {}
         map_data.items[y] = {}
+        map_data.enemies[y] = {}
         for x = 1, config.map.width do
             local river_value = map.river_noise(x, y, river_scale)
             local symbol
@@ -120,11 +122,18 @@ function map.initialize_game()
             map_data.tiles[y][x] = symbol
             map_data.visited[y][x] = false
             map_data.items[y][x] = {}
+            map_data.enemies[y][x] = {}
             local item_chance = symbol == "r" and 0.3 or (biomes[symbol] and biomes[symbol].item_chance or 0.1)
             if items_data.items and #items_data.items > 0 and math.random() < item_chance then
                 local item = items_data.items[math.random(1, #items_data.items)]
                 local quantity = math.random(1, 3)
                 map_data.items[y][x][item.name] = quantity
+            end
+            local enemy_chance = symbol == "r" and 0 or (biomes[symbol] and biomes[symbol].enemy_chance or 0.2)
+            if enemies_data.enemies and #enemies_data.enemies > 0 and math.random() < enemy_chance then
+                local enemy = enemies_data.enemies[math.random(1, #enemies_data.enemies)]
+                local quantity = math.random(1, 3)
+                map_data.enemies[y][x][enemy.name] = quantity
             end
         end
     end
