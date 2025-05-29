@@ -24,9 +24,10 @@
             "name": "Water Bottle",
             "tags": ["drinkable=30"]
         },
-		{
+        {
             "name": "Short Sword",
-            "tags": ["weapon=5"]
+            "tags": ["weapon=5"],
+            "skill": "Swords"
         },
         {
             "name": "Leather Armor",

@@ -168,11 +168,7 @@ function combat_round(enemy_name, enemy_data)
             if player.equipment and player.equipment.weapon then
                 local item_data = items.get_item_data(items_data, player.equipment.weapon)
                 if item_data then
-                    for _, tag in ipairs(item_data.tags) do
-                        if tag:match("^weapon=") then
-                            skills.upgrade_skill(player, skills_data, "Swords")
-                        end
-                    end
+                    skills.upgrade_skill(player, skills_data, item_data)
                 end
             end
             
@@ -339,7 +335,7 @@ function love.keypressed(key)
         elseif command_parts[1] == "new" then
             output.add("Starting a new game...\n")
             map.initialize_game()
-            player.skills = { Swords = skills_data.skills[1].initial_level }
+            player.skills = {Swords = 5}
             output.add("New game initialized.\n")
             display_location_and_items()
             output.add("Type 'help' to see a list of available commands.\n")
@@ -375,6 +371,15 @@ function love.keypressed(key)
             
             if not player.alive then
                 output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
+            end
+        elseif command_parts[1] == "skills" then
+            if not check_player_alive("check skills") then
+                return
+            end
+            output.add("Skills:\n")
+            for _, skill in ipairs(skills_data.skills) do
+                local level = player.skills and player.skills[skill.name] or 0
+                output.add(skill.name .. ": " .. level .. "\n")
             end
         elseif command_parts[1] == "time" then
             output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")

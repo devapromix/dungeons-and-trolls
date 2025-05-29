@@ -20,7 +20,7 @@ function player.clamp_player_skills(player_data, skills_data)
         player_data.skills = {}
     end
     for _, skill in ipairs(skills_data.skills) do
-        player_data.skills[skill.name] = math.min(skill.max_level, math.max(0, player_data.skills[skill.name] or skill.initial_level))
+        player_data.skills[skill.name] = math.min(skill.max_level, math.max(0, player_data.skills[skill.name] or 0))
     end
     return player_data
 end
