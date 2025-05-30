@@ -233,9 +233,7 @@ function attack_enemy(enemy_name)
         return
     end
     local enemy_list = map_data.enemies[player.y][player.x]
-    local enemy_key = items.find_item_key(enemy_list,
-
- enemy_name)
+    local enemy_key = items.find_item_key(enemy_list, enemy_name)
     if not enemy_key then
         output.add("No " .. enemy_name .. " found here.\n")
         return
@@ -247,55 +245,6 @@ function attack_enemy(enemy_name)
     end
     output.add("You engage " .. enemy_key .. " in combat!\n")
     combat_round(enemy_key, enemy_data)
-end
-
-function move_player(direction)
-    if not check_player_alive("move") then
-        return false
-    end
-    local moves = {
-        north = {y = -1, x_min = 1, x_max = config.map.width, y_min = 2, y_max = config.map.height, dir = "north"},
-        south = {y = 1, x_min = 1, x_max = config.map.width, y_min = 1, y_max = config.map.height - 1, dir = "south"},
-        east = {x = 1, x_min = 1, x_max = config.map.width - 1, y_min = 1, y_max = config.map.height, dir = "east"},
-        west = {x = -1, x_min = 2, x_max = config.map.width, y_min = 1, y_max = config.map.height, dir = "west"}
-    }
-    local move = moves[direction]
-    if not move then return false end
-    local new_x = player.x + (move.x or 0)
-    local new_y = player.y + (move.y or 0)
-    if new_x >= move.x_min and new_x <= move.x_max and new_y >= move.y_min and new_y <= move.y_max then
-        if map_data.fire.active and (map_data.fire.x ~= new_x or map_data.fire.y ~= new_y) then
-            map_data.fire.active = false
-            map_data.fire.x = nil
-            map_data.fire.y = nil
-            output.add("The fire goes out as you leave the location.\n")
-        end
-        player.x = new_x
-        player.y = new_y
-        for y = math.max(1, player.y - player.radius), math.min(config.map.height, player.y + player.radius) do
-            for x = math.max(1, player.x - player.radius), math.min(config.map.width, player.x + player.radius) do
-                if math.sqrt((x - player.x)^2 + (y - player.y)^2) <= player.radius then
-                    map_data.visited[y][x] = true
-                end
-            end
-        end
-        output.add("You moved " .. move.dir .. ".\n")
-        display_location_and_items()
-        local current_biome = map_data.tiles[player.y][player.x]
-        local effects = map.get_biome_effects(current_biome)
-        time.tick_time(120)
-        player.fatigue = math.min(100, math.max(0, player.fatigue + (player.mana <= 0 and effects.fatigue * 2 or effects.fatigue)))
-        player.hunger = math.min(100, math.max(0, player.hunger + effects.hunger))
-        player.thirst = math.min(100, math.max(0, player.thirst + effects.thirst))
-        local status_message = check_player_status()
-        if status_message ~= "" then
-            output.add(status_message)
-        end
-        return true
-    else
-        output.add("You can't move further " .. move.dir .. ".\n")
-        return false
-    end
 end
 
 function love.update(dt)
@@ -510,13 +459,13 @@ function love.keypressed(key)
                 attack_enemy(enemy_name)
             end
         elseif command_parts[1] == "north" or command_parts[1] == "n" then
-            move_player("north")
+            player_module.move_player("north", player, map_data, config, time, output)
         elseif command_parts[1] == "south" or command_parts[1] == "s" then
-            move_player("south")
+            player_module.move_player("south", player, map_data, config, time, output)
         elseif command_parts[1] == "east" or command_parts[1] == "e" then
-            move_player("east")
+            player_module.move_player("east", player, map_data, config, time, output)
         elseif command_parts[1] == "west" or command_parts[1] == "w" then
-            move_player("west")
+            player_module.move_player("west", player, map_data, config, time, output)
         elseif command_parts[1] == "light" then
             if not check_player_alive("light a fire") then
                 return
