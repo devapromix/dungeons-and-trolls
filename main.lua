@@ -17,7 +17,7 @@ function display_location_and_items()
 end
 
 function initialize_new_game()
-    map.initialize_game()
+    map.initialize_game(locations_data)
     output.add("Created new game.\n")
     display_location_and_items()
     output.add("Type 'help' to see a list of available commands.\n")
@@ -179,7 +179,6 @@ function combat_round(enemy_name, enemy_data)
                     skills.upgrade_skill(player, skills_data, item_data)
                 end
             end
-            
             if enemy_data.drops then
                 for _, drop in ipairs(enemy_data.drops) do
                     if math.random() < drop.chance then
@@ -194,7 +193,6 @@ function combat_round(enemy_name, enemy_data)
                     end
                 end
             end
-            
             map_data.enemies[player.y][player.x][enemy_name] = map_data.enemies[player.y][player.x][enemy_name] - 1
             if map_data.enemies[player.y][player.x][enemy_name] <= 0 then
                 map_data.enemies[player.y][player.x][enemy_name] = nil
@@ -202,7 +200,6 @@ function combat_round(enemy_name, enemy_data)
             display_location_and_items()
             return true
         end
-        
         local enemy_damage = math.max(0, enemy_data.attack - player.defense)
         if enemy_damage > 0 then
             player.health = player.health - enemy_damage
@@ -210,7 +207,6 @@ function combat_round(enemy_name, enemy_data)
         else
             output.add(enemy_name .. "'s attack is blocked.\n")
         end
-        
         if player.health <= 0 then
             player.alive = false
             output.add("You were defeated by " .. enemy_name .. ".\n")
@@ -218,7 +214,6 @@ function combat_round(enemy_name, enemy_data)
             save_game_to_json()
             return false
         end
-        
         time.tick_time(10)
     end
     return false
@@ -228,25 +223,21 @@ function attack_enemy(enemy_name)
     if not check_player_alive("attack") then
         return
     end
-    
     if not enemy_name or enemy_name == "" then
         output.add("Please specify an enemy to attack.\n")
         return
     end
-    
     local enemy_list = map_data.enemies[player.y][player.x]
     local enemy_key = items.find_item_key(enemy_list, enemy_name)
     if not enemy_key then
         output.add("No " .. enemy_name .. " found here.\n")
         return
     end
-    
     local enemy_data = enemies.get_enemy_data(enemies_data, enemy_key)
     if not enemy_data then
         output.add("No data found for " .. enemy_key .. ".\n")
         return
     end
-    
     output.add("You engage " .. enemy_key .. " in combat!\n")
     combat_round(enemy_key, enemy_data)
 end
@@ -255,24 +246,19 @@ function move_player(direction)
     if not check_player_alive("move") then
         return false
     end
-    
     local moves = {
         north = {y = -1, x_min = 1, x_max = config.map.width, y_min = 2, y_max = config.map.height, dir = "north"},
         south = {y = 1, x_min = 1, x_max = config.map.width, y_min = 1, y_max = config.map.height - 1, dir = "south"},
         east = {x = 1, x_min = 1, x_max = config.map.width - 1, y_min = 1, y_max = config.map.height, dir = "east"},
         west = {x = -1, x_min = 2, x_max = config.map.width, y_min = 1, y_max = config.map.height, dir = "west"}
     }
-    
     local move = moves[direction]
     if not move then return false end
-    
     local new_x = player.x + (move.x or 0)
     local new_y = player.y + (move.y or 0)
-    
     if new_x >= move.x_min and new_x <= move.x_max and new_y >= move.y_min and new_y <= move.y_max then
         player.x = new_x
         player.y = new_y
-        
         for y = math.max(1, player.y - player.radius), math.min(config.map.height, player.y + player.radius) do
             for x = math.max(1, player.x - player.radius), math.min(config.map.width, player.x + player.radius) do
                 if math.sqrt((x - player.x)^2 + (y - player.y)^2) <= player.radius then
@@ -280,18 +266,14 @@ function move_player(direction)
                 end
             end
         end
-        
         output.add("You moved " .. move.dir .. ".\n")
         display_location_and_items()
-        
         local current_biome = map_data.tiles[player.y][player.x]
         local effects = map.get_biome_effects(current_biome)
-        
         time.tick_time(120)
         player.fatigue = math.min(100, math.max(0, player.fatigue + (player.mana <= 0 and effects.fatigue * 2 or effects.fatigue)))
         player.hunger = math.min(100, math.max(0, player.hunger + effects.hunger))
         player.thirst = math.min(100, math.max(0, player.thirst + effects.thirst))
-        
         local status_message = check_player_status()
         if status_message ~= "" then
             output.add(status_message)
@@ -328,7 +310,6 @@ function love.keypressed(key)
         for part in command:gmatch("%S+") do
             table.insert(command_parts, part)
         end
-        
         if command_parts[1] == "help" then
             if love.filesystem.getInfo("assets/data/help.txt") then
                 local content = love.filesystem.read("assets/data/help.txt")
@@ -364,14 +345,11 @@ function love.keypressed(key)
             output.add("Experience: " .. player.experience .. "\n")
             output.add("Gold: " .. player.gold .. "\n")
             output.add("Position: " .. player.x .. ", " .. player.y .. "\n")
-
             output.add("\nEquipment:\n")
             output.add("Weapon: " .. (player.equipment and player.equipment.weapon or "None") .. "\n")
             output.add("Armor: " .. (player.equipment and player.equipment.armor or "None") .. "\n")
-
             output.add("\nSkills:\n")
-			skills.draw()
-            
+            skills.draw()
             if not player.alive then
                 output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
             end
@@ -380,7 +358,7 @@ function love.keypressed(key)
                 return
             end
             output.add("Skills:\n")
-			skills.draw()
+            skills.draw()
         elseif command_parts[1] == "time" then
             output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
         elseif command_parts[1] == "rest" then
@@ -404,7 +382,6 @@ function love.keypressed(key)
                 if hours_to_morning > 0 then
                     rest_hours = math.min(hours_to_full, hours_to_morning)
                 end
-                
                 output.add("You rest for " .. rest_hours .. " hour(s)...\n")
                 player.health = math.min(100, math.max(0, player.health + rest_hours * 10))
                 player.mana = math.min(100, math.max(0, player.mana + rest_hours * 10))
@@ -412,12 +389,10 @@ function love.keypressed(key)
                 player.hunger = math.min(100, math.max(0, player.hunger + rest_hours * 0.5))
                 player.thirst = math.min(100, math.max(0, player.thirst + rest_hours * 5))
                 time.tick_time(rest_hours * 60)
-                
                 output.add("Your health, mana, and fatigue have been restored.\n")
                 if rest_hours > 0 then
                     output.add("You feel hungrier and thirstier.\n")
                 end
-                
                 local status_message = check_player_status()
                 if status_message ~= "" then
                     output.add(status_message)

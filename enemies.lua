@@ -44,4 +44,13 @@ function enemies.get_enemy_data(enemies_data, enemy_name)
     return nil
 end
 
+function enemies.get_location_enemies(locations_data, symbol)
+    for _, location in ipairs(locations_data.locations) do
+        if location.symbol == symbol then
+            return location.enemies or {}
+        end
+    end
+    return {}
+end
+
 return enemies

@@ -1,6 +1,7 @@
 local json = require("libraries.json")
 local output = require("output")
 local items = require("items")
+local enemies = require("enemies")
 
 local map = {}
 
@@ -61,7 +62,7 @@ function map.get_biome_effects(symbol)
     return { thirst = 2, hunger = 0.5, fatigue = 1 }
 end
 
-function map.initialize_game()
+function map.initialize_game(locations_data)
     map_data = {
         tiles = {},
         visited = {},
@@ -84,7 +85,7 @@ function map.initialize_game()
         gold = 0,
         inventory = { ["Short Sword"] = 1, ["Leather Armor"] = 1 },
         equipment = { weapon = "Short Sword", armor = "Leather Armor" },
-		skills = {},
+        skills = {},
         radius = 3,
         level = 1,
         experience = 0
@@ -133,10 +134,11 @@ function map.initialize_game()
                 map_data.items[y][x][item.name] = quantity
             end
             local enemy_chance = symbol == "r" and 0 or (biomes[symbol] and biomes[symbol].enemy_chance or 0.2)
-            if enemies_data.enemies and #enemies_data.enemies > 0 and math.random() < enemy_chance then
-                local enemy = enemies_data.enemies[math.random(1, #enemies_data.enemies)]
+            local location_enemies = enemies.get_location_enemies(locations_data, symbol)
+            if #location_enemies > 0 and math.random() < enemy_chance then
+                local enemy = location_enemies[math.random(1, #location_enemies)]
                 local quantity = math.random(1, 3)
-                map_data.enemies[y][x][enemy.name] = quantity
+                map_data.enemies[y][x][enemy] = quantity
             end
         end
     end
