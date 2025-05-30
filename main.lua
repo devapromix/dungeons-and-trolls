@@ -233,7 +233,9 @@ function attack_enemy(enemy_name)
         return
     end
     local enemy_list = map_data.enemies[player.y][player.x]
-    local enemy_key = items.find_item_key(enemy_list, enemy_name)
+    local enemy_key = items.find_item_key(enemy_list,
+
+ enemy_name)
     if not enemy_key then
         output.add("No " .. enemy_name .. " found here.\n")
         return
@@ -515,8 +517,8 @@ function love.keypressed(key)
             move_player("east")
         elseif command_parts[1] == "west" or command_parts[1] == "w" then
             move_player("west")
-        elseif command_parts[1] == "make_fire" then
-            if not check_player_alive("make a fire") then
+        elseif command_parts[1] == "light" then
+            if not check_player_alive("light a fire") then
                 return
             end
             items.make_fire_item(player, map_data)
