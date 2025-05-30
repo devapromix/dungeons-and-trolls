@@ -67,7 +67,8 @@ function map.initialize_game(locations_data)
         tiles = {},
         visited = {},
         items = {},
-        enemies = {}
+        enemies = {},
+        fire = { x = nil, y = nil, active = false }
     }
     
     player = {
@@ -132,6 +133,9 @@ function map.initialize_game(locations_data)
                 local item = items_data.items[math.random(1, #items_data.items)]
                 local quantity = math.random(1, 3)
                 map_data.items[y][x][item.name] = quantity
+            end
+            if symbol == "f" and math.random() < 0.5 then
+                map_data.items[y][x]["Firewood"] = math.random(1, 3)
             end
             local enemy_chance = symbol == "r" and 0 or (biomes[symbol] and biomes[symbol].enemy_chance or 0.2)
             local location_enemies = enemies.get_location_enemies(locations_data, symbol)

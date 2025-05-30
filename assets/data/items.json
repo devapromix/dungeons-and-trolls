@@ -47,6 +47,10 @@
         {
             "name": "Leather Armor",
             "tags": ["armor=3"]
+        },
+        {
+            "name": "Firewood",
+            "tags": ["firewood"]
         }
     ]
 }

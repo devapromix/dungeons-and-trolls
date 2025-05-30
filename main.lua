@@ -14,6 +14,9 @@ function display_location_and_items()
     output.add(items_string)
     local enemies_string = enemies.get_tile_enemies_string(map_data, player.x, player.y)
     output.add(enemies_string)
+    if map_data.fire.active and map_data.fire.x == player.x and map_data.fire.y == player.y then
+        output.add("A fire is burning here.\n")
+    end
 end
 
 function initialize_new_game()
@@ -58,7 +61,8 @@ function save_game_to_json()
         player = player,
         history = input.history,
         time = game_time,
-        version = config.game.version
+        version = config.game.version,
+        fire = map_data.fire
     }
     
     local save_string = json.encode(save_data)
@@ -79,6 +83,7 @@ function load_game_from_json()
             player = save_data.player
             game_time = save_data.time or { year = 1280, month = 4, day = 1, hour = 6, minute = 0 }
             input.history = save_data.history or {}
+            map_data.fire = save_data.fire or { x = nil, y = nil, active = false }
             
             player = player_module.clamp_player_stats(player)
             player = player_module.clamp_player_skills(player, skills_data)
@@ -257,6 +262,12 @@ function move_player(direction)
     local new_x = player.x + (move.x or 0)
     local new_y = player.y + (move.y or 0)
     if new_x >= move.x_min and new_x <= move.x_max and new_y >= move.y_min and new_y <= move.y_max then
+        if map_data.fire.active and (map_data.fire.x ~= new_x or map_data.fire.y ~= new_y) then
+            map_data.fire.active = false
+            map_data.fire.x = nil
+            map_data.fire.y = nil
+            output.add("The fire goes out as you leave the location.\n")
+        end
         player.x = new_x
         player.y = new_y
         for y = math.max(1, player.y - player.radius), math.min(config.map.height, player.y + player.radius) do
@@ -382,14 +393,18 @@ function love.keypressed(key)
                 if hours_to_morning > 0 then
                     rest_hours = math.min(hours_to_full, hours_to_morning)
                 end
+                local rest_multiplier = map_data.fire.active and map_data.fire.x == player.x and map_data.fire.y == player.y and 2 or 1
                 output.add("You rest for " .. rest_hours .. " hour(s)...\n")
-                player.health = math.min(100, math.max(0, player.health + rest_hours * 10))
-                player.mana = math.min(100, math.max(0, player.mana + rest_hours * 10))
-                player.fatigue = math.min(100, math.max(0, player.fatigue - rest_hours * 10))
+                player.health = math.min(100, math.max(0, player.health + rest_hours * 10 * rest_multiplier))
+                player.mana = math.min(100, math.max(0, player.mana + rest_hours * 10 * rest_multiplier))
+                player.fatigue = math.min(100, math.max(0, player.fatigue - rest_hours * 10 * rest_multiplier))
                 player.hunger = math.min(100, math.max(0, player.hunger + rest_hours * 0.5))
                 player.thirst = math.min(100, math.max(0, player.thirst + rest_hours * 5))
                 time.tick_time(rest_hours * 60)
                 output.add("Your health, mana, and fatigue have been restored.\n")
+                if rest_multiplier > 1 then
+                    output.add("Resting by the fire makes you recover twice as fast!\n")
+                end
                 if rest_hours > 0 then
                     output.add("You feel hungrier and thirstier.\n")
                 end
@@ -500,6 +515,11 @@ function love.keypressed(key)
             move_player("east")
         elseif command_parts[1] == "west" or command_parts[1] == "w" then
             move_player("west")
+        elseif command_parts[1] == "make_fire" then
+            if not check_player_alive("make a fire") then
+                return
+            end
+            items.make_fire_item(player, map_data)
         elseif command_parts[1] == "quit" then
             save_game_to_json()
             love.event.quit()

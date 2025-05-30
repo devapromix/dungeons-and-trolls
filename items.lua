@@ -272,4 +272,31 @@ function items.drink_item(player, items_data, item_name)
     return player
 end
 
+function items.make_fire_item(player, map_data)
+    if not player.alive then
+        output.add("You are dead and cannot make a fire.\nStart a new game with the 'new' command.\n")
+        return
+    end
+    
+    local item_key = items.find_item_key(player.inventory, "Firewood")
+    if not item_key then
+        output.add("You don't have Firewood in your inventory.\n")
+        return
+    end
+    
+    if map_data.fire.active and map_data.fire.x == player.x and map_data.fire.y == player.y then
+        output.add("A fire is already burning here.\n")
+        return
+    end
+    
+    player.inventory[item_key] = player.inventory[item_key] - 1
+    if player.inventory[item_key] <= 0 then
+        player.inventory[item_key] = nil
+    end
+    
+    map_data.fire = { x = player.x, y = player.y, active = true }
+    output.add("You make a fire using Firewood.\n")
+    time.tick_time(15)
+end
+
 return items
