@@ -73,7 +73,7 @@ function map.initialize_game(locations_data)
     
     player = {
         x = math.floor(config.map.width / 2),
-        y = math.floor(config.map.height / 2), 
+        y = math.floor(config.map.height / 2),
         symbol = "@",
         health = 100,
         mana = 100,
@@ -153,6 +153,18 @@ function map.initialize_game(locations_data)
                 map_data.visited[y][x] = true
             end
         end
+    end
+end
+
+function map.display_location_and_items(player, map_data, output)
+    local location = map.get_location_description(map_data.tiles[player.y][player.x])
+    output.add("You are in " .. location.name .. ". " .. location.description .. "\n")
+    local items_string = items.get_tile_items_string(map_data, player.x, player.y)
+    output.add(items_string)
+    local enemies_string = enemies.get_tile_enemies_string(map_data, player.x, player.y)
+    output.add(enemies_string)
+    if map_data.fire.active and map_data.fire.x == player.x and map_data.fire.y == player.y then
+        output.add("A fire is burning here.\n")
     end
 end
 

@@ -7,22 +7,10 @@ map = require("map")
 player_module = require("player")
 skills = require("skills")
 
-function display_location_and_items()
-    local location = map.get_location_description(map_data.tiles[player.y][player.x])
-    output.add("You are in " .. location.name .. ". " .. location.description .. "\n")
-    local items_string = items.get_tile_items_string(map_data, player.x, player.y)
-    output.add(items_string)
-    local enemies_string = enemies.get_tile_enemies_string(map_data, player.x, player.y)
-    output.add(enemies_string)
-    if map_data.fire.active and map_data.fire.x == player.x and map_data.fire.y == player.y then
-        output.add("A fire is burning here.\n")
-    end
-end
-
 function initialize_new_game()
     map.initialize_game(locations_data)
     output.add("Created new game.\n")
-    display_location_and_items()
+    map.display_location_and_items(player, map_data, output)
     output.add("Type 'help' to see a list of available commands.\n")
 end
 
@@ -108,7 +96,7 @@ function load_game_from_json()
                 end
             end
             output.add("Loaded saved game.\n")
-            display_location_and_items()
+            map.display_location_and_items(player, map_data, output)
         end
     end
 end
@@ -202,7 +190,7 @@ function combat_round(enemy_name, enemy_data)
             if map_data.enemies[player.y][player.x][enemy_name] <= 0 then
                 map_data.enemies[player.y][player.x][enemy_name] = nil
             end
-            display_location_and_items()
+            map.display_location_and_items(player, map_data, output)
             return true
         end
         local enemy_damage = math.max(0, enemy_data.attack - player.defense)
@@ -432,7 +420,7 @@ function love.keypressed(key)
             if not check_player_alive("look around") then
                 return
             end
-            display_location_and_items()
+            map.display_location_and_items(player, map_data, output)
         elseif command_parts[1] == "map" then
             for y = 1, config.map.height do
                 local line = ""

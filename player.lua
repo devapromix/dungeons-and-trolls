@@ -20,8 +20,20 @@ function player.clamp_player_skills(player_data, skills_data)
     if not player_data.skills then
         player_data.skills = {}
     end
+    if not skills_data or not skills_data.skills then
+        output.add("Error: No valid skills data provided.\n")
+        return player_data
+    end
     for _, skill in ipairs(skills_data.skills) do
-        player_data.skills[skill.name] = math.min(skill.max_level, math.max(0, player_data.skills[skill.name] or skill.initial_level))
+        if skill and skill.name and skill.max_level then
+            local initial_level = skill.initial_level or 0 -- Default to 0 if initial_level is missing
+            player_data.skills[skill.name] = math.min(
+                skill.max_level,
+                math.max(0, player_data.skills[skill.name] or initial_level)
+            )
+        else
+            output.add("Warning: Invalid skill entry in skills data.\n")
+        end
     end
     return player_data
 end
@@ -186,15 +198,7 @@ function player.move_player(direction, player_data, map_data, config, time, outp
             end
         end
         output.add("You moved " .. move.dir .. ".\n")
-        local location = map.get_location_description(map_data.tiles[player_data.y][player_data.x])
-        output.add("You are in " .. location.name .. ". " .. location.description .. "\n")
-        local items_string = items.get_tile_items_string(map_data, player_data.x, player_data.y)
-        output.add(items_string)
-        local enemies_string = enemies.get_tile_enemies_string(map_data, player_data.x, player_data.y)
-        output.add(enemies_string)
-        if map_data.fire.active and map_data.fire.x == player_data.x and map_data.fire.y == player_data.y then
-            output.add("A fire is burning here.\n")
-        end
+        map.display_location_and_items(player_data, map_data, output)
         local current_biome = map_data.tiles[player_data.y][player_data.x]
         local effects = map.get_biome_effects(current_biome)
         time.tick_time(120)
