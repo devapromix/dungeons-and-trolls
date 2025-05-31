@@ -26,7 +26,7 @@ function player.clamp_player_skills(player_data, skills_data)
     end
     for _, skill in ipairs(skills_data.skills) do
         if skill and skill.name and skill.max_level then
-            local initial_level = skill.initial_level or 0 -- Default to 0 if initial_level is missing
+            local initial_level = skill.initial_level or 0
             player_data.skills[skill.name] = math.min(
                 skill.max_level,
                 math.max(0, player_data.skills[skill.name] or initial_level)
@@ -182,7 +182,7 @@ function player.move_player(direction, player_data, map_data, config, time, outp
     local new_x = player_data.x + (move.x or 0)
     local new_y = player_data.y + (move.y or 0)
     if new_x >= move.x_min and new_x <= move.x_max and new_y >= move.y_min and new_y <= move.y_max then
-        if map_data.fire.active and (map_data.fire.x ~= new_x or map_data.fire.y ~= new_y) then
+        if map_data.fire.active and (map_data.fire.x != new_x or map_data.fire.y != new_y) then
             map_data.fire.active = false
             map_data.fire.x = nil
             map_data.fire.y = nil
@@ -205,23 +205,6 @@ function player.move_player(direction, player_data, map_data, config, time, outp
         player_data.fatigue = math.min(100, math.max(0, player_data.fatigue + (player_data.mana <= 0 and effects.fatigue * 2 or effects.fatigue)))
         player_data.hunger = math.min(100, math.max(0, player_data.hunger + effects.hunger))
         player_data.thirst = math.min(100, math.max(0, player_data.thirst + effects.thirst))
-        if player_data.hunger >= 100 then
-            player_data.hunger = 100
-            player_data.alive = false
-            output.add("You died from starvation.\n")
-        elseif player_data.fatigue >= 100 then
-            player_data.fatigue = 100
-            player_data.alive = false
-            output.add("You died from exhaustion.\n")
-        elseif player_data.health <= 0 then
-            player_data.health = 0
-            player_data.alive = false
-            output.add("You died from injuries.\n")
-        elseif player_data.thirst >= 100 then
-            player_data.thirst = 100
-            player_data.alive = false
-            output.add("You died from thirst.\n")
-        end
         return true
     else
         output.add("You can't move further " .. move.dir .. ".\n")

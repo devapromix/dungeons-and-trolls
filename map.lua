@@ -2,18 +2,19 @@ local json = require("libraries.json")
 local output = require("output")
 local items = require("items")
 local enemies = require("enemies")
+local const = require("const")
 
 local map = {}
 
 local biomes = {
-    { symbol = "f", threshold = 0.15, item_chance = 0.25, enemy_chance = 0.2, effects = { thirst = 2, hunger = 0.5, fatigue = 1 } },
-    { symbol = "g", threshold = 0.30, item_chance = 0.20, enemy_chance = 0.2, effects = { thirst = 1.5, hunger = 0.4, fatigue = 0.8 } },
-    { symbol = "p", threshold = 0.45, item_chance = 0.15, enemy_chance = 0.2, effects = { thirst = 2.5, hunger = 0.5, fatigue = 1 } },
-    { symbol = "s", threshold = 0.60, item_chance = 0.10, enemy_chance = 0.2, effects = { thirst = 3, hunger = 0.5, fatigue = 1 } },
-    { symbol = "v", threshold = 0.75, item_chance = 0.08, enemy_chance = 0.2, effects = { thirst = 4, hunger = 0.6, fatigue = 1.2 } },
-    { symbol = "d", threshold = 0.85, item_chance = 0.05, enemy_chance = 0.2, effects = { thirst = 5, hunger = 0.8, fatigue = 1.5 } },
-    { symbol = "m", threshold = 1.0, item_chance = 0.08, enemy_chance = 0.2, effects = { thirst = 2.5, hunger = 0.6, fatigue = 2 } },
-    { symbol = "r", item_chance = 0.3, enemy_chance = 0, effects = { thirst = -3, hunger = 0.5, fatigue = 1.2 } }
+    { symbol = "f", threshold = 0.15, item_chance = 0.25, enemy_chance = const.DEFAULT_ENEMY_CHANCE, effects = { thirst = 1, hunger = 0.5, fatigue = 1 } },
+    { symbol = "g", threshold = 0.30, item_chance = 0.20, enemy_chance = const.DEFAULT_ENEMY_CHANCE, effects = { thirst = 0.75, hunger = 0.4, fatigue = 0.8 } },
+    { symbol = "p", threshold = 0.45, item_chance = 0.15, enemy_chance = const.DEFAULT_ENEMY_CHANCE, effects = { thirst = 1.25, hunger = 0.5, fatigue = 1 } },
+    { symbol = "s", threshold = 0.60, item_chance = 0.10, enemy_chance = const.DEFAULT_ENEMY_CHANCE, effects = { thirst = 1.5, hunger = 0.5, fatigue = 1 } },
+    { symbol = "v", threshold = 0.75, item_chance = 0.08, enemy_chance = const.DEFAULT_ENEMY_CHANCE, effects = { thirst = 2, hunger = 0.6, fatigue = 1.2 } },
+    { symbol = "d", threshold = 0.85, item_chance = 0.05, enemy_chance = const.DEFAULT_ENEMY_CHANCE, effects = { thirst = 2.5, hunger = 0.8, fatigue = 1.5 } },
+    { symbol = "m", threshold = 1.0, item_chance = 0.08, enemy_chance = const.DEFAULT_ENEMY_CHANCE, effects = { thirst = 1.25, hunger = 0.6, fatigue = 2 } },
+    { symbol = "r", item_chance = 0.3, enemy_chance = 0, effects = { thirst = -1.5, hunger = 0.5, fatigue = 1.2 } }
 }
 
 function map.load_locations()
@@ -114,7 +115,7 @@ function map.initialize_game(locations_data)
             if river_value < 0.1 then
                 symbol = "r"
             else
-                local noise_value = map.noise(x, y, scale)
+                local noise_value = map.no ніж(x, y, scale)
                 local biome = biomes[#biomes]
                 for _, b in ipairs(biomes) do
                     if noise_value <= b.threshold then

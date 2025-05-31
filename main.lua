@@ -152,13 +152,18 @@ end
 function combat_round(enemy_name, enemy_data)
     local enemy_health = enemy_data.health
     while player.health > 0 and enemy_health > 0 do
-        local player_damage = math.max(0, player.attack - enemy_data.defense)
-        player_damage = skills.apply_skill_effects(player, skills_data, player_damage)
-        if player_damage > 0 then
-            enemy_health = enemy_health - player_damage
-            output.add("You hit " .. enemy_name .. " for " .. player_damage .. " damage.\n")
+        local miss_chance = player.fatigue > 70 and ((player.fatigue - 70) / 30) * 0.5 or 0
+        if math.random() >= miss_chance then
+            local player_damage = math.max(0, player.attack - enemy_data.defense)
+            player_damage = skills.apply_skill_effects(player, skills_data, player_damage)
+            if player_damage > 0 then
+                enemy_health = enemy_health - player_damage
+                output.add("You hit " .. enemy_name .. " for " .. player_damage .. " damage.\n")
+            else
+                output.add("Your attack is blocked by " .. enemy_name .. ".\n")
+            end
         else
-            output.add("Your attack is blocked by " .. enemy_name .. ".\n")
+            output.add("You missed your attack due to fatigue!\n")
         end
         
         if enemy_health <= 0 then
@@ -338,7 +343,7 @@ function love.keypressed(key)
                 player.mana = math.min(100, math.max(0, player.mana + rest_hours * 10 * rest_multiplier))
                 player.fatigue = math.min(100, math.max(0, player.fatigue - rest_hours * 10 * rest_multiplier))
                 player.hunger = math.min(100, math.max(0, player.hunger + rest_hours * 0.5))
-                player.thirst = math.min(100, math.max(0, player.thirst + rest_hours * 5))
+                player.thirst = math.min(100, math.max(0, player.thirst + rest_hours * 2.5))
                 time.tick_time(rest_hours * 60)
                 output.add("Your health, mana, and fatigue have been restored.\n")
                 if rest_multiplier > 1 then
@@ -447,13 +452,33 @@ function love.keypressed(key)
                 attack_enemy(enemy_name)
             end
         elseif command_parts[1] == "north" or command_parts[1] == "n" then
-            player_module.move_player("north", player, map_data, config, time, output)
+            if player_module.move_player("north", player, map_data, config, time, output) then
+                local status_message = check_player_status()
+                if status_message ~= "" then
+                    output.add(status_message)
+                end
+            end
         elseif command_parts[1] == "south" or command_parts[1] == "s" then
-            player_module.move_player("south", player, map_data, config, time, output)
+            if player_module.move_player("south", player, map_data, config, time, output) then
+                local status_message = check_player_status()
+                if status_message ~= "" then
+                    output.add(status_message)
+                end
+            end
         elseif command_parts[1] == "east" or command_parts[1] == "e" then
-            player_module.move_player("east", player, map_data, config, time, output)
+            if player_module.move_player("east", player, map_data, config, time, output) then
+                local status_message = check_player_status()
+                if status_message ~= "" then
+                    output.add(status_message)
+                end
+            end
         elseif command_parts[1] == "west" or command_parts[1] == "w" then
-            player_module.move_player("west", player, map_data, config, time, output)
+            if player_module.move_player("west", player, map_data, config, time, output) then
+                local status_message = check_player_status()
+                if status_message ~= "" then
+                    output.add(status_message)
+                end
+            end
         elseif command_parts[1] == "light" then
             if not check_player_alive("light a fire") then
                 return
