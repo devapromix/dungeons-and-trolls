@@ -25,7 +25,7 @@ function commands.parse_item_command(command_parts, start_index)
         if #command_parts >= start_index + 1 then
             item_name = table.concat(command_parts, " ", start_index + 1)
         else
-            output.add("Please specify an item name after the quantity.\n")
+            output.add("Please specify an item name after the quantity  (e.g., 'pick 3 Healing Potion').\n")
             return nil, nil
         end
     else
@@ -108,15 +108,15 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         else
             output.add("No saved game found.\n")
         end
-    elseif command_parts[1] == "status" then
-        player_module.draw_status()
+	elseif command_parts[1] == "status" then
+		player_module.draw_status(player)
     elseif command_parts[1] == "skills" then
         output.add("Skills:\n")
         skills.draw()
     elseif command_parts[1] == "time" then
         output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
     elseif command_parts[1] == "rest" then
-        if not check_player_alive("rest") then
+        if not player_module.check_player_alive("rest", player) then
             return
         elseif player.health >= 100 and player.mana >= 100 and player.fatigue <= 0 then
             output.add("You don't need to rest.\n")
@@ -151,27 +151,27 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             if rest_hours > 0 then
                 output.add("You feel hungrier and thirstier.\n")
             end
-            local status_message = check_player_status()
+            local status_message = player_module.check_player_status(player)
             if status_message ~= "" then
                 output.add(status_message)
             end
         end
     elseif command_parts[1] == "eat" then
         if #command_parts < 2 then
-            output.add("Please specify an item to eat.\n")
+            output.add("Please specify an item to eat (e.g., 'eat Apple').\n")
         else
             local item_name = table.concat(command_parts, " ", 2)
             player = items.eat_item(player, items_data, item_name) or player
         end
     elseif command_parts[1] == "drink" then
         if #command_parts < 2 then
-            output.add("Please specify an item to drink.\n")
+            output.add("Please specify an item to drink (e.g., 'drink Healing Potion').\n")
         else
             local item_name = table.concat(command_parts, " ", 2)
             player = items.drink_item(player, items_data, item_name) or player
         end
     elseif command_parts[1] == "items" then
-        if not check_player_alive("check your inventory") then
+        if not player_module.check_player_alive("check your inventory", player) then
             return
         end
         output.add("Inventory (" .. commands.table_count(player.inventory) .. "/" .. config.inventory.max_slots .. "):\n")
@@ -221,7 +221,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             player = player_module.unequip_item(player, items_data, identifier)
         end
     elseif command_parts[1] == "look" then
-        if not check_player_alive("look around") then
+        if not player_module.check_player_alive("look around", player) then
             return
         end
         map.display_location_and_items(player, map_data, output)
@@ -248,38 +248,38 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
         else
             local enemy_name = table.concat(command_parts, " ", 2)
-            attack_enemy(enemy_name)
+            player_module.attack_enemy(enemy_name, map_data, player, enemies_data, items_data, skills_data, time, map, output)
         end
     elseif command_parts[1] == "north" or command_parts[1] == "n" then
         if player_module.move_player("north", player, map_data, config, time, output) then
-            local status_message = check_player_status()
+            local status_message = player_module.check_player_status(player)
             if status_message ~= "" then
                 output.add(status_message)
             end
         end
     elseif command_parts[1] == "south" or command_parts[1] == "s" then
         if player_module.move_player("south", player, map_data, config, time, output) then
-            local status_message = check_player_status()
-            if not status_message == "" then
+            local status_message = player_module.check_player_status(player)
+            if status_message ~= "" then
                 output.add(status_message)
             end
         end
     elseif command_parts[1] == "east" or command_parts[1] == "e" then
         if player_module.move_player("east", player, map_data, config, time, output) then
-            local status_message = check_player_status()
-            if not status_message == "" then
+            local status_message = player_module.check_player_status(player)
+            if status_message ~= "" then
                 output.add(status_message)
             end
         end
     elseif command_parts[1] == "west" or command_parts[1] == "w" then
         if player_module.move_player("west", player, map_data, config, time, output) then
-            local status_message = check_player_status()
-            if not status_message == "" then
+            local status_message = player_module.check_player_status(player)
+            if status_message ~= "" then
                 output.add(status_message)
             end
         end
     elseif command_parts[1] == "light" then
-        if not check_player_alive("light a fire") then
+        if not player_module.check_player_alive("light a fire", player) then
             return
         end
         items.make_fire_item(player, map_data)

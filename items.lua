@@ -22,9 +22,6 @@ end
 
 function items.get_tile_items_string(map, x, y)
     local tile_items = map and map.items and map.items[y] and map.items[y][x] or {}
-    if not next(tile_items) then
-        return "There are no items here.\n"
-    end
     local item_list = {}
     for item, qty in pairs(tile_items) do
         if qty == 1 then

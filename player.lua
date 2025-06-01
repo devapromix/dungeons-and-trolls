@@ -1,31 +1,33 @@
 local output = require("output")
 local map = require("map")
-local time = require("time")
 local items = require("items")
+local enemies = require("enemies")
+local skills = require("skills")
+local time = require("time")
 
 local player = {}
 
-function player.draw_status()
-            output.add("Player:\n")
-            output.add("Health: " .. player.health .. "\n")
-            output.add("Mana: " .. player.mana .. "\n")
-            output.add("Hunger: " .. player.hunger .. "\n")
-            output.add("Fatigue: " .. player.fatigue .. "\n")
-            output.add("Thirst: " .. player.thirst .. "\n")
-            output.add("Attack: " .. player.attack .. "\n")
-            output.add("Defense: " .. player.defense .. "\n")
-            output.add("Level: " .. player.level .. "\n")
-            output.add("Experience: " .. player.experience .. "\n")
-            output.add("Gold: " .. player.gold .. "\n")
-            output.add("Position: " .. player.x .. ", " .. player.y .. "\n")
-            output.add("\nEquipment:\n")
-            output.add("Weapon: " .. (player.equipment and player.equipment.weapon or "None") .. "\n")
-            output.add("Armor: " .. (player.equipment and player.equipment.armor or "None") .. "\n")
-            output.add("\nSkills:\n")
-            skills.draw()
-            if not player.alive then
-                output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
-            end
+function player.draw_status(player_data)
+    output.add("Player:\n")
+    output.add("Health: " .. player_data.health .. "\n")
+    output.add("Mana: " .. player_data.mana .. "\n")
+    output.add("Hunger: " .. player_data.hunger .. "\n")
+    output.add("Fatigue: " .. player_data.fatigue .. "\n")
+    output.add("Thirst: " .. player_data.thirst .. "\n")
+    output.add("Attack: " .. player_data.attack .. "\n")
+    output.add("Defense: " .. player_data.defense .. "\n")
+    output.add("Level: " .. player_data.level .. "\n")
+    output.add("Experience: " .. player_data.experience .. "\n")
+    output.add("Gold: " .. player_data.gold .. "\n")
+    output.add("Position: " .. player_data.x .. ", " .. player_data.y .. "\n")
+    output.add("\nEquipment:\n")
+    output.add("Weapon: " .. (player_data.equipment and player_data.equipment.weapon or "None") .. "\n")
+    output.add("Armor: " .. (player_data.equipment and player_data.equipment.armor or "None") .. "\n")
+    output.add("\nSkills:\n")
+    skills.draw()
+    if not player_data.alive then
+        output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
+    end
 end
 
 function player.clamp_player_stats(player_data)
@@ -233,6 +235,134 @@ function player.move_player(direction, player_data, map_data, config, time, outp
         output.add("You can't move further " .. move.dir .. ".\n")
         return false
     end
+end
+
+function player.check_player_status(player_data)
+    player_data = player.clamp_player_stats(player_data)
+    if player_data.hunger >= 100 then
+        player_data.hunger = 100
+        player_data.alive = false
+        return "You died from starvation.\n"
+    elseif player_data.fatigue >= 100 then
+        player_data.fatigue = 100
+        player_data.alive = false
+        return "You died from exhaustion.\n"
+    elseif player_data.health <= 0 then
+        player_data.health = 0
+        player_data.alive = false
+        return "You died from injuries.\n"
+    elseif player_data.thirst >= 100 then
+        player_data.thirst = 100
+        player_data.alive = false
+        return "You died from thirst.\n"
+    end
+    return ""
+end
+
+function player.check_player_alive(action, player_data)
+    if not player_data.alive then
+        output.add("You are dead and cannot " .. action .. ".\nStart a new game with the 'new' command.\n")
+        return false
+    end
+    return true
+end
+
+function player.attack_enemy(enemy_name, map_data, player_data, enemies_data, items_data, skills_data, time, map, output)
+    if not player.check_player_alive("attack", output) then
+        return
+    end
+    if not enemy_name or enemy_name == "" then
+        output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
+        return
+    end
+    local enemy_list = map_data.enemies[player_data.y][player_data.x]
+    local enemy_key = items.find_item_key(enemy_list, enemy_name)
+    if not enemy_key then
+        output.add("No " .. enemy_name .. " found here.\n")
+        return
+    end
+    local enemy_data = enemies.get_enemy_data(enemies_data, enemy_key)
+    if not enemy_data then
+        output.add("No data found for " .. enemy_key .. ".\n")
+        return
+    end
+    output.add("You engage " .. enemy_key .. " in combat!\n")
+    player.combat_round(enemy_key, enemy_data, map_data, player_data, items_data, skills_data, time, map, output)
+end
+
+function player.combat_round(enemy_name, enemy_data, map_data, player_data, items_data, skills_data, time, map, output)
+    local enemy_health = enemy_data.health
+    while player_data.health > 0 and enemy_health > 0 do
+        local miss_chance = player_data.fatigue > 70 and ((player_data.fatigue - 70) / 30) * 0.5 or 0
+        if math.random() >= miss_chance then
+            local player_damage = math.max(0, player_data.attack - enemy_data.defense)
+            player_damage = skills.apply_skill_effects(player_data, skills_data, player_damage)
+            if player_damage > 0 then
+                enemy_health = enemy_health - player_damage
+                output.add("You hit " .. enemy_name .. " for " .. player_damage .. " damage.\n")
+            else
+                output.add("Your attack is blocked by " .. enemy_name .. ".\n")
+            end
+        else
+            output.add("You missed your attack due to fatigue!\n")
+        end
+        if enemy_health <= 0 then
+            output.add("You defeated " .. enemy_name .. "!\n")
+            player_data.experience = player_data.experience + enemy_data.experience
+            output.add("Gained " .. enemy_data.experience .. " experience.\n")
+            if player_data.equipment and player_data.equipment.weapon then
+                local item_data = items.get_item_data(items_data, player_data.equipment.weapon)
+                if item_data then
+                    skills.upgrade_skill(player_data, skills_data, item_data)
+                end
+            end
+            if enemy_data.drops then
+                for _, drop in ipairs(enemy_data.drops) do
+                    if math.random() < drop.chance then
+                        local quantity = drop.quantity and math.random(drop.quantity[1], drop.quantity[2]) or 1
+                        if drop.type == "gold" then
+                            player_data.gold = player_data.gold + quantity
+                            output.add("Gained " .. quantity .. " gold.\n")
+                        elseif drop.type == "item" then
+                            map_data.items[player_data.y][player_data.x][drop.name] = (map_data.items[player_data.y][player_data.x][drop.name] or 0) + quantity
+                            output.add(drop.name .. " (" .. quantity .. ") dropped on the ground.\n")
+                        end
+                    end
+                end
+            end
+            map_data.enemies[player_data.y][player_data.x][enemy_name] = map_data.enemies[player_data.y][player_data.x][enemy_name] - 1
+            if map_data.enemies[player_data.y][player_data.x][enemy_name] <= 0 then
+                map_data.enemies[player_data.y][player_data.x][enemy_name] = nil
+            end
+            map.display_location_and_items(player_data, map_data, output)
+            return true
+        end
+        local enemy_damage = math.max(0, enemy_data.attack - player_data.defense)
+        if enemy_damage > 0 then
+            player_data.health = player_data.health - enemy_damage
+            output.add(enemy_name .. " hits you for " .. enemy_damage .. " damage.\n")
+        else
+            output.add(enemy_name .. "'s attack is blocked.\n")
+        end
+        if player_data.health <= 0 then
+            player_data.alive = false
+            output.add("You were defeated by " .. enemy_name .. ".\n")
+            output.add("Game over. Start a new game with the 'new' command.\n")
+            local save_data = {
+                map = map_data,
+                player = player_data,
+                history = input.history,
+                time = game_time,
+                version = config.game.version,
+                fire = map_data.fire
+            }
+            local save_string = json.encode(save_data)
+            love.filesystem.write("game.json", save_string)
+            return false
+        end
+        time.tick_time(10)
+    end
+    return false
 end
 
 return player
