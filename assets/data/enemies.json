@@ -3,7 +3,7 @@
     {
       "name": "Goblin",
       "health": 30,
-      "attack": 5,
+      "attack": 3,
       "defense": 1,
       "experience": 20,
       "description": "A small, sneaky creature with a crude weapon.",
@@ -21,11 +21,23 @@
       ]
     },
     {
+      "name": "Boar",
+      "health": 30,
+      "attack": 5,
+      "defense": 2,
+      "experience": 25,
+      "description": "A fierce, tusked beast that roams the wild forests.",
+      "tags": ["hostile", "animal"],
+      "drops": [
+        {"name": "Raw Meat", "chance": 0.8, "quantity": [1, 3], "type": "item"}
+      ]
+    },
+    {
       "name": "Wolf",
       "health": 35,
       "attack": 7,
       "defense": 3,
-      "experience": 15,
+      "experience": 30,
       "description": "A fierce wild animal with sharp teeth.",
       "tags": ["hostile", "animal"],
       "drops": [
@@ -37,7 +49,7 @@
       "health": 40,
       "attack": 9,
       "defense": 4,
-      "experience": 25,
+      "experience": 35,
       "description": "A rogue human preying on travelers.",
       "tags": ["hostile", "human"],
       "drops": [
