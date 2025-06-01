@@ -35,6 +35,10 @@ function commands.parse_item_command(command_parts, start_index)
 end
 
 function commands.handle_command(command_parts, player, map_data, items_data, enemies_data, skills_data, config, game_time, input, output, time, player_module, items, enemies, map, skills, json)
+    if not game.initialized and not (command_parts[1] == "help" or command_parts[1] == "quit" or command_parts[1] == "new" or command_parts[1] == "about") then
+        output.add("No game loaded or saved game version is incompatible. Please start a new game with the 'new' command.\n")
+        return
+    end
     if command_parts[1] == "help" then
         if love.filesystem.getInfo("assets/data/help.txt") then
             local content = love.filesystem.read("assets/data/help.txt")
@@ -229,12 +233,14 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         end
         items.make_fire_item(player, map_data)
     elseif command_parts[1] == "about" then
-		game.about()
+        game.about()
     elseif command_parts[1] == "quit" then
-        game.save_game()
+        if game.initialized then
+            game.save_game()
+        end
         love.event.quit()
     else
-        output.add("Unknown command: '" .. command_parts1 .. "'.\n")
+        output.add("Unknown command: '" .. command_parts[1] .. "'.\n")
         output.add("Type 'help' for a list of available commands.\n")
     end
 end

@@ -108,5 +108,7 @@ function love.resize(w, h)
 end
 
 function love.quit()
-    game.save_game()
+	if game.initialized then
+        game.save_game()
+    end
 end

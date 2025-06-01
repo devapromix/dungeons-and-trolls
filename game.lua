@@ -1,7 +1,9 @@
 local game = {}
+game.initialized = false
 
 function game.welcome()
     output.add("Welcome to " .. config.game.name .. " v." .. config.game.version .. "\n")
+    game.initialized = false
     if love.filesystem.getInfo("game.json") then
         game.load_game()
         output.add("Type 'help' to see a list of available commands.\n")
@@ -12,17 +14,21 @@ end
 
 function game.about()
     output.add(config.game.name .. " v." .. config.game.version .. "\n")
-	output.add("Author: Apromix")
+    output.add("Author: Apromix")
 end
 
 function game.new_game()
     map.initialize_game(locations_data)
+    game.initialized = true
     output.add("Created new game.\n")
     map.display_location_and_items(player, map_data)
     output.add("Type 'help' to see a list of available commands.\n")
 end
 
 function game.save_game()
+    if not game.initialized then
+        return
+    end
     local save_data = {
         map = map_data,
         player = player,
@@ -31,7 +37,6 @@ function game.save_game()
         version = config.game.version,
         fire = map_data.fire
     }
-    
     local save_string = json.encode(save_data)
     love.filesystem.write("game.json", save_string)
     output.add("Game saved.\n")
@@ -46,6 +51,7 @@ function game.load_game()
                 if save_data.version ~= config.game.version then
                     output.add("Saved game version (" .. (save_data.version or "unknown") .. ") is incompatible with current game version (" .. config.game.version .. ").\n")
                     output.add("Please start a new game with the 'new' command.\n")
+                    game.initialized = false
                     return false
                 end
                 map_data = save_data.map
@@ -76,6 +82,7 @@ function game.load_game()
                 end
                 output.add("Loaded saved game.\n")
                 map.display_location_and_items(player, map_data)
+                game.initialized = true
                 return true
             end
         end
@@ -83,6 +90,7 @@ function game.load_game()
     else
         output.add("No saved game found.\n")
     end
+    game.initialized = false
     return false
 end
 
