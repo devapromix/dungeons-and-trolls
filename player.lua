@@ -1,10 +1,3 @@
-local output = require("output")
-local map = require("map")
-local items = require("items")
-local enemies = require("enemies")
-local skills = require("skills")
-local time = require("time")
-
 local player = {}
 
 function player.draw_status(player_data)
@@ -223,7 +216,7 @@ function player.move_player(direction, player_data, map_data, config, time, outp
             end
         end
         output.add("You moved " .. move.dir .. ".\n")
-        map.display_location_and_items(player_data, map_data, output)
+        map.display_location_and_items(player_data, map_data)
         local current_biome = map_data.tiles[player_data.y][player_data.x]
         local effects = map.get_biome_effects(current_biome)
         time.tick_time(120)
@@ -334,7 +327,7 @@ function player.combat_round(enemy_name, enemy_data, map_data, player_data, item
             if map_data.enemies[player_data.y][player_data.x][enemy_name] <= 0 then
                 map_data.enemies[player_data.y][player_data.x][enemy_name] = nil
             end
-            map.display_location_and_items(player_data, map_data, output)
+            map.display_location_and_items(player_data, map_data)
             return true
         end
         local enemy_damage = math.max(0, enemy_data.attack - player_data.defense)

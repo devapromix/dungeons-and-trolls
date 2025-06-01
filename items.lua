@@ -1,7 +1,3 @@
-local json = require("libraries.json")
-local output = require("output")
-local time = require("time")
-
 local items = {}
 
 function items.load_items()

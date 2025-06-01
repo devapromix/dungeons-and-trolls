@@ -49,7 +49,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
     elseif command_parts[1] == "new" then
         map.initialize_game(locations_data)
         output.add("Created new game.\n")
-        map.display_location_and_items(player, map_data, output)
+        map.display_location_and_items(player, map_data)
         output.add("Type 'help' to see a list of available commands.\n")
     elseif command_parts[1] == "save" then
         local save_data = {
@@ -101,7 +101,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
                         end
                     end
                     output.add("Loaded saved game.\n")
-                    map.display_location_and_items(player, map_data, output)
+                    map.display_location_and_items(player, map_data)
                 end
             end
             output.add("Type 'help' to see a list of available commands.\n")
@@ -224,7 +224,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         if not player_module.check_player_alive("look around", player) then
             return
         end
-        map.display_location_and_items(player, map_data, output)
+        map.display_location_and_items(player, map_data)
     elseif command_parts[1] == "map" then
         for y = 1, config.map.height do
             local line = ""

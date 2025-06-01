@@ -1,19 +1,14 @@
 json = require("libraries.json")
 output = require("output")
 time = require("time")
+const = require("const")
 items = require("items")
 enemies = require("enemies")
 map = require("map")
+game = require("game")
 player_module = require("player")
 skills = require("skills")
 commands = require("commands")
-
-function initialize_new_game()
-    map.initialize_game(locations_data)
-    output.add("Created new game.\n")
-    map.display_location_and_items(player, map_data, output)
-    output.add("Type 'help' to see a list of available commands.\n")
-end
 
 function love.load()
     input = {
@@ -40,7 +35,7 @@ function love.load()
         load_game_from_json()
         output.add("Type 'help' to see a list of available commands.\n")
     else
-        initialize_new_game()
+        game.new_game()
     end
 end
 
@@ -97,7 +92,7 @@ function load_game_from_json()
                 end
             end
             output.add("Loaded saved game.\n")
-            map.display_location_and_items(player, map_data, output)
+            map.display_location_and_items(player, map_data)
         end
     end
 end

@@ -1,9 +1,3 @@
-local json = require("libraries.json")
-local output = require("output")
-local items = require("items")
-local enemies = require("enemies")
-local const = require("const")
-
 local map = {}
 
 local biomes = {
@@ -157,7 +151,7 @@ function map.initialize_game(locations_data)
     end
 end
 
-function map.display_location_and_items(player, map_data, output)
+function map.display_location_and_items(player, map_data)
     local location = map.get_location_description(map_data.tiles[player.y][player.x])
     output.add("You are in " .. location.name .. ". " .. location.description .. "\n")
     local items_string = items.get_tile_items_string(map_data, player.x, player.y)
