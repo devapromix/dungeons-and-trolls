@@ -65,46 +65,10 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
     elseif command_parts[1] == "time" then
         output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
     elseif command_parts[1] == "rest" then
-        if not player_module.check_player_alive("rest", player) then
-            return
-        elseif player.health >= 100 and player.mana >= 100 and player.fatigue <= 0 then
-            output.add("You don't need to rest.\n")
-        else
-            local hours_to_full = math.max(
-                math.ceil((100 - player.health) / 10),
-                math.ceil((100 - player.mana) / 10),
-                math.ceil(player.fatigue / 10)
-            )
-            local hours_to_morning = 0
-            if game_time.hour >= 18 then
-                hours_to_morning = (24 - game_time.hour) + 6
-            elseif game_time.hour < 6 then
-                hours_to_morning = 6 - game_time.hour
-            end
-            local rest_hours = hours_to_full
-            if hours_to_morning > 0 then
-                rest_hours = math.min(hours_to_full, hours_to_morning)
-            end
-            local rest_multiplier = map_data.fire.active and map_data.fire.x == player.x and map_data.fire.y == player.y and 2 or 1
-            output.add("You rest for " .. rest_hours .. " hour(s)...\n")
-            player.health = math.min(100, math.max(0, player.health + rest_hours * 10 * rest_multiplier))
-            player.mana = math.min(100, math.max(0, player.mana + rest_hours * 10 * rest_multiplier))
-            player.fatigue = math.min(100, math.max(0, player.fatigue - rest_hours * 10 * rest_multiplier))
-            player.hunger = math.min(100, math.max(0, player.hunger + rest_hours * 0.5))
-            player.thirst = math.min(100, math.max(0, player.thirst + rest_hours * 2.5))
-            time.tick_time(rest_hours * 60)
-            output.add("Your health, mana, and fatigue have been restored.\n")
-            if rest_multiplier > 1 then
-                output.add("Resting by the fire makes you recover twice as fast!\n")
-            end
-            if rest_hours > 0 then
-                output.add("You feel hungrier and thirstier.\n")
-            end
-            local status_message = player_module.check_player_status(player)
-            if status_message ~= "" then
-                output.add(status_message)
-            end
-        end
+    if not player_module.check_player_alive("rest", player) then
+        return
+    end
+    player = player_module.rest(player, map_data, game_time, time, output)
     elseif command_parts[1] == "eat" then
         if #command_parts < 2 then
             output.add("Please specify an item to eat (e.g., 'eat Apple').\n")
