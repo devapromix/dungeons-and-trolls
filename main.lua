@@ -39,20 +39,6 @@ function love.load()
     end
 end
 
-function save_game_to_json()
-    local save_data = {
-        map = map_data,
-        player = player,
-        history = input.history,
-        time = game_time,
-        version = config.game.version,
-        fire = map_data.fire
-    }
-    
-    local save_string = json.encode(save_data)
-    love.filesystem.write("game.json", save_string)
-end
-
 function load_game_from_json()
     local save_string = love.filesystem.read("game.json")
     if save_string then
@@ -172,5 +158,5 @@ function love.resize(w, h)
 end
 
 function love.quit()
-    save_game_to_json()
+    game.save_game()
 end

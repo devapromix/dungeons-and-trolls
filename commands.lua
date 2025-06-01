@@ -52,17 +52,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         map.display_location_and_items(player, map_data)
         output.add("Type 'help' to see a list of available commands.\n")
     elseif command_parts[1] == "save" then
-        local save_data = {
-            map = map_data,
-            player = player,
-            history = input.history,
-            time = game_time,
-            version = config.game.version,
-            fire = map_data.fire
-        }
-        local save_string = json.encode(save_data)
-        love.filesystem.write("game.json", save_string)
-        output.add("Game saved.\n")
+        game.save_game()
     elseif command_parts[1] == "load" then
         if love.filesystem.getInfo("game.json") then
             local save_string = love.filesystem.read("game.json")
@@ -108,8 +98,8 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         else
             output.add("No saved game found.\n")
         end
-	elseif command_parts[1] == "status" then
-		player_module.draw_status(player)
+    elseif command_parts[1] == "status" then
+        player_module.draw_status(player)
     elseif command_parts[1] == "skills" then
         output.add("Skills:\n")
         skills.draw()
@@ -284,16 +274,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         end
         items.make_fire_item(player, map_data)
     elseif command_parts[1] == "quit" then
-        local save_data = {
-            map = map_data,
-            player = player,
-            history = input.history,
-            time = game_time,
-            version = config.game.version,
-            fire = map_data.fire
-        }
-        local save_string = json.encode(save_data)
-        love.filesystem.write("game.json", save_string)
+        game.save_game()
         love.event.quit()
     else
         output.add("Unknown command: '" .. command_parts[1] .. "'.\n")
