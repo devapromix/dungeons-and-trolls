@@ -72,17 +72,12 @@ function map.initialize_game(locations_data)
         minute = 0
     }
     
-    local scale = 0.08
-    local river_scale = 0.05
-    
     for y = 1, config.map.height do
         map_data.tiles[y] = {}
         map_data.visited[y] = {}
         map_data.items[y] = {}
         map_data.enemies[y] = {}
         for x = 1, config.map.width do
-            local river_value = map.river_noise(x, y, river_scale)
-            local symbol
             local river_location = nil
             for _, loc in ipairs(locations_data.locations) do
                 if loc.symbol == "r" then
@@ -90,11 +85,13 @@ function map.initialize_game(locations_data)
                     break
                 end
             end
+            local river_value = map.river_noise(x, y, river_location.river_noise_scale or 0.05)
+            local symbol
             if river_location and river_value < river_location.threshold then
                 symbol = "r"
             else
-                local noise_value = map.noise(x, y, scale)
                 local selected_location = locations_data.locations[#locations_data.locations]
+                local noise_value = map.noise(x, y, selected_location.noise_scale or 0.08)
                 for _, loc in ipairs(locations_data.locations) do
                     if loc.threshold and noise_value <= loc.threshold then
                         selected_location = loc
