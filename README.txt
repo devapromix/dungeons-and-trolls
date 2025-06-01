@@ -1,2 +1,2 @@
 Dungeons and Trolls
-Interactive fiction game
+Enter the mysterious Troll Dungeon, a dark and dangerous maze hidden deep underground. Legends speak of the Sword of Dawn, a powerful artifact guarded by ancient magic and deadly creatures. As the brave hero, you must navigate traps, solve puzzles, and face the troll guardians to claim the sword. Only by wielding the Sword of Dawn can you defeat the final evil and win the game.
