@@ -53,6 +53,16 @@ function player.clamp_player_skills(player_data, skills_data)
     return player_data
 end
 
+function player.starter_kit(player_data)
+    if not player_data.inventory then
+        player_data.inventory = {}
+    end
+    player_data.inventory["Apple"] = (player_data.inventory["Apple"] or 0) + math.random(1, 3)
+    player_data.inventory["Bread"] = (player_data.inventory["Bread"] or 0) + math.random(1, 3)
+    player_data.inventory["Water Bottle"] = (player_data.inventory["Water Bottle"] or 0) + math.random(1, 3)
+    return player_data
+end
+
 function player.rest(player_data, map_data, game_time, time)
     if player_data.health >= 100 and player_data.mana >= 100 and player_data.fatigue <= 0 then
         output.add("You don't need to rest.\n")

@@ -56,7 +56,7 @@ function map.initialize_game(locations_data)
         defense = 3,
         alive = true,
         gold = 0,
-        inventory = { ["Short Sword"] = 1, ["Leather Armor"] = 1, ["Bread"] = 2, ["Apple"] = 3, ["Water Bottle"] = 1 },
+        inventory = { ["Short Sword"] = 1, ["Leather Armor"] = 1},
         equipment = { weapon = "Short Sword", armor = "Leather Armor" },
         skills = {},
         radius = 3,

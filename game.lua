@@ -1,5 +1,6 @@
-local game = {}
-game.initialized = false
+local game = {
+	initialized = false,
+}
 
 function game.welcome()
     output.add("Welcome to " .. config.game.name .. " v." .. config.game.version .. "\n")
@@ -21,6 +22,7 @@ end
 
 function game.new_game()
     map.initialize_game(locations_data)
+    player = player_module.starter_kit(player)
     game.initialized = true
     output.add("Created new game.\n")
     map.display_location_and_items(player, map_data)
