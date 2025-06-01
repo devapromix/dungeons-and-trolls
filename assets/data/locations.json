@@ -36,7 +36,7 @@
             ],
             "threshold": 0.30,
             "effects": { "thirst": 0.75, "hunger": 0.4, "fatigue": 0.8 },
-            "noise_scale": 0.08
+            "noise_scale": 0.06
         },
         {
             "symbol": "p",
@@ -54,7 +54,7 @@
             ],
             "threshold": 0.45,
             "effects": { "thirst": 1.25, "hunger": 0.5, "fatigue": 1 },
-            "noise_scale": 0.08
+            "noise_scale": 0.05
         },
         {
             "symbol": "s",
@@ -71,7 +71,7 @@
             ],
             "threshold": 0.60,
             "effects": { "thirst": 1.5, "hunger": 0.5, "fatigue": 1 },
-            "noise_scale": 0.08
+            "noise_scale": 0.10
         },
         {
             "symbol": "v",
@@ -89,7 +89,7 @@
             ],
             "threshold": 0.75,
             "effects": { "thirst": 2, "hunger": 0.6, "fatigue": 1.2 },
-            "noise_scale": 0.08
+            "noise_scale": 0.12
         },
         {
             "symbol": "d",
@@ -103,7 +103,7 @@
             ],
             "threshold": 0.85,
             "effects": { "thirst": 2.5, "hunger": 0.8, "fatigue": 1.5 },
-            "noise_scale": 0.08
+            "noise_scale": 0.04
         },
         {
             "symbol": "m",
@@ -121,7 +121,7 @@
             ],
             "threshold": 1.0,
             "effects": { "thirst": 1.25, "hunger": 0.6, "fatigue": 2 },
-            "noise_scale": 0.08
+            "noise_scale": 0.15
         },
         {
             "symbol": "r",

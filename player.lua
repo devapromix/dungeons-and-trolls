@@ -24,13 +24,13 @@ function player.draw_status(player_data)
 end
 
 function player.clamp_player_stats(player_data)
-    player_data.health = math.min(100, math.max(0, player_data.health))
-    player_data.mana = math.min(100, math.max(0, player_data.mana))
-    player_data.hunger = math.min(100, math.max(0, player_data.hunger))
-    player_data.fatigue = math.min(100, math.max(0, player_data.fatigue))
-    player_data.thirst = math.min(100, math.max(0, player_data.thirst))
-    player_data.attack = math.max(0, player_data.attack)
-    player_data.defense = math.max(0, player_data.defense)
+    player_data.health = utils.clamp(player_data.health, 0, 100)
+    player_data.mana = utils.clamp(player_data.mana, 0, 100)
+    player_data.hunger = utils.clamp(player_data.hunger, 0, 100)
+    player_data.fatigue = utils.clamp(player_data.fatigue, 0, 100)
+    player_data.thirst = utils.clamp(player_data.thirst, 0, 100)
+    player_data.attack = utils.clamp(player_data.attack, 0, math.huge)
+    player_data.defense = utils.clamp(player_data.defense, 0, math.huge)
     return player_data
 end
 
@@ -45,10 +45,7 @@ function player.clamp_player_skills(player_data, skills_data)
     for _, skill in ipairs(skills_data.skills) do
         if skill and skill.name and skill.max_level then
             local initial_level = skill.initial_level or 0
-            player_data.skills[skill.name] = math.min(
-                skill.max_level,
-                math.max(0, player_data.skills[skill.name] or initial_level)
-            )
+            player_data.skills[skill.name] = utils.clamp(player_data.skills[skill.name] or initial_level, 0, skill.max_level)
         else
             output.add("Warning: Invalid skill entry in skills data.\n")
         end
@@ -74,7 +71,7 @@ function player.rest(player_data, map_data, game_time, time)
     end
     local rest_hours = hours_to_full
     if hours_to_morning > 0 then
-        rest_hours = math.min(hours_to_full, hours_to_morning)
+        rest_hours = utils.clamp(hours_to_full, 0, hours_to_morning)
     end
     local rest_multiplier = map_data.fire.active and map_data.fire.x == player_data.x and map_data.fire.y == player_data.y and 2 or 1
     output.add("You rest for " .. rest_hours .. " hour(s)...\n")
@@ -248,8 +245,8 @@ function player.move_player(direction, player_data, map_data, config, time, outp
         end
         player_data.x = new_x
         player_data.y = new_y
-        for y = math.max(1, player_data.y - player_data.radius), math.min(config.map.height, player_data.y + player_data.radius) do
-            for x = math.max(1, player_data.x - player_data.radius), math.min(config.map.width, player_data.x + player_data.radius) do
+        for y = utils.clamp(player_data.y - player_data.radius, 1, config.map.height), utils.clamp(player_data.y + player_data.radius, 1, config.map.height) do
+            for x = utils.clamp(player_data.x - player_data.radius, 1, config.map.width), utils.clamp(player_data.x + player_data.radius, 1, config.map.width) do
                 if math.sqrt((x - player_data.x)^2 + (y - player_data.y)^2) <= player_data.radius then
                     map_data.visited[y][x] = true
                 end
@@ -260,9 +257,9 @@ function player.move_player(direction, player_data, map_data, config, time, outp
         local current_biome = map_data.tiles[player_data.y][player_data.x]
         local effects = map.get_biome_effects(current_biome)
         time.tick_time(120)
-        player_data.fatigue = math.min(100, math.max(0, player_data.fatigue + (player_data.mana <= 0 and effects.fatigue * 2 or effects.fatigue)))
-        player_data.hunger = math.min(100, math.max(0, player_data.hunger + effects.hunger))
-        player_data.thirst = math.min(100, math.max(0, player_data.thirst + effects.thirst))
+        player_data.fatigue = utils.clamp(player_data.fatigue + (player_data.mana <= 0 and effects.fatigue * 2 or effects.fatigue), 0, 100)
+        player_data.hunger = utils.clamp(player_data.hunger + effects.hunger, 0, 100)
+        player_data.thirst = utils.clamp(player_data.thirst + effects.thirst, 0, 100)
         return true
     else
         output.add("You can't move further " .. move.dir .. ".\n")
@@ -273,19 +270,19 @@ end
 function player.check_player_status(player_data)
     player_data = player.clamp_player_stats(player_data)
     if player_data.hunger >= 100 then
-        player_data.hunger = 100
+        player_data.hunger = utils.clamp(player_data.hunger, 0, 100)
         player_data.alive = false
         return "You died from starvation.\n"
     elseif player_data.fatigue >= 100 then
-        player_data.fatigue = 100
+        player_data.fatigue = utils.clamp(player_data.fatigue, 0, 100)
         player_data.alive = false
         return "You died from exhaustion.\n"
     elseif player_data.health <= 0 then
-        player_data.health = 0
+        player_data.health = utils.clamp(player_data.health, 0, 100)
         player_data.alive = false
         return "You died from injuries.\n"
     elseif player_data.thirst >= 100 then
-        player_data.thirst = 100
+        player_data.thirst = utils.clamp(player_data.thirst, 0, 100)
         player_data.alive = false
         return "You died from thirst.\n"
     end
@@ -328,7 +325,7 @@ function player.combat_round(enemy_name, enemy_data, map_data, player_data, item
     while player_data.health > 0 and enemy_health > 0 do
         local miss_chance = player_data.fatigue > 70 and ((player_data.fatigue - 70) / 30) * 0.5 or 0
         if math.random() >= miss_chance then
-            local player_damage = math.max(0, player_data.attack - enemy_data.defense)
+            local player_damage = utils.clamp(player_data.attack - enemy_data.defense, 0, math.huge)
             player_damage = skills.apply_skill_effects(player_data, skills_data, player_damage)
             if player_damage > 0 then
                 enemy_health = enemy_health - player_damage
@@ -370,7 +367,7 @@ function player.combat_round(enemy_name, enemy_data, map_data, player_data, item
             map.display_location_and_items(player_data, map_data)
             return true
         end
-        local enemy_damage = math.max(0, enemy_data.attack - player_data.defense)
+        local enemy_damage = utils.clamp(enemy_data.attack - player_data.defense, 0, math.huge)
         if enemy_damage > 0 then
             player_data.health = player_data.health - enemy_damage
             output.add(enemy_name .. " hits you for " .. enemy_damage .. " damage.\n")

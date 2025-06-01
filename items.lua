@@ -185,8 +185,8 @@ function items.eat_item(player, items_data, item_name)
     end
     
     output.add("You eat one " .. item_key .. "...\n")
-    player.hunger = math.min(100, math.max(0, player.hunger + edible_value))
-    player.thirst = math.min(100, math.max(0, player.thirst + 1))
+    player.hunger = utils.clamp(player.hunger + edible_value, 0, 100)
+    player.thirst = utils.clamp(player.thirst + 1, 0, 100)
     player.inventory[item_key] = player.inventory[item_key] - 1
     if player.inventory[item_key] <= 0 then
         player.inventory[item_key] = nil
@@ -238,13 +238,13 @@ function items.drink_item(player, items_data, item_name)
     end
     
     output.add("You drink one " .. item_key .. "...\n")
-    player.thirst = math.min(100, math.max(0, player.thirst - drinkable_value))
+    player.thirst = utils.clamp(player.thirst - drinkable_value, 0, 100)
     if healing_value then
-        player.health = math.min(100, math.max(0, player.health + healing_value))
+        player.health = utils.clamp(player.health + healing_value, 0, 100)
         output.add("Your health is restored.\n")
     end
     if mana_restore_value then
-        player.mana = math.min(100, math.max(0, player.mana + mana_restore_value))
+        player.mana = utils.clamp(player.mana + mana_restore_value, 0, 100)
         output.add("Your mana is restored.\n")
     end
     player.inventory[item_key] = player.inventory[item_key] - 1

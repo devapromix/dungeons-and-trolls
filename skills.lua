@@ -36,10 +36,7 @@ function skills.upgrade_skill(player, skills_data, item_data)
     if not player.skills or not player.skills[skill_name] then return end
     local skill_data = skills.get_skill_data(skills_data, skill_name)
     if not skill_data then return end
-    if player.skills[skill_name] >= skill_data.max_level then
-        return
-    end
-    player.skills[skill_name] = player.skills[skill_name] + 1
+    player.skills[skill_name] = utils.clamp(player.skills[skill_name] + 1, 0, skill_data.max_level)
     output.add(skill_name .. " skill increased to " .. player.skills[skill_name] .. ".\n")
 end
 

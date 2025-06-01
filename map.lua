@@ -91,8 +91,8 @@ function map.initialize_game(locations_data)
                 symbol = "r"
             else
                 local selected_location = locations_data.locations[#locations_data.locations]
-                local noise_value = map.noise(x, y, selected_location.noise_scale or 0.08)
                 for _, loc in ipairs(locations_data.locations) do
+                    local noise_value = map.noise(x, y, loc.noise_scale or 0.08)
                     if loc.threshold and noise_value <= loc.threshold then
                         selected_location = loc
                         break
@@ -130,8 +130,8 @@ function map.initialize_game(locations_data)
         end
     end
     
-    for y = math.max(1, player.y - player.radius), math.min(config.map.height, player.y + player.radius) do
-        for x = math.max(1, player.x - player.radius), math.min(config.map.width, player.x + player.radius) do
+    for y = utils.clamp(player.y - player.radius, 1, config.map.height), utils.clamp(player.y + player.radius, 1, config.map.height) do
+        for x = utils.clamp(player.x - player.radius, 1, config.map.width), utils.clamp(player.x + player.radius, 1, config.map.width) do
             if math.sqrt((x - player.x)^2 + (y - player.y)^2) <= player.radius then
                 map_data.visited[y][x] = true
             end

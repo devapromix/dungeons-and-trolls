@@ -15,4 +15,8 @@ function utils.load_json_file(file_path, error_message)
     end
 end
 
+function utils.clamp(value, min, max)
+  return value < min and min or (value > max and max or value)
+end
+
 return utils
