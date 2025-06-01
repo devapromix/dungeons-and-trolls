@@ -111,14 +111,18 @@ function map.initialize_game(locations_data)
             map_data.visited[y][x] = false
             map_data.items[y][x] = {}
             map_data.enemies[y][x] = {}
-            local item_chance = symbol == "r" and 0.3 or (biomes[symbol] and biomes[symbol].item_chance or 0.1)
-            if items_data.items and #items_data.items > 0 and math.random() < item_chance then
-                local item = items_data.items[math.random(1, #items_data.items)]
-                local quantity = math.random(1, 3)
-                map_data.items[y][x][item.name] = quantity
+            local location_data
+            for _, loc in ipairs(locations_data.locations) do
+                if loc.symbol == symbol then
+                    location_data = loc
+                    break
+                end
             end
-            if symbol == "f" and math.random() < 0.5 then
-                map_data.items[y][x]["Firewood"] = math.random(1, 3)
+            local item_chance = symbol == "r" and 0.3 or (biomes[symbol] and biomes[symbol].item_chance or 0.1)
+            if location_data and location_data.items and #location_data.items > 0 and math.random() < item_chance then
+                local item = location_data.items[math.random(1, #location_data.items)]
+                local quantity = math.random(1, 3)
+                map_data.items[y][x][item] = quantity
             end
             local enemy_chance = symbol == "r" and 0 or (biomes[symbol] and biomes[symbol].enemy_chance or 0.2)
             local location_enemies = enemies.get_location_enemies(locations_data, symbol)

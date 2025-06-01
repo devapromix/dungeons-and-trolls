@@ -4,49 +4,57 @@
             "symbol": "f",
             "name": "Forest",
             "description": "A dense forest with tall trees and abundant wildlife.",
-            "enemies": ["Goblin", "Wolf", "Bandit"]
+            "enemies": ["Goblin", "Wolf", "Bandit"],
+            "items": ["Apple", "Firewood", "Healing Potion"]
         },
         {
             "symbol": "g",
             "name": "Grasslands",
             "description": "Lush grasslands teeming with wildflowers and gentle breezes.",
-            "enemies": ["Goblin", "Wolf", "Bandit"]
+            "enemies": ["Goblin", "Wolf", "Bandit"],
+            "items": ["Apple", "Bread", "Water Bottle"]
         },
         {
             "symbol": "p",
             "name": "Plains",
             "description": "Open plains with scattered shrubs and rolling fields.",
-            "enemies": ["Goblin", "Wolf", "Bandit"]
+            "enemies": ["Goblin", "Wolf", "Bandit"],
+            "items": ["Bread", "Water Bottle"]
         },
         {
             "symbol": "s",
             "name": "Steppe",
             "description": "A vast steppe with rolling hills and sparse vegetation.",
-            "enemies": ["Goblin", "Wolf", "Bandit"]
+            "enemies": ["Goblin", "Wolf", "Bandit"],
+            "items": ["Water Bottle", "Raw Meat"]
         },
         {
             "symbol": "v",
             "name": "Savanna",
             "description": "A dry savanna with acacia trees and roaming wildlife.",
-            "enemies": ["Wolf", "Bandit"]
+            "enemies": ["Wolf", "Bandit"],
+            "items": ["Raw Meat", "Water Bottle"]
         },
         {
             "symbol": "d",
             "name": "Desert",
             "description": "A scorching desert with endless dunes and little life.",
-            "enemies": ["Bandit"]
+            "enemies": ["Bandit"],
+            "items": ["Water Bottle"]
         },
         {
             "symbol": "m",
             "name": "Mountains",
             "description": "Rugged mountains with steep cliffs and rocky paths.",
-            "enemies": ["Goblin", "Bandit"]
+            "enemies": ["Goblin", "Bandit"],
+            "items": ["Firewood", "Healing Potion"]
         },
         {
             "symbol": "r",
             "name": "River",
             "description": "A flowing river with clear water and fertile banks.",
-            "enemies": ["Goblin", "Bandit"]
+            "enemies": ["Goblin", "Bandit"],
+            "items": ["Water Bottle", "Apple"]
         }
     ]
 }
