@@ -12,19 +12,7 @@ local biomes = {
 }
 
 function map.load_locations()
-    local locations_file = "assets/data/locations.json"
-    if love.filesystem.getInfo(locations_file) then
-        local content = love.filesystem.read(locations_file)
-        if content then
-            return json.decode(content)
-        else
-            output.add("Failed to read locations file.\n")
-            return { locations = {} }
-        end
-    else
-        output.add("Locations file not found.\n")
-        return { locations = {} }
-    end
+    return utils.load_json_file("assets/data/locations.json", "Locations file")
 end
 
 function map.get_location_description(symbol)

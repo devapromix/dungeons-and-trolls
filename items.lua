@@ -1,19 +1,7 @@
 local items = {}
 
 function items.load_items()
-    local items_file = "assets/data/items.json"
-    if love.filesystem.getInfo(items_file) then
-        local content = love.filesystem.read(items_file)
-        if content then
-            return json.decode(content)
-        else
-            output.add("Failed to read items file.\n")
-            return {}
-        end
-    else
-        output.add("Items file not found.\n")
-        return {}
-    end
+    return utils.load_json_file("assets/data/items.json", "Items file")
 end
 
 function items.get_tile_items_string(map, x, y)
@@ -26,11 +14,11 @@ function items.get_tile_items_string(map, x, y)
             table.insert(item_list, item .. " (" .. qty .. ")")
         end
     end
-	local str = table.concat(item_list, ", ")
-	if str ~= "" then
-		return "Here you see: " .. str .. ".\n"
-	end
-	return ""
+    local str = table.concat(item_list, ", ")
+    if str ~= "" then
+        return "Here you see: " .. str .. ".\n"
+    end
+    return ""
 end
 
 function items.find_item_key(item_table, name)

@@ -1,23 +1,7 @@
-local json = require("libraries.json")
-local output = require("output")
-local items = require("items")
-
 local skills = {}
 
 function skills.load_skills()
-    local skills_file = "assets/data/skills.json"
-    if love.filesystem.getInfo(skills_file) then
-        local content = love.filesystem.read(skills_file)
-        if content then
-            return json.decode(content)
-        else
-            output.add("Failed to read skills file.\n")
-            return {}
-        end
-    else
-        output.add("Skills file not found.\n")
-        return {}
-    end
+    return utils.load_json_file("assets/data/skills.json", "Skills file")
 end
 
 function skills.get_skill_data(skills_data, skill_name)
