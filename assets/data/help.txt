@@ -1,4 +1,5 @@
 help - Show this help message.
+about - Show information about game
 new - Starts a new game.
 save - Saves a game.
 load - Loads a saved game.

@@ -30,13 +30,7 @@ function love.load()
     enemies_data = enemies.load_enemies()
     skills_data = skills.load_skills()
     
-    output.add("Welcome to " .. config.game.name .. " v." .. config.game.version .. "\n")
-    if love.filesystem.getInfo("game.json") then
-        game.load_game()
-        output.add("Type 'help' to see a list of available commands.\n")
-    else
-        game.new_game()
-    end
+	game.welcome()
 end
 
 function love.update(dt)

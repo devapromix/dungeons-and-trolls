@@ -1,5 +1,20 @@
 local game = {}
 
+function game.welcome()
+    output.add("Welcome to " .. config.game.name .. " v." .. config.game.version .. "\n")
+    if love.filesystem.getInfo("game.json") then
+        game.load_game()
+        output.add("Type 'help' to see a list of available commands.\n")
+    else
+        game.new_game()
+    end
+end
+
+function game.about()
+    output.add(config.game.name .. " v." .. config.game.version .. "\n")
+	output.add("Author: Apromix")
+end
+
 function game.new_game()
     map.initialize_game(locations_data)
     output.add("Created new game.\n")

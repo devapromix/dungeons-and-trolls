@@ -231,6 +231,8 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             return
         end
         items.make_fire_item(player, map_data)
+    elseif command_parts[1] == "about" then
+		game.about()
     elseif command_parts[1] == "quit" then
         game.save_game()
         love.event.quit()
