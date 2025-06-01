@@ -6,6 +6,7 @@ enemies = require("enemies")
 map = require("map")
 player_module = require("player")
 skills = require("skills")
+commands = require("commands")
 
 function initialize_new_game()
     map.initialize_game(locations_data)
@@ -132,21 +133,27 @@ function check_player_alive(action)
     return true
 end
 
-function parse_item_command(command_parts, start_index)
-    local quantity = 1
-    local item_name
-    if tonumber(command_parts[start_index]) then
-        quantity = math.floor(tonumber(command_parts[start_index]))
-        if #command_parts >= start_index + 1 then
-            item_name = table.concat(command_parts, " ", start_index + 1)
-        else
-            output.add("Please specify an item name after the quantity.\n")
-            return nil, nil
-        end
-    else
-        item_name = table.concat(command_parts, " ", start_index)
+function attack_enemy(enemy_name)
+    if not check_player_alive("attack") then
+        return
     end
-    return quantity, item_name
+    if not enemy_name or enemy_name == "" then
+        output.add("Please specify an enemy to attack.\n")
+        return
+    end
+    local enemy_list = map_data.enemies[player.y][player.x]
+    local enemy_key = items.find_item_key(enemy_list, enemy_name)
+    if not enemy_key then
+        output.add("No " .. enemy_name .. " found here.\n")
+        return
+    end
+    local enemy_data = enemies.get_enemy_data(enemies_data, enemy_key)
+    if not enemy_data then
+        output.add("No data found for " .. enemy_key .. ".\n")
+        return
+    end
+    output.add("You engage " .. enemy_key .. " in combat!\n")
+    combat_round(enemy_key, enemy_data)
 end
 
 function combat_round(enemy_name, enemy_data)
@@ -217,29 +224,6 @@ function combat_round(enemy_name, enemy_data)
     return false
 end
 
-function attack_enemy(enemy_name)
-    if not check_player_alive("attack") then
-        return
-    end
-    if not enemy_name or enemy_name == "" then
-        output.add("Please specify an enemy to attack.\n")
-        return
-    end
-    local enemy_list = map_data.enemies[player.y][player.x]
-    local enemy_key = items.find_item_key(enemy_list, enemy_name)
-    if not enemy_key then
-        output.add("No " .. enemy_name .. " found here.\n")
-        return
-    end
-    local enemy_data = enemies.get_enemy_data(enemies_data, enemy_key)
-    if not enemy_data then
-        output.add("No data found for " .. enemy_key .. ".\n")
-        return
-    end
-    output.add("You engage " .. enemy_key .. " in combat!\n")
-    combat_round(enemy_key, enemy_data)
-end
-
 function love.update(dt)
     input.cursor_timer = input.cursor_timer + dt
     if input.cursor_timer >= input.cursor_blink_speed then
@@ -265,212 +249,8 @@ function love.keypressed(key)
         for part in command:gmatch("%S+") do
             table.insert(command_parts, part)
         end
-        if command_parts[1] == "help" then
-            if love.filesystem.getInfo("assets/data/help.txt") then
-                local content = love.filesystem.read("assets/data/help.txt")
-                if content then
-                    output.add(content)
-                else
-                    output.add("Failed to read help file.\n")
-                end
-            else
-                output.add("Help file not found.\n")
-            end
-        elseif command_parts[1] == "new" then
-            initialize_new_game()
-        elseif command_parts[1] == "save" then
-            save_game_to_json()
-            output.add("Game saved.\n")
-        elseif command_parts[1] == "load" then
-            if love.filesystem.getInfo("game.json") then
-                load_game_from_json()
-                output.add("Type 'help' to see a list of available commands.\n")
-            else
-                output.add("No saved game found.\n")
-            end
-        elseif command_parts[1] == "status" then
-			player_module.draw_status()
-        elseif command_parts[1] == "skills" then
-            output.add("Skills:\n")
-            skills.draw()
-        elseif command_parts[1] == "time" then
-            output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
-        elseif command_parts[1] == "rest" then
-            if not check_player_alive("rest") then
-                return
-            elseif player.health >= 100 and player.mana >= 100 and player.fatigue <= 0 then
-                output.add("You don't need to rest.\n")
-            else
-                local hours_to_full = math.max(
-                    math.ceil((100 - player.health) / 10),
-                    math.ceil((100 - player.mana) / 10),
-                    math.ceil(player.fatigue / 10)
-                )
-                local hours_to_morning = 0
-                if game_time.hour >= 18 then
-                    hours_to_morning = (24 - game_time.hour) + 6
-                elseif game_time.hour < 6 then
-                    hours_to_morning = 6 - game_time.hour
-                end
-                local rest_hours = hours_to_full
-                if hours_to_morning > 0 then
-                    rest_hours = math.min(hours_to_full, hours_to_morning)
-                end
-                local rest_multiplier = map_data.fire.active and map_data.fire.x == player.x and map_data.fire.y == player.y and 2 or 1
-                output.add("You rest for " .. rest_hours .. " hour(s)...\n")
-                player.health = math.min(100, math.max(0, player.health + rest_hours * 10 * rest_multiplier))
-                player.mana = math.min(100, math.max(0, player.mana + rest_hours * 10 * rest_multiplier))
-                player.fatigue = math.min(100, math.max(0, player.fatigue - rest_hours * 10 * rest_multiplier))
-                player.hunger = math.min(100, math.max(0, player.hunger + rest_hours * 0.5))
-                player.thirst = math.min(100, math.max(0, player.thirst + rest_hours * 2.5))
-                time.tick_time(rest_hours * 60)
-                output.add("Your health, mana, and fatigue have been restored.\n")
-                if rest_multiplier > 1 then
-                    output.add("Resting by the fire makes you recover twice as fast!\n")
-                end
-                if rest_hours > 0 then
-                    output.add("You feel hungrier and thirstier.\n")
-                end
-                local status_message = check_player_status()
-                if status_message ~= "" then
-                    output.add(status_message)
-                end
-            end
-        elseif command_parts[1] == "eat" then
-            if #command_parts < 2 then
-                output.add("Please specify an item to eat.\n")
-            else
-                local item_name = table.concat(command_parts, " ", 2)
-                player = items.eat_item(player, items_data, item_name) or player
-            end
-        elseif command_parts[1] == "drink" then
-            if #command_parts < 2 then
-                output.add("Please specify an item to drink.\n")
-            else
-                local item_name = table.concat(command_parts, " ", 2)
-                player = items.drink_item(player, items_data, item_name) or player
-            end
-        elseif command_parts[1] == "items" then
-            if not check_player_alive("check your inventory") then
-                return
-            end
-            output.add("Inventory (" .. table_count(player.inventory) .. "/" .. config.inventory.max_slots .. "):\n")
-            if next(player.inventory) == nil then
-                output.add("(empty)\n")
-            else
-                for item, quantity in pairs(player.inventory) do
-                    local equipped = items.is_item_equipped(player, item) and " (equipped)" or ""
-                    if quantity > 1 then
-                        output.add(item .. " (" .. quantity .. ")" .. equipped .. "\n")
-                    else
-                        output.add(item .. equipped .. "\n")
-                    end
-                end
-            end
-            output.add("Gold: " .. player.gold .. "\n")
-        elseif command_parts[1] == "pick" then
-            if #command_parts < 2 then
-                output.add("Please specify a quantity and item to pick up (e.g., 'pick 2 Healing Potion').\n")
-            else
-                local quantity, item_name = parse_item_command(command_parts, 2)
-                if quantity and item_name then
-                    items.pick_item(player, map_data, item_name, quantity)
-                end
-            end
-        elseif command_parts[1] == "drop" then
-            if #command_parts < 2 then
-                output.add("Please specify a quantity and item to drop (e.g., 'drop 2 Healing Potion').\n")
-            else
-                local quantity, item_name = parse_item_command(command_parts, 2)
-                if quantity and item_name then
-                    items.drop_item(player, map_data, item_name, quantity)
-                end
-            end
-        elseif command_parts[1] == "equip" then
-            if #command_parts < 2 then
-                output.add("Please specify an item to equip (e.g., 'equip Sword').\n")
-            else
-                local item_name = table.concat(command_parts, " ", 2)
-                player = player_module.equip_item(player, items_data, item_name)
-            end
-        elseif command_parts[1] == "unequip" then
-            if #command_parts < 2 then
-                output.add("Please specify an item or slot to unequip (e.g., 'unequip Sword' or 'unequip weapon').\n")
-            else
-                local identifier = table.concat(command_parts, " ", 2)
-                player = player_module.unequip_item(player, items_data, identifier)
-            end
-        elseif command_parts[1] == "look" then
-            if not check_player_alive("look around") then
-                return
-            end
-            map.display_location_and_items(player, map_data, output)
-        elseif command_parts[1] == "map" then
-            for y = 1, config.map.height do
-                local line = ""
-                for x = 1, config.map.width do
-                    if x == player.x and y == player.y then
-                        if player.alive then
-                            line = line .. player.symbol
-                        else
-                            line = line .. "X"
-                        end
-                    elseif map_data.visited[y][x] then
-                        line = line .. map_data.tiles[y][x]
-                    else
-                        line = line .. " "
-                    end
-                end
-                output.add(line .. "\n")
-            end
-        elseif command_parts[1] == "attack" then
-            if #command_parts < 2 then
-                output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
-            else
-                local enemy_name = table.concat(command_parts, " ", 2)
-                attack_enemy(enemy_name)
-            end
-        elseif command_parts[1] == "north" or command_parts[1] == "n" then
-            if player_module.move_player("north", player, map_data, config, time, output) then
-                local status_message = check_player_status()
-                if status_message ~= "" then
-                    output.add(status_message)
-                end
-            end
-        elseif command_parts[1] == "south" or command_parts[1] == "s" then
-            if player_module.move_player("south", player, map_data, config, time, output) then
-                local status_message = check_player_status()
-                if status_message ~= "" then
-                    output.add(status_message)
-                end
-            end
-        elseif command_parts[1] == "east" or command_parts[1] == "e" then
-            if player_module.move_player("east", player, map_data, config, time, output) then
-                local status_message = check_player_status()
-                if status_message ~= "" then
-                    output.add(status_message)
-                end
-            end
-        elseif command_parts[1] == "west" or command_parts[1] == "w" then
-            if player_module.move_player("west", player, map_data, config, time, output) then
-                local status_message = check_player_status()
-                if status_message ~= "" then
-                    output.add(status_message)
-                end
-            end
-        elseif command_parts[1] == "light" then
-            if not check_player_alive("light a fire") then
-                return
-            end
-            items.make_fire_item(player, map_data)
-        elseif command_parts[1] == "quit" then
-            save_game_to_json()
-            love.event.quit()
-        else
-            output.add("Unknown command: '" .. command_parts[1] .. "'.\n")
-            output.add("Type 'help' for a list of available commands.\n")
-        end
-        if not table_contains(input.history, command) then
+        commands.handle_command(command_parts, player, map_data, items_data, enemies_data, skills_data, config, game_time, input, output, time, player_module, items, enemies, map, skills, json)
+        if not commands.table_contains(input.history, command) then
             table.insert(input.history, 1, command)
         end
         input.text = ">"
@@ -488,23 +268,6 @@ function love.keypressed(key)
             input.text = ">"
         end
     end
-end
-
-function table_contains(table, element)
-    for _, value in ipairs(table) do
-        if value == element then
-            return true
-        end
-    end
-    return false
-end
-
-function table_count(table)
-    local count = 0
-    for _ in pairs(table) do
-        count = count + 1
-    end
-    return count
 end
 
 function love.draw()
