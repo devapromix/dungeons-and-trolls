@@ -115,7 +115,7 @@ function map.initialize_game(locations_data)
             if river_value < 0.1 then
                 symbol = "r"
             else
-                local noise_value = map.no ніж(x, y, scale)
+                local noise_value = map.noise(x, y, scale)
                 local biome = biomes[#biomes]
                 for _, b in ipairs(biomes) do
                     if noise_value <= b.threshold then

@@ -5,6 +5,29 @@ local items = require("items")
 
 local player = {}
 
+function player.draw_status()
+            output.add("Player:\n")
+            output.add("Health: " .. player.health .. "\n")
+            output.add("Mana: " .. player.mana .. "\n")
+            output.add("Hunger: " .. player.hunger .. "\n")
+            output.add("Fatigue: " .. player.fatigue .. "\n")
+            output.add("Thirst: " .. player.thirst .. "\n")
+            output.add("Attack: " .. player.attack .. "\n")
+            output.add("Defense: " .. player.defense .. "\n")
+            output.add("Level: " .. player.level .. "\n")
+            output.add("Experience: " .. player.experience .. "\n")
+            output.add("Gold: " .. player.gold .. "\n")
+            output.add("Position: " .. player.x .. ", " .. player.y .. "\n")
+            output.add("\nEquipment:\n")
+            output.add("Weapon: " .. (player.equipment and player.equipment.weapon or "None") .. "\n")
+            output.add("Armor: " .. (player.equipment and player.equipment.armor or "None") .. "\n")
+            output.add("\nSkills:\n")
+            skills.draw()
+            if not player.alive then
+                output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
+            end
+end
+
 function player.clamp_player_stats(player_data)
     player_data.health = math.min(100, math.max(0, player_data.health))
     player_data.mana = math.min(100, math.max(0, player_data.mana))
@@ -182,7 +205,7 @@ function player.move_player(direction, player_data, map_data, config, time, outp
     local new_x = player_data.x + (move.x or 0)
     local new_y = player_data.y + (move.y or 0)
     if new_x >= move.x_min and new_x <= move.x_max and new_y >= move.y_min and new_y <= move.y_max then
-        if map_data.fire.active and (map_data.fire.x != new_x or map_data.fire.y != new_y) then
+        if map_data.fire.active and (map_data.fire.x ~= new_x or map_data.fire.y ~= new_y) then
             map_data.fire.active = false
             map_data.fire.x = nil
             map_data.fire.y = nil

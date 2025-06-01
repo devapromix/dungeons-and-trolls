@@ -289,29 +289,8 @@ function love.keypressed(key)
                 output.add("No saved game found.\n")
             end
         elseif command_parts[1] == "status" then
-            output.add("Health: " .. player.health .. "\n")
-            output.add("Mana: " .. player.mana .. "\n")
-            output.add("Hunger: " .. player.hunger .. "\n")
-            output.add("Fatigue: " .. player.fatigue .. "\n")
-            output.add("Thirst: " .. player.thirst .. "\n")
-            output.add("Attack: " .. player.attack .. "\n")
-            output.add("Defense: " .. player.defense .. "\n")
-            output.add("Level: " .. player.level .. "\n")
-            output.add("Experience: " .. player.experience .. "\n")
-            output.add("Gold: " .. player.gold .. "\n")
-            output.add("Position: " .. player.x .. ", " .. player.y .. "\n")
-            output.add("\nEquipment:\n")
-            output.add("Weapon: " .. (player.equipment and player.equipment.weapon or "None") .. "\n")
-            output.add("Armor: " .. (player.equipment and player.equipment.armor or "None") .. "\n")
-            output.add("\nSkills:\n")
-            skills.draw()
-            if not player.alive then
-                output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
-            end
+			player_module.draw_status()
         elseif command_parts[1] == "skills" then
-            if not check_player_alive("check skills") then
-                return
-            end
             output.add("Skills:\n")
             skills.draw()
         elseif command_parts[1] == "time" then
