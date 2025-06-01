@@ -1,16 +1,5 @@
 local map = {}
 
-local biomes = {
-    { symbol = "f", threshold = 0.15, effects = { thirst = 1, hunger = 0.5, fatigue = 1 } },
-    { symbol = "g", threshold = 0.30, effects = { thirst = 0.75, hunger = 0.4, fatigue = 0.8 } },
-    { symbol = "p", threshold = 0.45, effects = { thirst = 1.25, hunger = 0.5, fatigue = 1 } },
-    { symbol = "s", threshold = 0.60, effects = { thirst = 1.5, hunger = 0.5, fatigue = 1 } },
-    { symbol = "v", threshold = 0.75, effects = { thirst = 2, hunger = 0.6, fatigue = 1.2 } },
-    { symbol = "d", threshold = 0.85, effects = { thirst = 2.5, hunger = 0.8, fatigue = 1.5 } },
-    { symbol = "m", threshold = 1.0, effects = { thirst = 1.25, hunger = 0.6, fatigue = 2 } },
-    { symbol = "r", effects = { thirst = -1.5, hunger = 0.5, fatigue = 1.2 } }
-}
-
 function map.load_locations()
     return utils.load_json_file("assets/data/locations.json", "Locations file")
 end
@@ -37,9 +26,9 @@ function map.river_noise(x, y, scale)
 end
 
 function map.get_biome_effects(symbol)
-    for _, biome in ipairs(biomes) do
-        if biome.symbol == symbol then
-            return biome.effects
+    for _, location in ipairs(locations_data.locations or {}) do
+        if location.symbol == symbol then
+            return location.effects or { thirst = 2, hunger = 0.5, fatigue = 1 }
         end
     end
     return { thirst = 2, hunger = 0.5, fatigue = 1 }
@@ -94,18 +83,25 @@ function map.initialize_game(locations_data)
         for x = 1, config.map.width do
             local river_value = map.river_noise(x, y, river_scale)
             local symbol
-            if river_value < 0.1 then
+            local river_location = nil
+            for _, loc in ipairs(locations_data.locations) do
+                if loc.symbol == "r" then
+                    river_location = loc
+                    break
+                end
+            end
+            if river_location and river_value < river_location.threshold then
                 symbol = "r"
             else
                 local noise_value = map.noise(x, y, scale)
-                local biome = biomes[#biomes]
-                for _, b in ipairs(biomes) do
-                    if noise_value <= b.threshold then
-                        biome = b
+                local selected_location = locations_data.locations[#locations_data.locations]
+                for _, loc in ipairs(locations_data.locations) do
+                    if loc.threshold and noise_value <= loc.threshold then
+                        selected_location = loc
                         break
                     end
                 end
-                symbol = biome.symbol
+                symbol = selected_location.symbol
             end
             map_data.tiles[y][x] = symbol
             map_data.visited[y][x] = false

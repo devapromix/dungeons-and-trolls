@@ -5,6 +5,14 @@
             "tags": ["edible=10"]
         },
         {
+            "name": "Strawberry",
+            "tags": ["edible=5"]
+        },
+        {
+            "name": "Watermelon",
+            "tags": ["edible=15"]
+        },
+        {
             "name": "Bread",
             "tags": ["edible=35"]
         },
