@@ -47,10 +47,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             output.add("Help file not found.\n")
         end
     elseif command_parts[1] == "new" then
-        map.initialize_game(locations_data)
-        output.add("Created new game.\n")
-        map.display_location_and_items(player, map_data)
-        output.add("Type 'help' to see a list of available commands.\n")
+        game.new_game()
     elseif command_parts[1] == "save" then
         game.save_game()
     elseif command_parts[1] == "load" then
