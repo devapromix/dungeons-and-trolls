@@ -30,7 +30,11 @@ function items.get_tile_items_string(map, x, y)
             table.insert(item_list, item .. " (" .. qty .. ")")
         end
     end
-    return "Here you see: " .. table.concat(item_list, ", ") .. ".\n"
+	local str = table.concat(item_list, ", ")
+	if str ~= "" then
+		return "Here you see: " .. str .. ".\n"
+	end
+	return ""
 end
 
 function items.find_item_key(item_table, name)
