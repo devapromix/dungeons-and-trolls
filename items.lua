@@ -70,7 +70,7 @@ function items.is_item_equipped(player, item_name)
 end
 
 function items.pick_item(player, map, item_name, quantity)
-    if not check_player_alive("pick up items") then
+    if not player_module.check_player_alive("pick up items", player) then
         return
     end
     if not map or not map.items or not map.items[player.y] or not map.items[player.y][player.x] then
@@ -120,7 +120,7 @@ function items.pick_item(player, map, item_name, quantity)
 end
 
 function items.drop_item(player, map, item_name, quantity)
-    if not check_player_alive("drop items") then
+    if not player_module.check_player_alive("drop items", player) then
         return
     end
     
@@ -162,7 +162,7 @@ function items.drop_item(player, map, item_name, quantity)
 end
 
 function items.eat_item(player, items_data, item_name)
-    if not check_player_alive("eat") then
+    if not player_module.check_player_alive("eat", player) then
         return
     end
     
@@ -210,7 +210,7 @@ function items.eat_item(player, items_data, item_name)
 end
 
 function items.drink_item(player, items_data, item_name)
-    if not check_player_alive("drink") then
+    if not player_module.check_player_alive("drink", player) then
         return
     end
     
@@ -270,8 +270,7 @@ function items.drink_item(player, items_data, item_name)
 end
 
 function items.make_fire_item(player, map_data)
-    if not player.alive then
-        output.add("You are dead and cannot make a fire.\nStart a new game with the 'new' command.\n")
+    if not player_module.check_player_alive("make a fire", player) then
         return
     end
     

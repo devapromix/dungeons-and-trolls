@@ -100,8 +100,7 @@ function player.rest(player_data, map_data, game_time, time)
 end
 
 function player.equip_item(player_data, items_data, item_name)
-    if not player_data.alive then
-        output.add("You are dead and cannot equip items.\nStart a new game with the 'new' command.\n")
+    if not player.check_player_alive("equip items", player_data) then
         return player_data
     end
     
@@ -173,8 +172,7 @@ function player.equip_item(player_data, items_data, item_name)
 end
 
 function player.unequip_item(player_data, items_data, identifier)
-    if not player_data.alive then
-        output.add("You are dead and cannot unequip items.\nStart a new game with the 'new' command.\n")
+    if not player.check_player_alive("unequip items", player_data) then
         return player_data
     end
     
@@ -228,8 +226,7 @@ function player.unequip_item(player_data, items_data, identifier)
 end
 
 function player.move_player(direction, player_data, map_data, config, time, output)
-    if not player_data.alive then
-        output.add("You are dead and cannot move.\nStart a new game with the 'new' command.\n")
+    if not player.check_player_alive("move", player_data) then
         return false
     end
     local moves = {
@@ -304,7 +301,7 @@ function player.check_player_alive(action, player_data)
 end
 
 function player.attack_enemy(enemy_name, map_data, player_data, enemies_data, items_data, skills_data, time, map, output)
-    if not player.check_player_alive("attack", output) then
+    if not player.check_player_alive("attack", player_data) then
         return
     end
     if not enemy_name or enemy_name == "" then

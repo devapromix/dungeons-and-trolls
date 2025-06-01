@@ -68,7 +68,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
     if not player_module.check_player_alive("rest", player) then
         return
     end
-    player = player_module.rest(player, map_data, game_time, time, output)
+    player = player_module.rest(player, map_data, game_time, time)
     elseif command_parts[1] == "eat" then
         if #command_parts < 2 then
             output.add("Please specify an item to eat (e.g., 'eat Apple').\n")
