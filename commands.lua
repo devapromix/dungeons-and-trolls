@@ -110,7 +110,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         else
             local quantity, item_name = commands.parse_item_command(command_parts, 2)
             if quantity and item_name then
-                items.pick_item(player, map_data, item_name, quantity)
+                items.pick_item(player, map_data[player.world], item_name, quantity)
             end
         end
     elseif command_parts[1] == "drop" then
@@ -119,7 +119,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         else
             local quantity, item_name = commands.parse_item_command(command_parts, 2)
             if quantity and item_name then
-                items.drop_item(player, map_data, item_name, quantity)
+                items.drop_item(player, map_data[player.world], item_name, quantity)
             end
         end
     elseif command_parts[1] == "equip" then

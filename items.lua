@@ -105,6 +105,7 @@ function items.pick_item(player, map, item_name, quantity)
     end
 
     output.add("You picked up " .. pickup_qty .. " " .. item_key .. ".\n")
+	
     local item_data = items.get_item_data(items_data, item_key)
     if item_data then
         for _, tag in ipairs(item_data.tags) do
@@ -145,6 +146,11 @@ function items.drop_item(player, map, item_name, quantity)
     local available_qty = player.inventory[item_key]
     if quantity > available_qty then
         output.add("You don't have enough " .. item_key .. " to drop that amount.\n")
+        return
+    end
+    
+    if not map or not map.items or not map.items[player.y] or not map.items[player.y][player.x] then
+        output.add("Error: Cannot drop items due to invalid map data.\n")
         return
     end
     
