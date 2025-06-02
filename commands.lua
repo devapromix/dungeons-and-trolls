@@ -53,6 +53,9 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
     elseif command_parts[1] == "new" then
         game.new_game()
     elseif command_parts[1] == "save" then
+        if not player_module.check_player_alive("save the game", player) then
+            return
+        end
         game.save_game()
     elseif command_parts[1] == "load" then
         game.load_game()
@@ -65,10 +68,10 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
     elseif command_parts[1] == "time" then
         output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
     elseif command_parts[1] == "rest" then
-    if not player_module.check_player_alive("rest", player) then
-        return
-    end
-    player = player_module.rest(player, map_data, game_time, time)
+        if not player_module.check_player_alive("rest", player) then
+            return
+        end
+        player = player_module.rest(player, map_data, game_time, time)
     elseif command_parts[1] == "eat" then
         if #command_parts < 2 then
             output.add("Please specify an item to eat (e.g., 'eat Apple').\n")

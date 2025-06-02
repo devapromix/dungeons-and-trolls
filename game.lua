@@ -14,9 +14,9 @@ end
 
 function game.about()
     output.add(config.game.name .. " v." .. config.game.version .. "\n\n")
-	output.add("Enter the mysterious Troll Dungeon, a dark and dangerous maze hidden deep underground. Legends speak of the Sword of Dawn, a powerful artifact guarded by ancient magic and deadly creatures. As the brave hero, you must navigate traps, solve puzzles, and face the troll guardians to claim the sword. Only by wielding the Sword of Dawn can you defeat the final evil and win the game.\n")
+    output.add("Enter the mysterious Troll Dungeon, a dark and dangerous maze hidden deep underground. Legends speak of the Sword of Dawn, a powerful artifact guarded by ancient magic and deadly creatures. As the brave hero, you must navigate traps, solve puzzles, and face the troll guardians to claim the sword. Only by wielding the Sword of Dawn can you defeat the final evil and win the game.\n")
     output.add("\nAuthor: Apromix\n")
-	output.add("\nSources: https://github.com/devapromix/dungeons-and-trolls\n")
+    output.add("\nSources: https://github.com/devapromix/dungeons-and-trolls\n")
 end
 
 function game.new_game()
@@ -81,6 +81,11 @@ function game.load_game()
                         map_data.items[y][x] = map_data.items[y][x] or {}
                         map_data.enemies[y][x] = map_data.enemies[y][x] or {}
                     end
+                end
+                if not player.alive then
+                    output.add("Cannot load game: player is dead. Start a new game with the 'new' command.\n")
+                    game.initialized = false
+                    return false
                 end
                 output.add("Loaded saved game.\n")
                 map.display_location_and_items(player, map_data)
