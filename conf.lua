@@ -3,7 +3,7 @@ config = {
 		max_slots = 12,
 	},
 	
-	debug = true,
+	debug = false,
 	
 	audio = {
 		volume = 0.5,
@@ -25,6 +25,13 @@ window = {
 	height = 1080,
 	fullscreen = true,
 }
+
+for _, v in ipairs(arg) do
+    if v == "-d" then
+        config.debug = true
+        break
+    end
+end
 
 function love.conf (t)
 	t.console = config.debug

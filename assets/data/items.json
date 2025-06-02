@@ -13,6 +13,10 @@
             "tags": ["edible=15"]
         },
         {
+            "name": "Mushroom",
+            "tags": ["edible=10"]
+        },
+        {
             "name": "Bread",
             "tags": ["edible=35"]
         },
@@ -31,6 +35,11 @@
         {
             "name": "Water Bottle",
             "tags": ["drinkable=30"]
+        },
+        {
+            "name": "Dagger",
+            "tags": ["weapon=4"],
+            "skill": "Daggers"
         },
         {
             "name": "Short Sword",

@@ -12,7 +12,7 @@ function player.draw_status(player_data)
     output.add("Level: " .. player_data.level .. "\n")
     output.add("Experience: " .. player_data.experience .. "\n")
     output.add("\nGold: " .. player_data.gold .. "\n")
-    output.add("Position: " .. player_data.x .. ", " .. player_data.y .. "\n")
+    output.add("Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n")
     output.add("\nEquipment:\n")
     output.add("Weapon: " .. (player_data.equipment and player_data.equipment.weapon or "None") .. "\n")
     output.add("Armor: " .. (player_data.equipment and player_data.equipment.armor or "None") .. "\n")
@@ -83,7 +83,7 @@ function player.rest(player_data, map_data, game_time, time)
     if hours_to_morning > 0 then
         rest_hours = utils.clamp(hours_to_full, 0, hours_to_morning)
     end
-    local rest_multiplier = map_data.fire.active and map_data.fire.x == player_data.x and map_data.fire.y == player_data.y and 2 or 1
+    local rest_multiplier = map_data[player_data.world].fire.active and map_data[player_data.world].fire.x == player_data.x and map_data[player_data.world].fire.y == player_data.y and 2 or 1
     output.add("You rest for " .. rest_hours .. " hour(s)...\n")
     player_data.health = player_data.health + rest_hours * 10 * rest_multiplier
     player_data.mana = player_data.mana + rest_hours * 10 * rest_multiplier
@@ -247,10 +247,10 @@ function player.move_player(direction, player_data, map_data, config, time, outp
     local new_x = player_data.x + (move.x or 0)
     local new_y = player_data.y + (move.y or 0)
     if new_x >= move.x_min and new_x <= move.x_max and new_y >= move.y_min and new_y <= move.y_max then
-        if map_data.fire.active and (map_data.fire.x ~= new_x or map_data.fire.y ~= new_y) then
-            map_data.fire.active = false
-            map_data.fire.x = nil
-            map_data.fire.y = nil
+        if map_data[player_data.world].fire.active and (map_data[player_data.world].fire.x ~= new_x or map_data[player_data.world].fire.y ~= new_y) then
+            map_data[player_data.world].fire.active = false
+            map_data[player_data.world].fire.x = nil
+            map_data[player_data.world].fire.y = nil
             output.add("The fire goes out as you leave the location.\n")
         end
         player_data.x = new_x
@@ -258,13 +258,13 @@ function player.move_player(direction, player_data, map_data, config, time, outp
         for y = utils.clamp(player_data.y - player_data.radius, 1, config.map.height), utils.clamp(player_data.y + player_data.radius, 1, config.map.height) do
             for x = utils.clamp(player_data.x - player_data.radius, 1, config.map.width), utils.clamp(player_data.x + player_data.radius, 1, config.map.width) do
                 if math.sqrt((x - player_data.x)^2 + (y - player_data.y)^2) <= player_data.radius then
-                    map_data.visited[y][x] = true
+                    map_data[player_data.world].visited[y][x] = true
                 end
             end
         end
         output.add("You moved " .. move.dir .. ".\n")
         map.display_location_and_items(player_data, map_data)
-        local current_biome = map_data.tiles[player_data.y][player_data.x]
+        local current_biome = map_data[player_data.world].tiles[player_data.y][player_data.x]
         local effects = map.get_biome_effects(current_biome)
         time.tick_time(120)
         player_data.fatigue = utils.clamp(player_data.fatigue + (player_data.mana <= 0 and effects.fatigue * 2 or effects.fatigue), 0, 100)
@@ -315,7 +315,7 @@ function player.attack_enemy(enemy_name, map_data, player_data, enemies_data, it
         output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
         return
     end
-    local enemy_list = map_data.enemies[player_data.y][player_data.x]
+    local enemy_list = map_data[player_data.world].enemies[player_data.y][player_data.x]
     local enemy_key = items.find_item_key(enemy_list, enemy_name)
     if not enemy_key then
         output.add("No " .. enemy_name .. " found here.\n")
@@ -364,15 +364,15 @@ function player.combat_round(enemy_name, enemy_data, map_data, player_data, item
                             player_data.gold = player_data.gold + quantity
                             output.add("Gained " .. quantity .. " gold.\n")
                         elseif drop.type == "item" then
-                            map_data.items[player_data.y][player_data.x][drop.name] = (map_data.items[player_data.y][player_data.x][drop.name] or 0) + quantity
+                            map_data[player_data.world].items[player_data.y][player_data.x][drop.name] = (map_data[player_data.world].items[player_data.y][player_data.x][drop.name] or 0) + quantity
                             output.add(drop.name .. " (" .. quantity .. ") dropped on the ground.\n")
                         end
                     end
                 end
             end
-            map_data.enemies[player_data.y][player_data.x][enemy_name] = map_data.enemies[player_data.y][player_data.x][enemy_name] - 1
-            if map_data.enemies[player_data.y][player_data.x][enemy_name] <= 0 then
-                map_data.enemies[player_data.y][player_data.x][enemy_name] = nil
+            map_data[player_data.world].enemies[player_data.y][player_data.x][enemy_name] = map_data[player_data.world].enemies[player_data.y][player_data.x][enemy_name] - 1
+            if map_data[player_data.world].enemies[player_data.y][player_data.x][enemy_name] <= 0 then
+                map_data[player_data.world].enemies[player_data.y][player_data.x][enemy_name] = nil
             end
             map.display_location_and_items(player_data, map_data)
             return true
@@ -394,7 +394,7 @@ function player.combat_round(enemy_name, enemy_data, map_data, player_data, item
                 history = input.history,
                 time = game_time,
                 version = config.game.version,
-                fire = map_data.fire
+                fire = map_data[player_data.world].fire
             }
             local save_string = json.encode(save_data)
             love.filesystem.write("game.json", save_string)

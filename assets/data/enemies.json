@@ -9,6 +9,7 @@
       "description": "A small, sneaky creature with a crude weapon.",
       "tags": ["hostile", "melee"],
       "drops": [
+        {"name": "Dagger", "chance": 0.3, "type": "item"},
         {"name": "Spear", "chance": 0.3, "type": "item"},
         {"name": "Spiked Club", "chance": 0.4, "type": "item"},
         {"name": "Gold", "chance": 0.7, "quantity": [10, 20], "type": "gold"},
@@ -54,6 +55,7 @@
       "tags": ["hostile", "human"],
       "drops": [
         {"name": "Leather Armor", "chance": 0.1, "type": "item"},
+        {"name": "Dagger", "chance": 0.7, "type": "item"},
         {"name": "Short Sword", "chance": 0.1, "type": "item"},
         {"name": "Hand Axe", "chance": 0.1, "type": "item"},
         {"name": "Spear", "chance": 0.2, "type": "item"},
@@ -65,6 +67,54 @@
         {"name": "Bread", "chance": 0.7, "quantity": [2, 4], "type": "item"},
         {"name": "Healing Potion", "chance": 0.2, "quantity": [1, 1], "type": "item"},
         {"name": "Mana Potion", "chance": 0.15, "quantity": [1, 1], "type": "item"}
+      ]
+    },
+    {
+      "name": "Kobold",
+      "health": 25,
+      "attack": 4,
+      "defense": 2,
+      "experience": 15,
+      "description": "A small, cunning creature lurking in the caves.",
+      "tags": ["hostile", "melee"],
+      "drops": [
+        {"name": "Dagger", "chance": 0.3, "type": "item"},
+        {"name": "Spear", "chance": 0.3, "type": "item"},
+        {"name": "Gold", "chance": 0.5, "quantity": [5, 15], "type": "gold"},
+        {"name": "Water Bottle", "chance": 0.3, "quantity": [1, 2], "type": "item"},
+        {"name": "Mushroom", "chance": 0.4, "quantity": [1, 2], "type": "item"}
+      ]
+    },
+    {
+      "name": "Troll",
+      "health": 50,
+      "attack": 10,
+      "defense": 5,
+      "experience": 40,
+      "description": "A large, brutish creature with tough skin.",
+      "tags": ["hostile", "melee"],
+      "drops": [
+        {"name": "Spear", "chance": 0.3, "type": "item"},
+        {"name": "Spiked Club", "chance": 0.3, "type": "item"},
+        {"name": "Gold", "chance": 0.6, "quantity": [10, 20], "type": "gold"},
+        {"name": "Water Bottle", "chance": 0.3, "quantity": [1, 2], "type": "item"},
+        {"name": "Healing Potion", "chance": 0.1, "quantity": [1, 1], "type": "item"},
+        {"name": "Mana Potion", "chance": 0.1, "quantity": [1, 1], "type": "item"}
+      ]
+    },
+    {
+      "name": "Troll King",
+      "health": 100,
+      "attack": 15,
+      "defense": 8,
+      "experience": 100,
+      "description": "The mighty ruler of the trolls, guarding his cave.",
+      "tags": ["hostile", "melee", "unique"],
+      "drops": [
+        {"name": "Troll Crown", "chance": 1.0, "type": "item"},
+        {"name": "Gold", "chance": 1.0, "quantity": [150, 200], "type": "gold"},
+        {"name": "Healing Potion", "chance": 0.8, "quantity": [1, 2], "type": "item"},
+        {"name": "Mana Potion", "chance": 0.3, "quantity": [1, 1], "type": "item"}
       ]
     }
   ]

@@ -4,6 +4,9 @@ local game = {
 
 function game.welcome()
     output.add("Welcome to " .. config.game.name .. " v." .. config.game.version .. "\n")
+	if config.debug then
+		output.add("Debug mode: on\n")
+	end
     game.initialized = false
     if love.filesystem.getInfo("game.json") then
         game.load_game()
@@ -39,7 +42,10 @@ function game.save_game()
         history = input.history,
         time = game_time,
         version = config.game.version,
-        fire = map_data.fire
+        fire = {
+            overworld = map_data.overworld.fire,
+            underworld = map_data.underworld.fire
+        }
     }
     local save_string = json.encode(save_data)
     love.filesystem.write("game.json", save_string)
@@ -58,11 +64,12 @@ function game.load_game()
                     game.initialized = false
                     return false
                 end
-                map_data = save_data.map
+                map_data = save_data.map or { overworld = {}, underworld = {} }
                 player = save_data.player
                 game_time = save_data.time or { year = 1280, month = 4, day = 1, hour = 6, minute = 0 }
                 input.history = save_data.history or {}
-                map_data.fire = save_data.fire or { x = nil, y = nil, active = false }
+                map_data.overworld.fire = save_data.fire and save_data.fire.overworld or { x = nil, y = nil, active = false }
+                map_data.underworld.fire = save_data.fire and save_data.fire.underworld or { x = nil, y = nil, active = false }
                 player = player_module.clamp_player_stats(player)
                 player = player_module.clamp_player_skills(player, skills_data)
                 player.inventory = player.inventory or {}
@@ -76,12 +83,21 @@ function game.load_game()
                 if player.alive == nil then
                     player.alive = (player.hunger < 100 and player.fatigue < 100 and player.health > 0 and player.thirst < 100)
                 end
-                for y = 1, config.map.height do
-                    map_data.items[y] = map_data.items[y] or {}
-                    map_data.enemies[y] = map_data.enemies[y] or {}
-                    for x = 1, config.map.width do
-                        map_data.items[y][x] = map_data.items[y][x] or {}
-                        map_data.enemies[y][x] = map_data.enemies[y][x] or {}
+                for world in pairs({ overworld = true, underworld = true }) do
+                    if not map_data[world].tiles or not map_data[world].visited or not map_data[world].items or not map_data[world].enemies then
+                        output.add("Invalid map data for " .. world .. ". Starting a new game.\n")
+                        game.new_game()
+                        return false
+                    end
+                    for y = 1, config.map.height do
+                        map_data[world].items[y] = map_data[world].items[y] or {}
+                        map_data[world].enemies[y] = map_data[world].enemies[y] or {}
+                        map_data[world].visited[y] = map_data[world].visited[y] or {}
+                        for x = 1, config.map.width do
+                            map_data[world].items[y][x] = map_data[world].items[y][x] or {}
+                            map_data[world].enemies[y][x] = map_data[world].enemies[y][x] or {}
+                            map_data[world].visited[y][x] = map_data[world].visited[y][x] or false
+                        end
                     end
                 end
                 if not player.alive then

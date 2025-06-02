@@ -151,8 +151,8 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
                     else
                         line = line .. "X"
                     end
-                elseif map_data.visited[y][x] then
-                    line = line .. map_data.tiles[y][x]
+                elseif map_data[player.world].visited[y][x] then
+                    line = line .. map_data[player.world].tiles[y][x]
                 else
                     line = line .. " "
                 end
@@ -193,6 +193,26 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             if status_message ~= "" then
                 output.add(status_message)
             end
+        end
+    elseif command_parts[1] == "up" then
+        if not player_module.check_player_alive("move up", player) then
+            return
+        end
+        if map.move_up(player, map_data) then
+            output.add("You climb up to the surface.\n")
+            map.display_location_and_items(player, map_data)
+        else
+            output.add("There is no exit here.\n")
+        end
+    elseif command_parts[1] == "down" then
+        if not player_module.check_player_alive("move down", player) then
+            return
+        end
+        if map.move_down(player, map_data) then
+            output.add("You descend into the underworld.\n")
+            map.display_location_and_items(player, map_data)
+        else
+            output.add("There is no entrance here.\n")
         end
     elseif command_parts[1] == "light" then
         if not player_module.check_player_alive("light a fire", player) then

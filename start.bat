@@ -1,1 +1,1 @@
-"C:\Program Files\LOVE\love.exe" . main.lua -d
+"C:\Program Files\LOVE\love.exe" . main.lua
