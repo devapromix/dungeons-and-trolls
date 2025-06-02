@@ -233,7 +233,7 @@ function map.initialize_game(locations_data)
 end
 
 function map.move_up(player, map_data)
-    if map_data[player.world].tiles[player.y][player.x] == "<" then
+    if config.debug or map_data[player.world].tiles[player.y][player.x] == "<" then
         player.world = "overworld"
         map.update_visibility(player, map_data)
         return true
@@ -242,7 +242,7 @@ function map.move_up(player, map_data)
 end
 
 function map.move_down(player, map_data)
-    if map_data[player.world].tiles[player.y][player.x] == ">" then
+    if config.debug or map_data[player.world].tiles[player.y][player.x] == ">" then
         player.world = "underworld"
         map.update_visibility(player, map_data)
         return true

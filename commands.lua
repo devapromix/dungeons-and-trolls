@@ -151,7 +151,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
                     else
                         line = line .. "X"
                     end
-                elseif map_data[player.world].visited[y][x] then
+                elseif config.debug or map_data[player.world].visited[y][x] then
                     line = line .. map_data[player.world].tiles[y][x]
                 else
                     line = line .. " "
