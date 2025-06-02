@@ -1,5 +1,16 @@
 local player = {}
 
+function player.starter_kit(player_data)
+    if not player_data.inventory then
+        player_data.inventory = {}
+    end
+    player_data.inventory["Apple"] = (player_data.inventory["Apple"] or 0) + math.random(1, 3)
+    player_data.inventory["Bread"] = (player_data.inventory["Bread"] or 0) + math.random(1, 3)
+    player_data.inventory["Water Bottle"] = (player_data.inventory["Water Bottle"] or 0) + math.random(1, 3)
+    player_data.inventory["Sword of Dawn"] = (player_data.inventory["Sword of Dawn"] or 0) + 1
+    return player_data
+end
+
 function player.draw_status(player_data)
     output.add("Player:\n")
     output.add("Health: " .. player_data.health .. "\n")
@@ -50,16 +61,6 @@ function player.clamp_player_skills(player_data, skills_data)
             output.add("Warning: Invalid skill entry in skills data.\n")
         end
     end
-    return player_data
-end
-
-function player.starter_kit(player_data)
-    if not player_data.inventory then
-        player_data.inventory = {}
-    end
-    player_data.inventory["Apple"] = (player_data.inventory["Apple"] or 0) + math.random(1, 3)
-    player_data.inventory["Bread"] = (player_data.inventory["Bread"] or 0) + math.random(1, 3)
-    player_data.inventory["Water Bottle"] = (player_data.inventory["Water Bottle"] or 0) + math.random(1, 3)
     return player_data
 end
 

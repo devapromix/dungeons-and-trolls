@@ -105,6 +105,15 @@ function items.pick_item(player, map, item_name, quantity)
     end
 
     output.add("You picked up " .. pickup_qty .. " " .. item_key .. ".\n")
+    local item_data = items.get_item_data(items_data, item_key)
+    if item_data then
+        for _, tag in ipairs(item_data.tags) do
+            if tag == "artifact" then
+                output.add("This is a legendary artifact!\n")
+                break
+            end
+        end
+    end
 end
 
 function items.drop_item(player, map, item_name, quantity)
