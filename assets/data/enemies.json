@@ -79,7 +79,7 @@
       "tags": ["hostile", "melee"],
       "drops": [
         {"name": "Dagger", "chance": 0.3, "type": "item"},
-        {"name": "Spear", "chance": 0.3, "type": "item"},
+        {"name": "Spear", "chance": 0.2, "type": "item"},
         {"name": "Gold", "chance": 0.5, "quantity": [5, 15], "type": "gold"},
         {"name": "Water Bottle", "chance": 0.3, "quantity": [1, 2], "type": "item"},
         {"name": "Mushroom", "chance": 0.4, "quantity": [1, 2], "type": "item"}
@@ -112,9 +112,10 @@
       "tags": ["hostile", "melee", "unique"],
       "drops": [
         {"name": "Troll Crown", "chance": 1.0, "type": "item"},
+        {"name": "Sword of Dawn", "chance": 1.0, "type": "item"},
         {"name": "Gold", "chance": 1.0, "quantity": [150, 200], "type": "gold"},
         {"name": "Healing Potion", "chance": 0.8, "quantity": [1, 2], "type": "item"},
-        {"name": "Mana Potion", "chance": 0.3, "quantity": [1, 1], "type": "item"}
+        {"name": "Mana Potion", "chance": 0.5, "quantity": [1, 1], "type": "item"}
       ]
     }
   ]

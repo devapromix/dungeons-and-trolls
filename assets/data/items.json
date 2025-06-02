@@ -26,7 +26,7 @@
         },
         {
             "name": "Healing Potion",
-            "tags": ["drinkable=20", "healing=15"]
+            "tags": ["drinkable=20", "healing=25"]
         },
         {
             "name": "Mana Potion",
@@ -47,6 +47,11 @@
             "skill": "Swords"
         },
         {
+            "name": "Sword of Dawn",
+            "tags": ["weapon=50", "artifact"],
+            "skill": "Swords"
+        },
+        {
             "name": "Hand Axe",
             "tags": ["weapon=4"],
             "skill": "Axes"
@@ -64,6 +69,10 @@
         {
             "name": "Leather Armor",
             "tags": ["armor=3"]
+        },
+        {
+            "name": "Troll Crown",
+            "tags": ["armor=10", "artifact"]
         },
         {
             "name": "Firewood",
