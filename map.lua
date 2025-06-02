@@ -7,10 +7,10 @@ end
 function map.get_location_description(symbol)
     for _, location in ipairs(locations_data.locations or {}) do
         if location.symbol == symbol then
-            return { name = location.name, description = location.description }
+            return { name = location.name, description = location.description, passable = location.passable }
         end
     end
-    return { name = "Unknown", description = "An unknown location." }
+    return { name = "Unknown", description = "An unknown location.", passable = true }
 end
 
 function map.noise(x, y, scale)
@@ -138,8 +138,10 @@ function map.initialize_game(locations_data)
                         symbol = "l"
                     elseif noise_value < 0.7 then
                         symbol = "k"
-                    else
+                    elseif noise_value < 0.95 then
                         symbol = "o"
+                    else
+                        symbol = "#"
                     end
                 else
                     local river_location = nil

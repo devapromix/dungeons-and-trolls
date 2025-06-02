@@ -248,6 +248,12 @@ function player.move_player(direction, player_data, map_data, config, time, outp
     local new_x = player_data.x + (move.x or 0)
     local new_y = player_data.y + (move.y or 0)
     if new_x >= move.x_min and new_x <= move.x_max and new_y >= move.y_min and new_y <= move.y_max then
+        local target_symbol = map_data[player_data.world].tiles[new_y][new_x]
+        local location_data = map.get_location_description(target_symbol)
+        if not location_data.passable then
+            output.add("You cannot pass through the granite wall.\n")
+            return false
+        end
         if map_data[player_data.world].fire.active and (map_data[player_data.world].fire.x ~= new_x or map_data[player_data.world].fire.y ~= new_y) then
             map_data[player_data.world].fire.active = false
             map_data[player_data.world].fire.x = nil
