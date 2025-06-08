@@ -28,7 +28,7 @@ function game.new_game()
     player = player_module.starter_kit(player)
     game.initialized = true
     output.add("Created new game.\n")
-    map.display_location_and_items(player, map_data)
+    map.display_location(player, map_data)
     output.add(const.TYPE_HELP_MSG)
 end
 
@@ -106,7 +106,7 @@ function game.load_game()
                     return false
                 end
                 output.add("Loaded saved game.\n")
-                map.display_location_and_items(player, map_data)
+                map.display_location(player, map_data)
                 game.initialized = true
                 return true
             end

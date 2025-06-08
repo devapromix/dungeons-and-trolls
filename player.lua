@@ -270,7 +270,7 @@ function player.move_player(direction, player_data, map_data, config, time, outp
             end
         end
         output.add("You moved " .. move.dir .. ".\n")
-        map.display_location_and_items(player_data, map_data)
+        map.display_location(player_data, map_data)
         local current_biome = map_data[player_data.world].tiles[player_data.y][player_data.x]
         local effects = map.get_biome_effects(current_biome)
         time.tick_time(120)
@@ -381,7 +381,7 @@ function player.combat_round(enemy_name, enemy_data, map_data, player_data, item
             if map_data[player_data.world].enemies[player_data.y][player_data.x][enemy_name] <= 0 then
                 map_data[player_data.world].enemies[player_data.y][player_data.x][enemy_name] = nil
             end
-            map.display_location_and_items(player_data, map_data)
+            map.display_location(player_data, map_data)
             return true
         end
         local enemy_damage = utils.clamp(enemy_data.attack - player_data.defense, 0, math.huge)

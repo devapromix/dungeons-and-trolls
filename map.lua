@@ -262,9 +262,42 @@ function map.update_visibility(player, map_data)
     end
 end
 
-function map.display_location_and_items(player, map_data)
+function map.display_location(player, map_data)
     local location = map.get_location_description(map_data[player.world].tiles[player.y][player.x])
     output.add("You are in " .. location.name .. ". " .. location.description .. "\n")
+    
+    local directions = {
+        north = {x = player.x, y = player.y - 1, name = "North"},
+        south = {x = player.x, y = player.y + 1, name = "South"},
+        east = {x = player.x + 1, y = player.y, name = "East"},
+        west = {x = player.x - 1, y = player.y, name = "West"}
+    }
+    
+    local visible_directions = {}
+    for dir, data in pairs(directions) do
+        if data.x >= 1 and data.x <= config.map.width and data.y >= 1 and data.y <= config.map.height then
+            local tile_symbol = map_data[player.world].tiles[data.y][data.x]
+            local tile_data = map.get_location_description(tile_symbol)
+            visible_directions[dir] = tile_data.name
+        end
+    end
+    
+    local direction_groups = {}
+    for dir, name in pairs(visible_directions) do
+        direction_groups[name] = direction_groups[name] or {}
+        table.insert(direction_groups[name], directions[dir].name)
+    end
+    
+    local direction_strings = {}
+    for biome, dirs in pairs(direction_groups) do
+        local dir_names = table.concat(dirs, ", ")
+        table.insert(direction_strings, "To " .. dir_names .. " you see " .. biome .. ".")
+    end
+    
+    if #direction_strings > 0 then
+        output.add(table.concat(direction_strings, "\n") .. "\n")
+    end
+    
     local items_string = items.get_tile_items_string(map_data[player.world], player.x, player.y)
     output.add(items_string)
     local enemies_string = enemies.get_tile_enemies_string(map_data[player.world], player.x, player.y)
