@@ -1,5 +1,8 @@
 local commands = {}
 
+commands.awaiting_confirmation = false
+commands.confirmation_type = nil
+
 function commands.table_contains(table, element)
     for _, value in ipairs(table) do
         if value == element then
@@ -25,7 +28,7 @@ function commands.parse_item_command(command_parts, start_index)
         if #command_parts >= start_index + 1 then
             item_name = table.concat(command_parts, " ", start_index + 1)
         else
-            output.add("Please specify an item name after the quantity  (e.g., 'pick 3 Healing Potion').\n")
+            output.add("Please specify an item name after the quantity (e.g., 'pick 3 Healing Potion').\n")
             return nil, nil
         end
     else
@@ -35,10 +38,30 @@ function commands.parse_item_command(command_parts, start_index)
 end
 
 function commands.handle_command(command_parts, player, map_data, items_data, enemies_data, skills_data, config, game_time, input, output, time, player_module, items, enemies, map, skills, json)
-    if not game.initialized and not (command_parts[1] == "help" or command_parts[1] == "quit" or command_parts[1] == "new" or command_parts[1] == "about") then
+    if commands.awaiting_confirmation then
+        if command_parts[1] == "y" or command_parts[1] == "yes" then
+            if commands.confirmation_type == "new" then
+                game.new_game()
+            elseif commands.confirmation_type == "load" then
+                game.load_game()
+                output.add(const.TYPE_HELP_MSG)
+            end
+            commands.awaiting_confirmation = false
+            commands.confirmation_type = nil
+        elseif command_parts[1] == "n" or command_parts[1] == "no" then
+            commands.awaiting_confirmation = false
+            commands.confirmation_type = nil
+        else
+            output.add("Please enter ('yes' or 'no').\n")
+        end
+        return
+    end
+
+    if not game.initialized and not (command_parts[1] == "help" or command_parts[1] == "quit" or command_parts[1] == "new" or command_parts[1] == "about" or command_parts[1] == "load") then
         output.add("No game loaded or saved game version is incompatible. Please start a new game with the 'new' command.\n")
         return
     end
+
     if command_parts[1] == "help" then
         if love.filesystem.getInfo("assets/data/help.txt") then
             local content = love.filesystem.read("assets/data/help.txt")
@@ -51,15 +74,27 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             output.add("Help file not found.\n")
         end
     elseif command_parts[1] == "new" then
-        game.new_game()
+        if game.initialized and player.alive then
+            commands.awaiting_confirmation = true
+            commands.confirmation_type = "new"
+            output.add("This will end the current game. Are you sure you want to start a new game? (y/n)\n")
+        else
+            game.new_game()
+        end
+    elseif command_parts[1] == "load" then
+        if game.initialized and player.alive then
+            commands.awaiting_confirmation = true
+            commands.confirmation_type = "load"
+            output.add("This will end the current game. Are you sure you want to load a saved game? (y/n)\n")
+        else
+            game.load_game()
+            output.add(const.TYPE_HELP_MSG)
+        end
     elseif command_parts[1] == "save" then
         if not player_module.check_player_alive("save the game", player) then
             return
         end
         game.save_game()
-    elseif command_parts[1] == "load" then
-        game.load_game()
-        output.add("Type 'help' to see a list of available commands.\n")
     elseif command_parts[1] == "status" then
         player_module.draw_status(player)
     elseif command_parts[1] == "skills" then
@@ -228,7 +263,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         love.event.quit()
     else
         output.add("Unknown command: '" .. command_parts[1] .. "'.\n")
-        output.add("Type 'help' for a list of available commands.\n")
+        output.add(const.TYPE_HELP_MSG)
     end
 end
 

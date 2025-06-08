@@ -10,7 +10,7 @@ function game.welcome()
     game.initialized = false
     if love.filesystem.getInfo("game.json") then
         game.load_game()
-        output.add("Type 'help' to see a list of available commands.\n")
+        output.add(const.TYPE_HELP_MSG)
     else
         game.new_game()
     end
@@ -29,7 +29,7 @@ function game.new_game()
     game.initialized = true
     output.add("Created new game.\n")
     map.display_location_and_items(player, map_data)
-    output.add("Type 'help' to see a list of available commands.\n")
+    output.add(const.TYPE_HELP_MSG)
 end
 
 function game.save_game()
