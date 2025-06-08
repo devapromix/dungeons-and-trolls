@@ -20,6 +20,13 @@ function commands.table_count(table)
     return count
 end
 
+function commands.look()
+    if not player_module.check_player_alive("look around", player) then
+        return
+    end
+    map.display_location(player, map_data)
+end
+
 function commands.parse_item_command(command_parts, start_index)
     local quantity = 1
     local item_name
@@ -51,6 +58,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         elseif command_parts[1] == "n" or command_parts[1] == "no" then
             commands.awaiting_confirmation = false
             commands.confirmation_type = nil
+			commands.look()
         else
             output.add("Please enter ('yes' or 'no').\n")
         end
@@ -77,7 +85,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         if game.initialized and player.alive then
             commands.awaiting_confirmation = true
             commands.confirmation_type = "new"
-            output.add("This will end the current game. Are you sure you want to start a new game? (y/n)\n")
+            output.add("This will end the current game. Are you sure you want to start a new game? (yes/no)\n")
         else
             game.new_game()
         end
@@ -85,7 +93,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         if game.initialized and player.alive then
             commands.awaiting_confirmation = true
             commands.confirmation_type = "load"
-            output.add("This will end the current game. Are you sure you want to load a saved game? (y/n)\n")
+            output.add("This will end the current game. Are you sure you want to load a saved game? (yes/no)\n")
         else
             game.load_game()
             output.add(const.TYPE_HELP_MSG)
@@ -172,10 +180,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             player = player_module.unequip_item(player, items_data, identifier)
         end
     elseif command_parts[1] == "look" then
-        if not player_module.check_player_alive("look around", player) then
-            return
-        end
-        map.display_location(player, map_data)
+		commands.look()
     elseif command_parts[1] == "map" then
         for y = 1, config.map.height do
             local line = ""
