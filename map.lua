@@ -74,8 +74,68 @@ function map.cellular_automaton(tiles, width, height, iterations)
     return tiles
 end
 
+function map.biome(world, x, y, tile, size)
+	local biome_x, biome_y = x, y
+	for i = 1, size do
+		world.tiles[biome_y][biome_x] = tile
+		d = math.random(1, 4)
+		if d == 1 and biome_x - 1 >= 1 then
+			biome_x = biome_x - 1
+		elseif d == 2 and biome_x + 1 <= config.map.width then
+			biome_x = biome_x + 1
+		elseif d == 3 and biome_y - 1 >= 1 then
+			biome_y = biome_y - 1
+		elseif d == 4 and biome_y + 1 <= config.map.height then
+			biome_y = biome_y + 1
+		end
+	end
+end
+
+function map.fill(world, tile)
+	for y = 1, config.map.height do
+		for x = 1, config.map.width do
+			world.tiles[y][x] = tile
+		end
+	end
+end
+
+function map.gen_world(world, is_underworld)
+	for i = 1, 100 do
+		x = math.random(1, config.map.width - 1)
+		y = math.random(1, config.map.height - 1)
+		map.biome(map_data.underworld, x, y, "u", 100)
+	end
+end
+
+function map.add_passages(map_data)
+    local center_x, center_y = math.floor(config.map.width / 2), math.floor(config.map.height / 2)
+    local portals = {}
+    for i = 1, 3 do
+        local x, y
+        repeat
+            x = center_x + math.random(-15, 15)
+            y = center_y + math.random(-10, 10)
+        until x >= 1 and x <= config.map.width and y >= 1 and y <= config.map.height and not map_data.overworld.tiles[y][x]:match("[><]") and not map_data.underworld.tiles[y][x]:match("[b]")
+        map_data.overworld.tiles[y][x] = ">"
+        map_data.underworld.tiles[y][x] = "<"
+        portals[i] = { x = x, y = y }
+    end
+end
+
+function map.add_troll_cave()
+    local troll_x, troll_y
+    local center_x, center_y = math.floor(config.map.width / 2), math.floor(config.map.height / 2)
+    repeat
+        troll_x = center_x + math.random(-20, 20)
+        troll_y = center_y + math.random(-20, 20)
+        local distance = math.sqrt((troll_x - center_x)^2 + (troll_y - center_y)^2)
+    until distance >= 15 and distance <= 20 and troll_x >= 1 and troll_x <= config.map.width and troll_y >= 1 and troll_y <= config.map.height and not map_data.underworld.tiles[troll_y][troll_x]:match("[><]")
+    map_data.underworld.tiles[troll_y][troll_x] = "t"
+    map_data.underworld.enemies[troll_y][troll_x]["Troll King"] = 1
+end
+
 function map.initialize_game(locations_data)
-    map_data = {
+	map_data = {
         overworld = {
             tiles = {},
             visited = {},
@@ -195,43 +255,16 @@ function map.initialize_game(locations_data)
                 end
             end
         end
-        if is_underworld then
-            world.tiles = map.cellular_automaton(world.tiles, config.map.width, config.map.height, 3)
-        end
     end
     
     initialize_world(map_data.overworld, false)
     initialize_world(map_data.underworld, true)
     
-    local center_x, center_y = math.floor(config.map.width / 2), math.floor(config.map.height / 2)
-    local portals = {}
-    for i = 1, 3 do
-        local x, y
-        repeat
-            x = center_x + math.random(-15, 15)
-            y = center_y + math.random(-10, 10)
-        until x >= 1 and x <= config.map.width and y >= 1 and y <= config.map.height and not map_data.overworld.tiles[y][x]:match("[><]")
-        map_data.overworld.tiles[y][x] = ">"
-        map_data.underworld.tiles[y][x] = "<"
-        portals[i] = { x = x, y = y }
-    end
-    
-    local troll_x, troll_y
-    repeat
-        troll_x = center_x + math.random(-20, 20)
-        troll_y = center_y + math.random(-20, 20)
-        local distance = math.sqrt((troll_x - center_x)^2 + (troll_y - center_y)^2)
-    until distance >= 15 and distance <= 20 and troll_x >= 1 and troll_x <= config.map.width and troll_y >= 1 and troll_y <= config.map.height and not map_data.underworld.tiles[troll_y][troll_x]:match("[><]")
-    map_data.underworld.tiles[troll_y][troll_x] = "t"
-    map_data.underworld.enemies[troll_y][troll_x]["Troll King"] = 1
-    
-    for y = utils.clamp(player.y - player.radius, 1, config.map.height), utils.clamp(player.y + player.radius, 1, config.map.height) do
-        for x = utils.clamp(player.x - player.radius, 1, config.map.width), utils.clamp(player.x + player.radius, 1, config.map.width) do
-            if math.sqrt((x - player.x)^2 + (y - player.y)^2) <= player.radius then
-                map_data[player.world].visited[y][x] = true
-            end
-        end
-    end
+	map.fill(map_data.underworld, "b")
+	map.gen_world(map_data.underworld, true)
+	map.add_passages(map_data)
+	map.add_troll_cave()
+	map.update_visibility(player, map_data)
 end
 
 function map.move_up(player, map_data)
