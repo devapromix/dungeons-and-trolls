@@ -17,10 +17,10 @@
         {"name": "Firewood", "chance": 0.7, "quantity": [1, 3]},
         {"name": "Healing Potion", "chance": 0.2, "quantity": [1, 1]}
       ],
-      "threshold": 0.15,
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
-      "noise_scale": 0.08,
-      "passable": true
+      "passable": true,
+      "special": false,
+      "underworld": false
     },
     {
       "symbol": "g",
@@ -36,10 +36,10 @@
         {"name": "Watermelon", "chance": 0.1, "quantity": [1, 2]},
         {"name": "Water Bottle", "chance": 0.3, "quantity": [1, 2]}
       ],
-      "threshold": 0.30,
       "effects": { "thirst": 0.75, "hunger": 0.4, "fatigue": 0.8 },
-      "noise_scale": 0.06,
-      "passable": true
+      "passable": true,
+      "special": false,
+      "underworld": false
     },
     {
       "symbol": "p",
@@ -55,10 +55,10 @@
         {"name": "Watermelon", "chance": 0.1, "quantity": [1, 1]},
         {"name": "Water Bottle", "chance": 0.2, "quantity": [1, 2]}
       ],
-      "threshold": 0.45,
       "effects": { "thirst": 1.25, "hunger": 0.5, "fatigue": 1 },
-      "noise_scale": 0.05,
-      "passable": true
+      "passable": true,
+      "special": false,
+      "underworld": false
     },
     {
       "symbol": "s",
@@ -73,10 +73,10 @@
         {"name": "Strawberry", "chance": 0.1, "quantity": [1, 3]},
         {"name": "Water Bottle", "chance": 0.1, "quantity": [1, 1]}
       ],
-      "threshold": 0.60,
       "effects": { "thirst": 1.5, "hunger": 0.5, "fatigue": 1 },
-      "noise_scale": 0.10,
-      "passable": true
+      "passable": true,
+      "special": false,
+      "underworld": false
     },
     {
       "symbol": "v",
@@ -92,10 +92,10 @@
         {"name": "Firewood", "chance": 0.4, "quantity": [1, 2]},
         {"name": "Water Bottle", "chance": 0.2, "quantity": [1, 2]}
       ],
-      "threshold": 0.75,
       "effects": { "thirst": 2, "hunger": 0.6, "fatigue": 1.2 },
-      "noise_scale": 0.12,
-      "passable": true
+      "passable": true,
+      "special": false,
+      "underworld": false
     },
     {
       "symbol": "d",
@@ -107,10 +107,10 @@
       "items": [
         {"name": "Water Bottle", "chance": 0.15, "quantity": [1, 1]}
       ],
-      "threshold": 0.85,
       "effects": { "thirst": 2.5, "hunger": 0.8, "fatigue": 1.5 },
-      "noise_scale": 0.04,
-      "passable": true
+      "passable": true,
+      "special": false,
+      "underworld": false
     },
     {
       "symbol": "m",
@@ -126,10 +126,10 @@
         {"name": "Strawberry", "chance": 0.1, "quantity": [1, 1]},
         {"name": "Apple", "chance": 0.2, "quantity": [1, 1]}
       ],
-      "threshold": 1.0,
       "effects": { "thirst": 1.25, "hunger": 0.6, "fatigue": 2 },
-      "noise_scale": 0.15,
-      "passable": true
+      "passable": true,
+      "special": false,
+      "underworld": false
     },
     {
       "symbol": "r",
@@ -146,10 +146,10 @@
         {"name": "Strawberry", "chance": 0.2, "quantity": [1, 3]},
         {"name": "Apple", "chance": 0.4, "quantity": [1, 3]}
       ],
-      "threshold": 0.1,
       "effects": { "thirst": -1.5, "hunger": 0.5, "fatigue": 1.2 },
-      "river_noise_scale": 0.05,
-      "passable": true
+      "passable": true,
+      "special": true,
+      "underworld": false
     },
     {
       "symbol": "u",
@@ -164,10 +164,10 @@
         {"name": "Mushroom", "chance": 0.6, "quantity": [2, 5]},
         {"name": "Water Bottle", "chance": 0.3, "quantity": [1, 2]}
       ],
-      "threshold": 0.3,
       "effects": { "thirst": 1.5, "hunger": 0.5, "fatigue": 1.2 },
-      "noise_scale": 0.1,
-      "passable": true
+      "passable": true,
+      "special": false,
+      "underworld": true
     },
     {
       "symbol": "l",
@@ -180,10 +180,10 @@
       "items": [
         {"name": "Mushroom", "chance": 0.2, "quantity": [1, 2]}
       ],
-      "threshold": 0.5,
       "effects": { "thirst": 2.5, "hunger": 0.7, "fatigue": 1.5 },
-      "noise_scale": 0.08,
-      "passable": true
+      "passable": true,
+      "special": false,
+      "underworld": true
     },
     {
       "symbol": "k",
@@ -197,10 +197,10 @@
       "items": [
         {"name": "Mushroom", "chance": 0.3, "quantity": [1, 2]}
       ],
-      "threshold": 0.7,
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1.3 },
-      "noise_scale": 0.12,
-      "passable": true
+      "passable": true,
+      "special": false,
+      "underworld": true
     },
     {
       "symbol": "o",
@@ -213,10 +213,10 @@
       "items": [
         {"name": "Mushroom", "chance": 0.15, "quantity": [1, 1]}
       ],
-      "threshold": 0.9,
       "effects": { "thirst": 0.8, "hunger": 0.4, "fatigue": 0.9 },
-      "noise_scale": 0.15,
-      "passable": true
+      "passable": true,
+      "special": true,
+      "underworld": true
     },
     {
       "symbol": "t",
@@ -230,7 +230,9 @@
         {"name": "Gold", "chance": 0.6, "quantity": [30, 50]}
       ],
       "effects": { "thirst": 1.2, "hunger": 0.6, "fatigue": 1.1 },
-      "passable": true
+      "passable": true,
+      "special": true,
+      "underworld": true
     },
     {
       "symbol": ">",
@@ -239,7 +241,9 @@
       "enemies": [],
       "items": [],
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
-      "passable": true
+      "passable": true,
+      "special": true,
+      "underworld": false
     },
     {
       "symbol": "<",
@@ -248,7 +252,9 @@
       "enemies": [],
       "items": [],
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
-      "passable": true
+      "passable": true,
+      "special": true,
+      "underworld": true
     },
     {
       "symbol": "w",
@@ -257,7 +263,9 @@
       "enemies": [],
       "items": [],
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
-      "passable": false
+      "passable": false,
+      "special": false,
+      "underworld": true
     },
     {
       "symbol": "b",
@@ -266,7 +274,9 @@
       "enemies": [],
       "items": [],
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
-      "passable": false
+      "passable": false,
+      "special": false,
+      "underworld": true
     },
     {
       "symbol": "n",
@@ -275,7 +285,9 @@
       "enemies": [],
       "items": [],
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
-      "passable": false
+      "passable": false,
+      "special": false,
+      "underworld": true
     },
     {
       "symbol": "q",
@@ -284,7 +296,9 @@
       "enemies": [],
       "items": [],
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
-      "passable": false
+      "passable": false,
+      "special": false,
+      "underworld": true
     },
     {
       "symbol": "e",
@@ -293,7 +307,9 @@
       "enemies": [],
       "items": [],
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
-      "passable": false
+      "passable": false,
+      "special": false,
+      "underworld": true
     }
   ]
 }

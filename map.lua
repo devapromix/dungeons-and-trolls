@@ -13,18 +13,6 @@ function map.get_location_description(symbol)
     return { name = "Unknown", description = "An unknown location.", passable = true }
 end
 
-function map.noise(x, y, scale)
-    local seed = 12345
-    local value = math.sin(x * scale + seed) * math.cos(y * scale + seed)
-    return (value + 1) / 2
-end
-
-function map.river_noise(x, y, scale)
-    local seed = 54321
-    local value = math.sin((x + y) * scale + seed) * math.cos((x - y) * scale + seed)
-    return (value + 1) / 2
-end
-
 function map.get_biome_effects(symbol)
     for _, location in ipairs(locations_data.locations or {}) do
         if location.symbol == symbol then
@@ -75,44 +63,44 @@ function map.cellular_automaton(tiles, width, height, iterations)
 end
 
 function map.biome(world, x, y, tile, size)
-	local biome_x, biome_y = x, y
-	for i = 1, size do
-		world.tiles[biome_y][biome_x] = tile
-		d = math.random(1, 4)
-		if d == 1 and biome_x - 1 >= 1 then
-			biome_x = biome_x - 1
-		elseif d == 2 and biome_x + 1 <= config.map.width then
-			biome_x = biome_x + 1
-		elseif d == 3 and biome_y - 1 >= 1 then
-			biome_y = biome_y - 1
-		elseif d == 4 and biome_y + 1 <= config.map.height then
-			biome_y = biome_y + 1
-		end
-	end
+    local biome_x, biome_y = x, y
+    for i = 1, size do
+        world.tiles[biome_y][biome_x] = tile
+        d = math.random(1, 4)
+        if d == 1 and biome_x - 1 >= 1 then
+            biome_x = biome_x - 1
+        elseif d == 2 and biome_x + 1 <= config.map.width then
+            biome_x = biome_x + 1
+        elseif d == 3 and biome_y - 1 >= 1 then
+            biome_y = biome_y - 1
+        elseif d == 4 and biome_y + 1 <= config.map.height then
+            biome_y = biome_y + 1
+        end
+    end
 end
 
 function map.fill(world, symbol)
-	for y = 1, config.map.height do
-		for x = 1, config.map.width do
-			world.tiles[y][x] = symbol
-		end
-	end
+    for y = 1, config.map.height do
+        for x = 1, config.map.width do
+            world.tiles[y][x] = symbol
+        end
+    end
 end
 
 function map.get_random_location_symbol(is_passable, is_underworld)
-	local location = nil
-	repeat
-		location = locations_data.locations[math.random(1, #locations_data.locations)]
-	until location.passable == is_passable
-	return location.symbol
+    local location = nil
+    repeat
+        location = locations_data.locations[math.random(1, #locations_data.locations)]
+    until location.passable == is_passable and location.underworld == is_underworld
+    return location.symbol
 end
 
 function map.gen_world(world, is_underworld, biome_amount, biome_size)
-	for i = 1, biome_amount do
-		x = math.random(1, config.map.width - 1)
-		y = math.random(1, config.map.height - 1)
-		map.biome(world, x, y, map.get_random_location_symbol(true, is_underworld), biome_size)
-	end
+    for i = 1, biome_amount do
+        x = math.random(1, config.map.width - 1)
+        y = math.random(1, config.map.height - 1)
+        map.biome(world, x, y, map.get_random_location_symbol(true, is_underworld), biome_size)
+    end
 end
 
 function map.add_passages(map_data)
@@ -143,7 +131,7 @@ function map.add_troll_cave()
 end
 
 function map.initialize_game(locations_data)
-	map_data = {
+    map_data = {
         overworld = {
             tiles = {},
             visited = {},
@@ -197,44 +185,7 @@ function map.initialize_game(locations_data)
             world.items[y] = {}
             world.enemies[y] = {}
             for x = 1, config.map.width do
-                local symbol
-                if is_underworld then
-                    local noise_value = map.noise(x, y, 0.1)
-                    if noise_value < 0.3 then
-                        symbol = "u"
-                    elseif noise_value < 0.5 then
-                        symbol = "l"
-                    elseif noise_value < 0.7 then
-                        symbol = "k"
-                    elseif noise_value < 0.95 then
-                        symbol = "o"
-                    else
-                        symbol = "#"
-                    end
-                else
-                    local river_location = nil
-                    for _, loc in ipairs(locations_data.locations) do
-                        if loc.symbol == "r" then
-                            river_location = loc
-                            break
-                        end
-                    end
-                    local river_value = map.river_noise(x, y, river_location.river_noise_scale or 0.05)
-                    if river_location and river_value < river_location.threshold then
-                        symbol = "r"
-                    else
-                        local selected_location = locations_data.locations[#locations_data.locations]
-                        for _, loc in ipairs(locations_data.locations) do
-                            local noise_value = map.noise(x, y, loc.noise_scale or 0.08)
-                            if loc.threshold and noise_value <= loc.threshold then
-                                selected_location = loc
-                                break
-                            end
-                        end
-                        symbol = selected_location.symbol
-                    end
-                end
-				
+                local symbol = map.get_random_location_symbol(true, is_underworld)
                 world.tiles[y][x] = symbol
                 world.visited[y][x] = false
                 world.items[y][x] = {}
@@ -268,14 +219,13 @@ function map.initialize_game(locations_data)
     
     initialize_world(map_data.overworld, false)
     initialize_world(map_data.underworld, true)
-    --(world, is_underworld, biome_amount, biome_size)
-	map.fill(map_data.overworld, map.get_random_location_symbol(true, false))
-	map.gen_world(map_data.overworld, false, 25, 200)
-	map.fill(map_data.underworld, map.get_random_location_symbol(false, true))
-	map.gen_world(map_data.underworld, true, 10, 100)
-	map.add_passages(map_data)
-	map.add_troll_cave()
-	map.update_visibility(player, map_data)
+    map.fill(map_data.overworld, map.get_random_location_symbol(true, false))
+    map.gen_world(map_data.overworld, false, 25, 200)
+    map.fill(map_data.underworld, map.get_random_location_symbol(true, true))
+    map.gen_world(map_data.underworld, true, 10, 100)
+    map.add_passages(map_data)
+    map.add_troll_cave()
+    map.update_visibility(player, map_data)
 end
 
 function map.move_up(player, map_data)
