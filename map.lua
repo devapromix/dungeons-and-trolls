@@ -91,7 +91,7 @@ function map.get_random_location_symbol(is_passable, is_underworld)
     local location = nil
     repeat
         location = locations_data.locations[math.random(1, #locations_data.locations)]
-    until location.passable == is_passable and location.underworld == is_underworld
+    until location.passable == is_passable and location.underworld == is_underworld and location.special == false
     return location.symbol
 end
 
@@ -220,9 +220,9 @@ function map.initialize_game(locations_data)
     initialize_world(map_data.overworld, false)
     initialize_world(map_data.underworld, true)
     map.fill(map_data.overworld, map.get_random_location_symbol(true, false))
-    map.gen_world(map_data.overworld, false, 25, 200)
-    map.fill(map_data.underworld, map.get_random_location_symbol(true, true))
-    map.gen_world(map_data.underworld, true, 10, 100)
+    map.gen_world(map_data.overworld, false, 45, 200)
+    map.fill(map_data.underworld, map.get_random_location_symbol(false, true))
+    map.gen_world(map_data.underworld, true, 20, 100)
     map.add_passages(map_data)
     map.add_troll_cave()
     map.update_visibility(player, map_data)
