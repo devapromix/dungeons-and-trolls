@@ -20,7 +20,11 @@
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
       "passable": true,
       "special": false,
-      "underworld": false
+      "underworld": false,
+      "color": {
+        "foreground": [34, 139, 34],
+        "background": [0, 100, 0]
+      }
     },
     {
       "symbol": "g",
@@ -39,7 +43,11 @@
       "effects": { "thirst": 0.75, "hunger": 0.4, "fatigue": 0.8 },
       "passable": true,
       "special": false,
-      "underworld": false
+      "underworld": false,
+      "color": {
+        "foreground": [124, 252, 0],
+        "background": [50, 205, 50]
+      }
     },
     {
       "symbol": "p",
@@ -58,7 +66,11 @@
       "effects": { "thirst": 1.25, "hunger": 0.5, "fatigue": 1 },
       "passable": true,
       "special": false,
-      "underworld": false
+      "underworld": false,
+      "color": {
+        "foreground": [154, 205, 50],
+        "background": [107, 142, 35]
+      }
     },
     {
       "symbol": "s",
@@ -76,7 +88,11 @@
       "effects": { "thirst": 1.5, "hunger": 0.5, "fatigue": 1 },
       "passable": true,
       "special": false,
-      "underworld": false
+      "underworld": false,
+      "color": {
+        "foreground": [139, 117, 0],
+        "background": [85, 71, 0]
+      }
     },
     {
       "symbol": "v",
@@ -95,7 +111,11 @@
       "effects": { "thirst": 2, "hunger": 0.6, "fatigue": 1.2 },
       "passable": true,
       "special": false,
-      "underworld": false
+      "underworld": false,
+      "color": {
+        "foreground": [188, 143, 143],
+        "background": [160, 82, 45]
+      }
     },
     {
       "symbol": "d",
@@ -110,7 +130,11 @@
       "effects": { "thirst": 2.5, "hunger": 0.8, "fatigue": 1.5 },
       "passable": true,
       "special": false,
-      "underworld": false
+      "underworld": false,
+      "color": {
+        "foreground": [210, 180, 140],
+        "background": [255, 228, 181]
+      }
     },
     {
       "symbol": "m",
@@ -129,7 +153,11 @@
       "effects": { "thirst": 1.25, "hunger": 0.6, "fatigue": 2 },
       "passable": true,
       "special": false,
-      "underworld": false
+      "underworld": false,
+      "color": {
+        "foreground": [139, 137, 137],
+        "background": [105, 105, 105]
+      }
     },
     {
       "symbol": "r",
@@ -149,7 +177,11 @@
       "effects": { "thirst": -1.5, "hunger": 0.5, "fatigue": 1.2 },
       "passable": true,
       "special": true,
-      "underworld": false
+      "underworld": false,
+      "color": {
+        "foreground": [0, 191, 255],
+        "background": [30, 144, 255]
+      }
     },
     {
       "symbol": "u",
@@ -167,7 +199,11 @@
       "effects": { "thirst": 1.5, "hunger": 0.5, "fatigue": 1.2 },
       "passable": true,
       "special": false,
-      "underworld": true
+      "underworld": true,
+      "color": {
+        "foreground": [147, 112, 219],
+        "background": [75, 0, 130]
+      }
     },
     {
       "symbol": "l",
@@ -183,7 +219,11 @@
       "effects": { "thirst": 2.5, "hunger": 0.7, "fatigue": 1.5 },
       "passable": true,
       "special": false,
-      "underworld": true
+      "underworld": true,
+      "color": {
+        "foreground": [255, 69, 0],
+        "background": [178, 34, 34]
+      }
     },
     {
       "symbol": "k",
@@ -200,7 +240,11 @@
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1.3 },
       "passable": true,
       "special": false,
-      "underworld": true
+      "underworld": true,
+      "color": {
+        "foreground": [112, 128, 144],
+        "background": [47, 79, 79]
+      }
     },
     {
       "symbol": "o",
@@ -216,7 +260,11 @@
       "effects": { "thirst": 0.8, "hunger": 0.4, "fatigue": 0.9 },
       "passable": true,
       "special": true,
-      "underworld": true
+      "underworld": true,
+      "color": {
+        "foreground": [192, 192, 192],
+        "background": [128, 128, 128]
+      }
     },
     {
       "symbol": "t",
@@ -232,7 +280,11 @@
       "effects": { "thirst": 1.2, "hunger": 0.6, "fatigue": 1.1 },
       "passable": true,
       "special": true,
-      "underworld": true
+      "underworld": true,
+      "color": {
+        "foreground": [85, 107, 47],
+        "background": [47, 79, 47]
+      }
     },
     {
       "symbol": ">",
@@ -243,7 +295,11 @@
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
       "passable": true,
       "special": true,
-      "underworld": false
+      "underworld": false,
+      "color": {
+        "foreground": [255, 255, 255],
+        "background": [0, 0, 0]
+      }
     },
     {
       "symbol": "<",
@@ -254,7 +310,11 @@
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
       "passable": true,
       "special": true,
-      "underworld": true
+      "underworld": true,
+      "color": {
+        "foreground": [255, 255, 255],
+        "background": [0, 0, 0]
+      }
     },
     {
       "symbol": "w",
@@ -265,7 +325,11 @@
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
       "passable": false,
       "special": false,
-      "underworld": true
+      "underworld": true,
+      "color": {
+        "foreground": [169, 169, 169],
+        "background": [105, 105, 105]
+      }
     },
     {
       "symbol": "b",
@@ -276,7 +340,11 @@
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
       "passable": false,
       "special": false,
-      "underworld": true
+      "underworld": true,
+      "color": {
+        "foreground": [54, 54, 54],
+        "background": [25, 25, 25]
+      }
     },
     {
       "symbol": "n",
@@ -287,7 +355,11 @@
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
       "passable": false,
       "special": false,
-      "underworld": true
+      "underworld": true,
+      "color": {
+        "foreground": [15, 15, 15],
+        "background": [4, 4, 4]
+      }
     },
     {
       "symbol": "q",
@@ -298,7 +370,11 @@
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
       "passable": false,
       "special": false,
-      "underworld": true
+      "underworld": true,
+      "color": {
+        "foreground": [245, 245, 220],
+        "background": [220, 220, 220]
+      }
     },
     {
       "symbol": "e",
@@ -309,7 +385,11 @@
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
       "passable": false,
       "special": false,
-      "underworld": true
+      "underworld": true,
+      "color": {
+        "foreground": [245, 245, 220],
+        "background": [211, 211, 211]
+      }
     }
   ]
 }
