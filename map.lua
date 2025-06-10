@@ -91,26 +91,34 @@ function map.biome(world, x, y, tile, size)
 	end
 end
 
-function map.fill(world, tile)
+function map.fill(world, symbol)
 	for y = 1, config.map.height do
 		for x = 1, config.map.width do
-			world.tiles[y][x] = tile
+			world.tiles[y][x] = symbol
 		end
 	end
 end
 
-function map.gen_world(world, is_underworld)
-	for i = 1, 100 do
+function map.get_random_location_symbol(is_passable, is_underworld)
+	local location = nil
+	repeat
+		location = locations_data.locations[math.random(1, #locations_data.locations)]
+	until location.passable == is_passable
+	return location.symbol
+end
+
+function map.gen_world(world, is_underworld, biome_amount, biome_size)
+	for i = 1, biome_amount do
 		x = math.random(1, config.map.width - 1)
 		y = math.random(1, config.map.height - 1)
-		map.biome(map_data.underworld, x, y, "u", 100)
+		map.biome(world, x, y, map.get_random_location_symbol(true, is_underworld), biome_size)
 	end
 end
 
 function map.add_passages(map_data)
     local center_x, center_y = math.floor(config.map.width / 2), math.floor(config.map.height / 2)
     local portals = {}
-    for i = 1, 3 do
+    for i = 1, 5 do
         local x, y
         repeat
             x = center_x + math.random(-15, 15)
@@ -226,6 +234,7 @@ function map.initialize_game(locations_data)
                         symbol = selected_location.symbol
                     end
                 end
+				
                 world.tiles[y][x] = symbol
                 world.visited[y][x] = false
                 world.items[y][x] = {}
@@ -259,9 +268,11 @@ function map.initialize_game(locations_data)
     
     initialize_world(map_data.overworld, false)
     initialize_world(map_data.underworld, true)
-    
-	map.fill(map_data.underworld, "b")
-	map.gen_world(map_data.underworld, true)
+    --(world, is_underworld, biome_amount, biome_size)
+	map.fill(map_data.overworld, map.get_random_location_symbol(true, false))
+	map.gen_world(map_data.overworld, false, 25, 200)
+	map.fill(map_data.underworld, map.get_random_location_symbol(false, true))
+	map.gen_world(map_data.underworld, true, 10, 100)
 	map.add_passages(map_data)
 	map.add_troll_cave()
 	map.update_visibility(player, map_data)
