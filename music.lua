@@ -40,6 +40,7 @@ function music.play_random()
 end
 
 function music.setVolume(vol)
+	config.audio.volume = vol
 	if music.currentSource then
 		music.currentSource:setVolume(vol)
 	end

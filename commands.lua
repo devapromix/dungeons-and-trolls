@@ -258,9 +258,10 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         if #command_parts < 2 then
             output.add("Please specify a volume level from 0 to 10 (e.g., 'volume 5').\n")
         else
+			local v = config.audio.volume
             local vol = tonumber(command_parts[2])
             if vol and vol >= 0 and vol <= 10 then
-				if config.audio.volume == 0 and vol > 0 then
+				if vol > 0 and config.audio.volume == 0 then
 					output.add("Music: on.\n")
 				end
                 music.setVolume(vol / 10)
@@ -269,7 +270,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
                 elseif vol >= 1 then
                     music.play_random()
                 end
-				if config.audio.volume > 0 then
+				if config.audio.volume > 0 and vol > 0 then
 					output.add("Volume set to " .. vol .. ".\n")
 				else
 					output.add("Music: off.\n")

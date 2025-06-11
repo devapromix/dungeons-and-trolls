@@ -1,6 +1,6 @@
 Commands:
 help - Show this help message.
-about - Show information about game
+about - Show information about game.
 new - Starts a new game.
 save - Saves a game.
 load - Loads a saved game.
@@ -18,7 +18,8 @@ look - Displays the current location.
 items - Display player's inventory and gold.
 eat <item> - Eats an item.
 drink <item> - Drinks an item.
-pick [quantity] <item> - Pick up an item
-drop [quantity] <item> - Drop an item
-attack <enemy> - Attack an enemy to engage in combat
+pick [quantity] <item> - Pick up an item.
+drop [quantity] <item> - Drop an item.
+attack <enemy> - Attack an enemy to engage in combat.
+volume <level> - Set the audio volume (0 to 10).
 quit - Exit the game.
