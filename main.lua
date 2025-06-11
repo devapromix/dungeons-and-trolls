@@ -12,6 +12,7 @@ game = require("game")
 player_module = require("player")
 skills = require("skills")
 commands = require("commands")
+volume = require("commands.volume")
 
 function love.load()
     input = {

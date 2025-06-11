@@ -313,4 +313,24 @@ function map.display_location(player, map_data)
     end
 end
 
+function map.draw()
+	for y = 1, config.map.height do
+		local line = ""
+		for x = 1, config.map.width do
+			if x == player.x and y == player.y then
+				if player.alive then
+					line = line .. player.symbol
+				else
+					line = line .. "X"
+				end
+			elseif config.debug or map_data[player.world].visited[y][x] then
+				line = line .. map_data[player.world].tiles[y][x]
+			else
+				line = line .. " "
+			end
+		end
+		output.add(line .. "\n")
+	end
+end
+
 return map

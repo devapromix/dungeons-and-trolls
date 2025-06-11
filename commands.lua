@@ -3,329 +3,352 @@ local commands = {}
 commands.awaiting_confirmation = false
 commands.confirmation_type = nil
 
+local movement_map = {
+	north = "north", n = "north",
+	south = "south", s = "south",
+	east = "east", e = "east",
+	west = "west", w = "west"
+}
+
 function commands.table_contains(table, element)
-    for _, value in ipairs(table) do
-        if value == element then
-            return true
-        end
-    end
-    return false
+	for _, value in ipairs(table) do
+		if value == element then
+			return true
+		end
+	end
+	return false
 end
 
 function commands.table_count(table)
-    local count = 0
-    for _ in pairs(table) do
-        count = count + 1
-    end
-    return count
+	local count = 0
+	for _ in pairs(table) do
+		count = count + 1
+	end
+	return count
 end
 
 function commands.look()
-    if not player_module.check_player_alive("look around", player) then
-        return
-    end
-    map.display_location(player, map_data)
+	if not player_module.check_player_alive("look around", player) then
+		return
+	end
+	map.display_location(player, map_data)
+end
+
+function commands.get_item_name_from_parts(command_parts, start_index)
+	return table.concat(command_parts, " ", start_index)
+end
+
+function commands.validate_parameter(param, param_type, output)
+	if #param < 3 then
+		output.add("Parameter '" .. param .. "' must be at least 3 characters long.\n")
+		return false
+	end
+	return true
 end
 
 function commands.parse_item_command(command_parts, start_index)
-    local quantity = 1
-    local item_name
-    if tonumber(command_parts[start_index]) then
-        quantity = math.floor(tonumber(command_parts[start_index]))
-        if #command_parts >= start_index + 1 then
-            item_name = table.concat(command_parts, " ", start_index + 1)
-        else
-            output.add("Please specify an item name after the quantity (e.g., 'pick 3 Healing Potion').\n")
-            return nil, nil
-        end
-    else
-        item_name = table.concat(command_parts, " ", start_index)
-    end
-    return quantity, item_name
+	local quantity = 1
+	local item_name
+	if tonumber(command_parts[start_index]) then
+		quantity = math.floor(tonumber(command_parts[start_index]))
+		if #command_parts >= start_index + 1 then
+			item_name = commands.get_item_name_from_parts(command_parts, start_index + 1)
+		else
+			output.add("Please specify an item name after the quantity (e.g., 'pick 3 Healing Potion').\n")
+			return nil, nil
+		end
+	else
+		item_name = commands.get_item_name_from_parts(command_parts, start_index)
+	end
+	if item_name and not commands.validate_parameter(item_name, "item", output) then
+		return nil, nil
+	end
+	return quantity, item_name
+end
+
+function commands.handle_confirmation(command_parts, output)
+	local cmd = command_parts[1]
+	if cmd == "y" or cmd == "yes" then
+		if commands.confirmation_type == "new" then
+			game.new_game()
+		elseif commands.confirmation_type == "load" then
+			game.load_game()
+			output.add(const.TYPE_HELP_MSG)
+		end
+		commands.awaiting_confirmation = false
+		commands.confirmation_type = nil
+	elseif cmd == "n" or cmd == "no" then
+		commands.awaiting_confirmation = false
+		commands.confirmation_type = nil
+		commands.look()
+	else
+		output.add("Please enter ('yes' or 'no').\n")
+	end
+end
+
+function commands.handle_movement_command(direction, player, map_data, config, time, output, player_module)
+	if player_module.move_player(direction, player, map_data, config, time, output) then
+		local status_message = player_module.check_player_status(player)
+		if status_message ~= "" then
+			output.add(status_message)
+		end
+	end
+end
+
+function commands.handle_item_commands(cmd, command_parts, player, map_data, items_data, items, player_module)
+	if cmd == "eat" then
+		if #command_parts < 2 then
+			output.add("Please specify an item to eat (e.g., 'eat Apple').\n")
+		else
+			local item_name = commands.get_item_name_from_parts(command_parts, 2)
+			if commands.validate_parameter(item_name, "item", output) then
+				player = items.eat_item(player, items_data, item_name) or player
+			end
+		end
+	elseif cmd == "drink" then
+		if #command_parts < 2 then
+			output.add("Please specify an item to drink (e.g., 'drink Healing Potion').\n")
+		else
+			local item_name = commands.get_item_name_from_parts(command_parts, 2)
+			if commands.validate_parameter(item_name, "item", output) then
+				player = items.drink_item(player, items_data, item_name) or player
+			end
+		end
+	elseif cmd == "pick" then
+		if #command_parts < 2 then
+			output.add("Please specify a quantity and item to pick up (e.g., 'pick 2 Healing Potion').\n")
+		else
+			local quantity, item_name = commands.parse_item_command(command_parts, 2)
+			if quantity and item_name then
+				items.pick_item(player, map_data[player.world], item_name, quantity)
+			end
+		end
+	elseif cmd == "drop" then
+		if #command_parts < 2 then
+			output.add("Please specify a quantity and item to drop (e.g., 'drop 2 Healing Potion').\n")
+		else
+			local quantity, item_name = commands.parse_item_command(command_parts, 2)
+			if quantity and item_name then
+				items.drop_item(player, map_data[player.world], item_name, quantity)
+			end
+		end
+	elseif cmd == "equip" then
+		if #command_parts < 2 then
+			output.add("Please specify an item to equip (e.g., 'equip Sword').\n")
+		else
+			local item_name = commands.get_item_name_from_parts(command_parts, 2)
+			if commands.validate_parameter(item_name, "item", output) then
+				player = player_module.equip_item(player, items_data, item_name)
+			end
+		end
+	elseif cmd == "unequip" then
+		if #command_parts < 2 then
+			output.add("Please specify an item or slot to unequip (e.g., 'unequip Sword' or 'unequip weapon').\n")
+		else
+			local identifier = commands.get_item_name_from_parts(command_parts, 2)
+			if commands.validate_parameter(identifier, "item", output) then
+				player = player_module.unequip_item(player, items_data, identifier)
+			end
+		end
+	end
+	return player
+end
+
+function commands.handle_game_commands(cmd, command_parts, player, output)
+	if cmd == "help" then
+		game.help()
+	elseif cmd == "new" then
+		if game.initialized and player.alive then
+			commands.awaiting_confirmation = true
+			commands.confirmation_type = "new"
+			output.add("This will end the current game. Are you sure you want to start a new game? (yes/no)\n")
+		else
+			game.new_game()
+		end
+	elseif cmd == "load" then
+		if game.initialized and player.alive then
+			commands.awaiting_confirmation = true
+			commands.confirmation_type = "load"
+			output.add("This will end the current game. Are you sure you want to load a saved game? (yes/no)\n")
+		else
+			game.load_game()
+			output.add(const.TYPE_HELP_MSG)
+		end
+	elseif cmd == "save" then
+		if not player_module.check_player_alive("save the game", player) then
+			return
+		end
+		game.save_game()
+	elseif cmd == "about" then
+		game.about()
+	elseif cmd == "quit" then
+		if game.initialized then
+			game.save_game()
+		end
+		love.event.quit()
+	end
+end
+
+function commands.handle_info_commands(cmd, command_parts, player, map_data, config, game_time, skills, output, player_module)
+	if cmd == "status" then
+		player_module.draw_status(player)
+	elseif cmd == "skills" then
+		output.add("Skills:\n")
+		skills.draw()
+	elseif cmd == "time" then
+		output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
+	elseif cmd == "items" then
+		if not player_module.check_player_alive("check your inventory", player) then
+			return
+		end
+		output.add("Inventory (" .. commands.table_count(player.inventory) .. "/" .. config.inventory.max_slots .. "):\n")
+		if next(player.inventory) == nil then
+			output.add("(empty)\n")
+		else
+			for item, quantity in pairs(player.inventory) do
+				local equipped = items.is_item_equipped(player, item) and " (equipped)" or ""
+				if quantity > 1 then
+					output.add(item .. " (" .. quantity .. ")" .. equipped .. "\n")
+				else
+					output.add(item .. equipped .. "\n")
+				end
+			end
+		end
+		output.add("Gold: " .. player.gold .. "\n")
+	elseif cmd == "map" then
+		map.draw()
+	end
+end
+
+local function display_item_info(item_key, item_data, output)
+	output.add(item_key .. ":\n\n")
+	output.add(item_data.description .. "\n\n")
+	for _, tag in ipairs(item_data.tags) do
+		local key, value = tag:match("(%w+)=(%d+)")
+		if key and value then
+			local capitalized_key = key:sub(1, 1):upper() .. key:sub(2)
+			output.add(capitalized_key .. ": " .. value .. "\n")
+		end
+	end
+end
+
+function commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config)
+	if cmd == "rest" then
+		if not player_module.check_player_alive("rest", player) then
+			return player
+		end
+		return player_module.rest(player, map_data, game_time, time)
+	elseif cmd == "examine" then
+		if not player_module.check_player_alive("examine", player) then
+			return player
+		end
+		if #command_parts < 2 then
+			output.add("Please specify an item or enemy to examine (e.g., 'examine Goblin').\n")
+			return player
+		end
+		local name = commands.get_item_name_from_parts(command_parts, 2)
+		if not commands.validate_parameter(name, "name", output) then
+			return player
+		end
+		local enemies_at_location = map_data[player.world].enemies[player.y][player.x]
+		for enemy_name, _ in pairs(enemies_at_location) do
+			if enemy_name:lower() == name:lower() then
+				local enemy_data = enemies.get_enemy_data(enemies_data, enemy_name)
+				if enemy_data then
+					output.add(enemy_data.name .. ":\n\n")
+					output.add(enemy_data.description .. "\n\n")
+					output.add("Health: " .. enemy_data.health .. "\nAttack: " .. enemy_data.attack .. "\nDefense: " .. enemy_data.defense .. "\nExperience: " .. enemy_data.experience .. "\n")
+					return player
+				end
+			end
+		end
+		local item_key = items.find_item_key(player.inventory, name, false)
+		if item_key then
+			local item_data = items.get_item_data(items_data, item_key)
+			display_item_info(item_key, item_data, output)
+			return player
+		end
+		item_key = items.find_item_key(map_data[player.world].items[player.y][player.x], name, false)
+		if item_key then
+			local item_data = items.get_item_data(items_data, item_key)
+			display_item_info(item_key, item_data, output)
+			return player
+		end
+		output.add("No item or enemy named " .. name .. " found.\n")
+	elseif cmd == "look" then
+		commands.look()
+	elseif cmd == "attack" then
+		if #command_parts < 2 then
+			output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
+		else
+			local enemy_name = commands.get_item_name_from_parts(command_parts, 2)
+			if commands.validate_parameter(enemy_name, "enemy", output) then
+				player_module.attack_enemy(enemy_name, map_data, player, enemies_data, items_data, skills_data, time, map, output)
+			end
+		end
+	elseif cmd == "up" or cmd == "u" then
+		if not player_module.check_player_alive("move up", player) then
+			return player
+		end
+		if map.move_up(player, map_data) then
+			music.play_random()
+			output.add("You climb up to the surface.\n")
+			map.display_location(player, map_data)
+		else
+			output.add("There is no exit here.\n")
+		end
+	elseif cmd == "down" or cmd == "d" then
+		if not player_module.check_player_alive("move down", player) then
+			return player
+		end
+		if map.move_down(player, map_data) then
+			music.play_random()
+			output.add("You descend into the underworld.\n")
+			map.display_location(player, map_data)
+		else
+			output.add("There is no entrance here.\n")
+		end
+	elseif cmd == "light" then
+		if not player_module.check_player_alive("light a fire", player) then
+			return player
+		end
+		items.make_fire_item(player, map_data)
+	elseif cmd == "volume" then
+		if #command_parts < 2 then
+			output.add("Please specify a volume level from 0 to 10 (e.g., 'volume 5').\n")
+		else
+			local vol = tonumber(command_parts[2])
+			volume.exec(vol)
+		end
+	end
+	return player
 end
 
 function commands.handle_command(command_parts, player, map_data, items_data, enemies_data, skills_data, config, game_time, input, output, time, player_module, items, enemies, map, skills, json)
-    if commands.awaiting_confirmation then
-        if command_parts[1] == "y" or command_parts[1] == "yes" then
-            if commands.confirmation_type == "new" then
-                game.new_game()
-            elseif commands.confirmation_type == "load" then
-                game.load_game()
-                output.add(const.TYPE_HELP_MSG)
-            end
-            commands.awaiting_confirmation = false
-            commands.confirmation_type = nil
-        elseif command_parts[1] == "n" or command_parts[1] == "no" then
-            commands.awaiting_confirmation = false
-            commands.confirmation_type = nil
-            commands.look()
-        else
-            output.add("Please enter ('yes' or 'no').\n")
-        end
-        return
-    end
+	if commands.awaiting_confirmation then
+		commands.handle_confirmation(command_parts, output)
+		return
+	end
 
-    if not game.initialized and not (command_parts[1] == "help" or command_parts[1] == "quit" or command_parts[1] == "new" or command_parts[1] == "about" or command_parts[1] == "load") then
-        output.add("No game loaded or saved game version is incompatible. " .. const.START_NEW_GAME_MSG)
-        return
-    end
+	if not game.initialized and not commands.table_contains({"help", "quit", "new", "about", "load"}, command_parts[1]) then
+		output.add("No game loaded or saved game version is incompatible. " .. const.START_NEW_GAME_MSG)
+		return
+	end
 
-    if command_parts[1] == "help" then
-        game.help()
-    elseif command_parts[1] == "new" then
-        if game.initialized and player.alive then
-            commands.awaiting_confirmation = true
-            commands.confirmation_type = "new"
-            output.add("This will end the current game. Are you sure you want to start a new game? (yes/no)\n")
-        else
-            game.new_game()
-        end
-    elseif command_parts[1] == "load" then
-        if game.initialized and player.alive then
-            commands.awaiting_confirmation = true
-            commands.confirmation_type = "load"
-            output.add("This will end the current game. Are you sure you want to load a saved game? (yes/no)\n")
-        else
-            game.load_game()
-            output.add(const.TYPE_HELP_MSG)
-        end
-    elseif command_parts[1] == "save" then
-        if not player_module.check_player_alive("save the game", player) then
-            return
-        end
-        game.save_game()
-    elseif command_parts[1] == "status" then
-        player_module.draw_status(player)
-    elseif command_parts[1] == "skills" then
-        output.add("Skills:\n")
-        skills.draw()
-    elseif command_parts[1] == "time" then
-        output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
-    elseif command_parts[1] == "rest" then
-        if not player_module.check_player_alive("rest", player) then
-            return
-        end
-        player = player_module.rest(player, map_data, game_time, time)
-    elseif command_parts[1] == "eat" then
-        if #command_parts < 2 then
-            output.add("Please specify an item to eat (e.g., 'eat Apple').\n")
-        else
-            local item_name = table.concat(command_parts, " ", 2)
-            player = items.eat_item(player, items_data, item_name) or player
-        end
-    elseif command_parts[1] == "drink" then
-        if #command_parts < 2 then
-            output.add("Please specify an item to drink (e.g., 'drink Healing Potion').\n")
-        else
-            local item_name = table.concat(command_parts, " ", 2)
-            player = items.drink_item(player, items_data, item_name) or player
-        end
-    elseif command_parts[1] == "items" then
-        if not player_module.check_player_alive("check your inventory", player) then
-            return
-        end
-        output.add("Inventory (" .. commands.table_count(player.inventory) .. "/" .. config.inventory.max_slots .. "):\n")
-        if next(player.inventory) == nil then
-            output.add("(empty)\n")
-        else
-            for item, quantity in pairs(player.inventory) do
-                local equipped = items.is_item_equipped(player, item) and " (equipped)" or ""
-                if quantity > 1 then
-                    output.add(item .. " (" .. quantity .. ")" .. equipped .. "\n")
-                else
-                    output.add(item .. equipped .. "\n")
-                end
-            end
-        end
-        output.add("Gold: " .. player.gold .. "\n")
-    elseif command_parts[1] == "pick" then
-        if #command_parts < 2 then
-            output.add("Please specify a quantity and item to pick up (e.g., 'pick 2 Healing Potion').\n")
-        else
-            local quantity, item_name = commands.parse_item_command(command_parts, 2)
-            if quantity and item_name then
-                items.pick_item(player, map_data[player.world], item_name, quantity)
-            end
-        end
-    elseif command_parts[1] == "drop" then
-        if #command_parts < 2 then
-            output.add("Please specify a quantity and item to drop (e.g., 'drop 2 Healing Potion').\n")
-        else
-            local quantity, item_name = commands.parse_item_command(command_parts, 2)
-            if quantity and item_name then
-                items.drop_item(player, map_data[player.world], item_name, quantity)
-            end
-        end
-    elseif command_parts[1] == "equip" then
-        if #command_parts < 2 then
-            output.add("Please specify an item to equip (e.g., 'equip Sword').\n")
-        else
-            local item_name = table.concat(command_parts, " ", 2)
-            player = player_module.equip_item(player, items_data, item_name)
-        end
-    elseif command_parts[1] == "unequip" then
-        if #command_parts < 2 then
-            output.add("Please specify an item or slot to unequip (e.g., 'unequip Sword' or 'unequip weapon').\n")
-        else
-            local identifier = table.concat(command_parts, " ", 2)
-            player = player_module.unequip_item(player, items_data, identifier)
-        end
-    elseif command_parts[1] == "examine" then
-        if not player_module.check_player_alive("examine", player) then
-            return
-        end
-        if #command_parts < 2 then
-            output.add("Please specify an item or enemy to examine (e.g., 'examine Goblin').\n")
-            return
-        end
-        local name = table.concat(command_parts, " ", 2)
-        local enemies_at_location = map_data[player.world].enemies[player.y][player.x]
-        for enemy_name, _ in pairs(enemies_at_location) do
-            if enemy_name:lower() == name:lower() then
-                local enemy_data = enemies.get_enemy_data(enemies_data, enemy_name)
-                if enemy_data then
-                    output.add(enemy_data.name .. ":\n\n")
-                    output.add(enemy_data.description .. "\n\n")
-                    output.add("Health: " .. enemy_data.health .. "\nAttack: " .. enemy_data.attack .. "\nDefense: " .. enemy_data.defense .. "\nExperience: " .. enemy_data.experience .. "\n")
-                    return
-                end
-            end
-        end
-        local item_key = items.find_item_key(player.inventory, name, false)
-        if item_key then
-            local item_data = items.get_item_data(items_data, item_key)
-            output.add(item_key .. ":\n\n")
-            output.add(item_data.description .. "\n\n")
-            output.add(table.concat(item_data.tags, ", ") .. "\n")
-            return
-        end
-        item_key = items.find_item_key(map_data[player.world].items[player.y][player.x], name, false)
-        if item_key then
-            local item_data = items.get_item_data(items_data, item_key)
-            output.add(item_key .. ":\n\n")
-            output.add(item_data.description .. "\n\n")
-            output.add(table.concat(item_data.tags, ", ") .. "\n")
-            return
-        end
-        output.add("No item or enemy named " .. name .. " found.\n")
-    elseif command_parts[1] == "look" then
-        commands.look()
-    elseif command_parts[1] == "map" then
-        for y = 1, config.map.height do
-            local line = ""
-            for x = 1, config.map.width do
-                if x == player.x and y == player.y then
-                    if player.alive then
-                        line = line .. player.symbol
-                    else
-                        line = line .. "X"
-                    end
-                elseif config.debug or map_data[player.world].visited[y][x] then
-                    line = line .. map_data[player.world].tiles[y][x]
-                else
-                    line = line .. " "
-                end
-            end
-            output.add(line .. "\n")
-        end
-    elseif command_parts[1] == "attack" then
-        if #command_parts < 2 then
-            output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
-        else
-            local enemy_name = table.concat(command_parts, " ", 2)
-            player_module.attack_enemy(enemy_name, map_data, player, enemies_data, items_data, skills_data, time, map, output)
-        end
-    elseif command_parts[1] == "north" or command_parts[1] == "n" then
-        if player_module.move_player("north", player, map_data, config, time, output) then
-            local status_message = player_module.check_player_status(player)
-            if status_message ~= "" then
-                output.add(status_message)
-            end
-        end
-    elseif command_parts[1] == "south" or command_parts[1] == "s" then
-        if player_module.move_player("south", player, map_data, config, time, output) then
-            local status_message = player_module.check_player_status(player)
-            if status_message ~= "" then
-                output.add(status_message)
-            end
-        end
-    elseif command_parts[1] == "east" or command_parts[1] == "e" then
-        if player_module.move_player("east", player, map_data, config, time, output) then
-            local status_message = player_module.check_player_status(player)
-            if status_message ~= "" then
-                output.add(status_message)
-            end
-        end
-    elseif command_parts[1] == "west" or command_parts[1] == "w" then
-        if player_module.move_player("west", player, map_data, config, time, output) then
-            local status_message = player_module.check_player_status(player)
-            if status_message ~= "" then
-                output.add(status_message)
-            end
-        end
-    elseif command_parts[1] == "up" then
-        if not player_module.check_player_alive("move up", player) then
-            return
-        end
-        if map.move_up(player, map_data) then
-            music.play_random()
-            output.add("You climb up to the surface.\n")
-            map.display_location(player, map_data)
-        else
-            output.add("There is no exit here.\n")
-        end
-    elseif command_parts[1] == "down" then
-        if not player_module.check_player_alive("move down", player) then
-            return
-        end
-        if map.move_down(player, map_data) then
-            music.play_random()
-            output.add("You descend into the underworld.\n")
-            map.display_location(player, map_data)
-        else
-            output.add("There is no entrance here.\n")
-        end
-    elseif command_parts[1] == "light" then
-        if not player_module.check_player_alive("light a fire", player) then
-            return
-        end
-        items.make_fire_item(player, map_data)
-    elseif command_parts[1] == "about" then
-        game.about()
-    elseif command_parts[1] == "volume" then
-        if #command_parts < 2 then
-            output.add("Please specify a volume level from 0 to 10 (e.g., 'volume 5').\n")
-        else
-            local v = config.audio.volume
-            local vol = tonumber(command_parts[2])
-            if vol and vol >= 0 and vol <= 10 then
-                if vol > 0 and config.audio.volume == 0 then
-                    output.add("Music: on.\n")
-                end
-                music.setVolume(vol / 10)
-                if vol == 0 then
-                    music.stop()
-                elseif vol >= 1 then
-                    music.play_random()
-                end
-                if config.audio.volume > 0 and vol > 0 then
-                    output.add("Volume set to " .. vol .. ".\n")
-                else
-                    output.add("Music: off.\n")
-                end
-            else
-                output.add("Invalid volume level. Please use a number from 0 to 10.\n")
-            end
-        end
-    elseif command_parts[1] == "quit" then
-        if game.initialized then
-            game.save_game()
-        end
-        love.event.quit()
-    else
-        output.add("Unknown command: '" .. command_parts[1] .. "'.\n")
-        output.add(const.TYPE_HELP_MSG)
-    end
+	local cmd = command_parts[1]
+
+	commands.handle_game_commands(cmd, command_parts, player, output)
+	commands.handle_info_commands(cmd, command_parts, player, map_data, config, game_time, skills, output, player_module)
+	player = commands.handle_item_commands(cmd, command_parts, player, map_data, items_data, items, player_module)
+	player = commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config)
+
+	local direction = movement_map[cmd]
+	if direction then
+		commands.handle_movement_command(direction, player, map_data, config, time, output, player_module)
+	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "attack", "up", "u", "down", "d", "light", "about", "volume", "quit"}, cmd) then
+		output.add("Unknown command: '" .. cmd .. "'.\n")
+		output.add(const.TYPE_HELP_MSG)
+	end
 end
 
 return commands

@@ -3,19 +3,13 @@ help - Show this help message.                                  north (or n) - M
 about - Show information about game.                            south (or s) - Move player south.
 new - Starts a new game.                                        east (or e) - Move player east.
 save - Saves a game.                                            west (or w) - Move player west.
-load - Loads a saved game.                                      up (or u) - Move up.
-map - Display the game map.                                     down (or d) - Move down.
+load - Loads a saved game.                                      up (or u) - Climb up to the surface.
+map - Display the game map.                                     down (or d) - Descend into the underworld.
 status - Display player's stats.                                examine <item or enemy> - Inspecting items or enemies.
-skills - Display player's skills.
-rest - Rest to restore health and mana.
-time - Displays the current time.
-light - Light a fire.
-look - Displays the current location.
-items - Display player's inventory and gold.
-eat <item> - Eats an item.
-drink <item> - Drinks an item.
-pick [quantity] <item> - Pick up an item.
-drop [quantity] <item> - Drop an item.
-attack <enemy> - Attack an enemy to engage in combat.
-volume <level> - Set the audio volume (0 to 10).
+skills - Display player's skills.                               eat <item> - Eats an item.
+rest - Rest to restore health and mana.                         drink <item> - Drinks an item.
+time - Displays the current time.                               pick [quantity] <item> - Pick up an item.
+light - Light a fire.                                           drop [quantity] <item> - Drop an item.
+look - Displays the current location.                           attack <enemy> - Attack an enemy to engage in combat.
+items - Display player's inventory and gold.                    volume <level> - Set the audio volume (0 to 10).
 quit - Exit the game.
