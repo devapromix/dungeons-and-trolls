@@ -71,16 +71,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
     end
 
     if command_parts[1] == "help" then
-        if love.filesystem.getInfo("assets/data/help.txt") then
-            local content = love.filesystem.read("assets/data/help.txt")
-            if content then
-                output.add(content)
-            else
-                output.add("Failed to read help file.\n")
-            end
-        else
-            output.add("Help file not found.\n")
-        end
+		game.help()
     elseif command_parts[1] == "new" then
         if game.initialized and player.alive then
             commands.awaiting_confirmation = true

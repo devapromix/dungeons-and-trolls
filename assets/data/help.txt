@@ -1,3 +1,4 @@
+Commands:
 help - Show this help message.
 about - Show information about game
 new - Starts a new game.

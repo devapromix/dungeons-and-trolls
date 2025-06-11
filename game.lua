@@ -17,10 +17,13 @@ function game.welcome()
 end
 
 function game.about()
-    output.add(config.game.name .. " v." .. config.game.version .. "\n\n")
-    output.add("Enter the mysterious Troll Dungeon, a dark and dangerous maze hidden deep underground. Legends speak of the Sword of Dawn, a powerful artifact guarded by ancient magic and deadly creatures. As the brave hero, you must navigate traps, solve puzzles, and face the troll guardians to claim the sword. Only by wielding the Sword of Dawn can you defeat the final evil and win the game.\n")
-    output.add("\nAuthor: Apromix\n")
-    output.add("\nSources: https://github.com/devapromix/dungeons-and-trolls\n")
+    output.add(config.game.name)
+	output.add("Version: " .. config.game.version .. "\n\n")
+	utils.output_text_file("assets/data/about.txt")
+end
+
+function game.help()
+	utils.output_text_file("assets/data/help.txt")
 end
 
 function game.new_game()
