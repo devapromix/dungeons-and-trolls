@@ -9,7 +9,7 @@ function enemies.get_tile_enemies_string(map_data, x, y)
     if not enemy_list or next(enemy_list) == nil then
         return ""
     end
-    local enemies_string = "You see enemies: "
+    local enemies_string = "\nYou see enemies: "
     local enemies = {}
     for name, quantity in pairs(enemy_list) do
         if quantity > 1 then

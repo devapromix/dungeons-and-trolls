@@ -66,7 +66,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
     end
 
     if not game.initialized and not (command_parts[1] == "help" or command_parts[1] == "quit" or command_parts[1] == "new" or command_parts[1] == "about" or command_parts[1] == "load") then
-        output.add("No game loaded or saved game version is incompatible. Please start a new game with the 'new' command.\n")
+        output.add("No game loaded or saved game version is incompatible. " .. const.START_NEW_GAME_MSG)
         return
     end
 

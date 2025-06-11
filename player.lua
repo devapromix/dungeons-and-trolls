@@ -30,7 +30,7 @@ function player.draw_status(player_data)
     output.add("\nSkills:\n")
     skills.draw()
     if not player_data.alive then
-        output.add("\nYou are DEAD.\nUse 'new' command to start a new game.\n")
+        output.add("\nYou are dead. " .. const.START_NEW_GAME_MSG)
     end
 end
 
@@ -308,7 +308,7 @@ end
 
 function player.check_player_alive(action, player_data)
     if not player_data.alive then
-        output.add("You are dead and cannot " .. action .. ".\nStart a new game with the 'new' command.\n")
+        output.add("You are dead and cannot " .. action .. ". " .. const.START_NEW_GAME_MSG)
         return false
     end
     return true
@@ -394,7 +394,7 @@ function player.combat_round(enemy_name, enemy_data, map_data, player_data, item
         if player_data.health <= 0 then
             player_data.alive = false
             output.add("You were defeated by " .. enemy_name .. ".\n")
-            output.add("Game over. Start a new game with the 'new' command.\n")
+            output.add("Game over. " .. const.START_NEW_GAME_MSG)
             local save_data = {
                 map = map_data,
                 player = player_data,

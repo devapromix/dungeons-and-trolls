@@ -1,17 +1,13 @@
 Commands:
-help - Show this help message.
-about - Show information about game.
-new - Starts a new game.
-save - Saves a game.
-load - Loads a saved game.
-map - Display the game map.
+help - Show this help message.                                  north (or n) - Move player north.
+about - Show information about game.                            south (or s) - Move player south.
+new - Starts a new game.                                        east (or e) - Move player east.
+save - Saves a game.                                            west (or w) - Move player west.
+load - Loads a saved game.                                      up (or u) - Move up.
+map - Display the game map.                                     down (or d) - Move down.
 status - Display player's stats.
 skills - Display player's skills.
 rest - Rest to restore health and mana.
-north (or n) - Move player north.
-south (or s) - Move player south.
-east (or e) - Move player east.
-west (or w) - Move player west.
 time - Displays the current time.
 light - Light a fire.
 look - Displays the current location.

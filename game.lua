@@ -3,9 +3,9 @@ local game = {
 }
 
 function game.welcome()
-    output.add("Welcome to " .. config.game.name .. " v." .. config.game.version .. "\n")
+    output.add("Welcome to " .. config.game.name .. "\n\n")
 	if config.debug then
-		output.add("Debug mode: on\n")
+		output.add("Debug mode: on\n\n")
 	end
     game.initialized = false
     if love.filesystem.getInfo("game.json") then
@@ -17,7 +17,7 @@ function game.welcome()
 end
 
 function game.about()
-    output.add(config.game.name)
+    output.add(config.game.name .. "\n\n")
 	output.add("Version: " .. config.game.version .. "\n\n")
 	utils.output_text_file("assets/data/about.txt")
 end
@@ -31,7 +31,7 @@ function game.new_game()
     map.initialize_game(locations_data)
     player = player_module.starter_kit(player)
     game.initialized = true
-    output.add("Created new game.\n")
+    output.add("Created new game.\n\n")
     map.display_location(player, map_data)
     output.add(const.TYPE_HELP_MSG)
 end
@@ -65,7 +65,7 @@ function game.load_game()
             if save_data then
                 if save_data.version ~= config.game.version then
                     output.add("Saved game version (" .. (save_data.version or "unknown") .. ") is incompatible with current game version (" .. config.game.version .. ").\n")
-                    output.add("Please start a new game with the 'new' command.\n")
+                    output.add(const.START_NEW_GAME_MSG)
                     game.initialized = false
                     return false
                 end
@@ -106,11 +106,11 @@ function game.load_game()
                     end
                 end
                 if not player.alive then
-                    output.add("Cannot load game: player is dead. Start a new game with the 'new' command.\n")
+                    output.add("Cannot load game: player is dead. " .. const.START_NEW_GAME_MSG)
                     game.initialized = false
                     return false
                 end
-                output.add("Loaded saved game.\n")
+                output.add("Loaded saved game.\n\n")
                 map.display_location(player, map_data)
                 game.initialized = true
                 return true

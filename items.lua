@@ -16,7 +16,7 @@ function items.get_tile_items_string(map, x, y)
     end
     local str = table.concat(item_list, ", ")
     if str ~= "" then
-        return "You see items: " .. str .. ".\n"
+        return "\nYou see items: " .. str .. ".\n"
     end
     return ""
 end

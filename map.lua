@@ -299,6 +299,7 @@ function map.display_location(player, map_data)
         table.insert(direction_strings, "To " .. dir_names .. " you see " .. biome .. ".")
     end
     
+	output.add("\n")
     if #direction_strings > 0 then
         output.add(table.concat(direction_strings, "\n") .. "\n")
     end
