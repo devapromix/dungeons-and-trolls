@@ -7,6 +7,7 @@ function time.tick_time(minutes)
         game_time.hour = game_time.hour + 1
     end
     while game_time.hour >= 24 do
+		music.play_random()
         game_time.hour = game_time.hour - 24
         game_time.day = game_time.day + 1
     end

@@ -6,7 +6,7 @@ config = {
 	debug = false,
 	
 	audio = {
-		volume = 0.5,
+		volume = 0.3,
 	},
 	
 	game = {

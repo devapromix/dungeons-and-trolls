@@ -27,6 +27,7 @@ function game.help()
 end
 
 function game.new_game()
+	music.play_random()
     map.initialize_game(locations_data)
     player = player_module.starter_kit(player)
     game.initialized = true
@@ -56,6 +57,7 @@ function game.save_game()
 end
 
 function game.load_game()
+	music.play_random()
     if love.filesystem.getInfo("game.json") then
         local save_string = love.filesystem.read("game.json")
         if save_string then

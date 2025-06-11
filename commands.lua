@@ -230,6 +230,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             return
         end
         if map.move_up(player, map_data) then
+			music.play_random()
             output.add("You climb up to the surface.\n")
             map.display_location(player, map_data)
         else
@@ -240,6 +241,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             return
         end
         if map.move_down(player, map_data) then
+			music.play_random()
             output.add("You descend into the underworld.\n")
             map.display_location(player, map_data)
         else
