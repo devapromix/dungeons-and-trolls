@@ -179,7 +179,19 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             return
         end
         local name = table.concat(command_parts, " ", 2)
-        local item_key = items.find_item_key(player.inventory, name)
+        local enemies_at_location = map_data[player.world].enemies[player.y][player.x]
+        for enemy_name, _ in pairs(enemies_at_location) do
+            if enemy_name:lower() == name:lower() then
+                local enemy_data = enemies.get_enemy_data(enemies_data, enemy_name)
+                if enemy_data then
+                    output.add(enemy_data.name .. ":\n\n")
+                    output.add(enemy_data.description .. "\n\n")
+                    output.add("Health: " .. enemy_data.health .. "\nAttack: " .. enemy_data.attack .. "\nDefense: " .. enemy_data.defense .. "\nExperience: " .. enemy_data.experience .. "\n")
+                    return
+                end
+            end
+        end
+        local item_key = items.find_item_key(player.inventory, name, false)
         if item_key then
             local item_data = items.get_item_data(items_data, item_key)
             output.add(item_key .. ":\n\n")
@@ -187,19 +199,12 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             output.add(table.concat(item_data.tags, ", ") .. "\n")
             return
         end
-        item_key = items.find_item_key(map_data[player.world].items[player.y][player.x], name)
+        item_key = items.find_item_key(map_data[player.world].items[player.y][player.x], name, false)
         if item_key then
             local item_data = items.get_item_data(items_data, item_key)
             output.add(item_key .. ":\n\n")
             output.add(item_data.description .. "\n\n")
             output.add(table.concat(item_data.tags, ", ") .. "\n")
-            return
-        end
-        local enemy_data = enemies.get_enemy_data(enemies_data, name)
-        if enemy_data and map_data[player.world].enemies[player.y][player.x][enemy_data.name] then
-            output.add(enemy_data.name .. ":\n\n")
-            output.add(enemy_data.description .. "\n\n")
-            output.add("Health: " .. enemy_data.health .. "\nAttack: " .. enemy_data.attack .. "\nDefense: " .. enemy_data.defense .. "\nExperience: " .. enemy_data.experience .. "\n")
             return
         end
         output.add("No item or enemy named " .. name .. " found.\n")

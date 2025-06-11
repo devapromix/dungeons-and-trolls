@@ -21,7 +21,7 @@ function items.get_tile_items_string(map, x, y)
     return ""
 end
 
-function items.find_item_key(item_table, name)
+function items.find_item_key(item_table, name, is_show)
     if not item_table or not name or name == "" then return nil end
     local lower_name = string.lower(name)
     local matches = {}
@@ -38,7 +38,7 @@ function items.find_item_key(item_table, name)
         return matches[1]
     end
     
-    output.add("No " .. name .. " found in your inventory.\n")
+    if is_show and is_show == true then output.add("No " .. name .. " found!\n") end
     return nil
 end
 
