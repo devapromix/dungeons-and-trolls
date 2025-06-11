@@ -1,0 +1,14 @@
+[
+    {
+        "input": "Raw Meat",
+        "output": "Cooked Meat",
+        "quantity": 1,
+        "requires_fire": true
+    },
+    {
+        "input": ["Mushroom", "Water Bottle"],
+        "output": "Stew",
+        "quantity": 1,
+        "requires_fire": true
+    }
+]

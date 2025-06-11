@@ -26,6 +26,11 @@
             "tags": ["edible=10"]
         },
         {
+            "name": "Stew",
+            "description": "A hot stew made from fresh ingredients.",
+            "tags": ["edible=40", "healing=5"]
+        },
+        {
             "name": "Raw Meat",
             "description": "A bloody, uncooked chunk of meat. Needs cooking first.",
             "tags": ["edible=15"]

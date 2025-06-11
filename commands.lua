@@ -4,10 +4,14 @@ commands.awaiting_confirmation = false
 commands.confirmation_type = nil
 
 local movement_map = {
-	north = "north", n = "north",
-	south = "south", s = "south",
-	east = "east", e = "east",
-	west = "west", w = "west"
+	north = "north",
+	south = "south",
+	east = "east",
+	west = "west",
+	n = "north",
+	s = "south",
+	e = "east",
+	w = "west"
 }
 
 function commands.table_contains(table, element)
@@ -320,6 +324,8 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 			local vol = tonumber(command_parts[2])
 			volume.exec(vol)
 		end
+	elseif cmd == "cook" then
+		return cook.exec(command_parts, player, map_data, items_data, output, items)
 	end
 	return player
 end
@@ -345,7 +351,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 	local direction = movement_map[cmd]
 	if direction then
 		commands.handle_movement_command(direction, player, map_data, config, time, output, player_module)
-	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "attack", "up", "u", "down", "d", "light", "about", "volume", "quit"}, cmd) then
+	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "attack", "up", "u", "down", "d", "light", "volume", "cook", "quit"}, cmd) then
 		output.add("Unknown command: '" .. cmd .. "'.\n")
 		output.add(const.TYPE_HELP_MSG)
 	end
