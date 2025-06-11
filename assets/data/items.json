@@ -16,14 +16,14 @@
             "tags": ["edible=15"]
         },
         {
-            "name": "Mushroom",
-            "description": "A wild mushroom. Edible, but be careful with unknown species.",
-            "tags": ["edible=10"]
-        },
-        {
             "name": "Bread",
             "description": "A simple loaf of bread. Fills the stomach decently.",
             "tags": ["edible=35"]
+        },
+        {
+            "name": "Mushroom",
+            "description": "A black mushroom. Edible, but be careful with unknown species.",
+            "tags": ["edible=10"]
         },
         {
             "name": "Raw Meat",

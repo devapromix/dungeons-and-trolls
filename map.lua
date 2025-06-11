@@ -309,7 +309,7 @@ function map.display_location(player, map_data)
     local enemies_string = enemies.get_tile_enemies_string(map_data[player.world], player.x, player.y)
     output.add(enemies_string)
     if map_data[player.world].fire.active and map_data[player.world].fire.x == player.x and map_data[player.world].fire.y == player.y then
-        output.add("A fire is burning here.\n")
+        output.add(const.FIRE_IS_BURNING)
     end
 end
 

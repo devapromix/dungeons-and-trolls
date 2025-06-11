@@ -312,7 +312,7 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 		if not player_module.check_player_alive("light a fire", player) then
 			return player
 		end
-		items.make_fire_item(player, map_data)
+		items.make_fire_item(player, map_data, player.world)
 	elseif cmd == "volume" then
 		if #command_parts < 2 then
 			output.add("Please specify a volume level from 0 to 10 (e.g., 'volume 5').\n")

@@ -4,6 +4,7 @@ function player.starter_kit(player_data)
     if not player_data.inventory then
         player_data.inventory = {}
     end
+    player_data.inventory["Firewood"] = (player_data.inventory["Firewood"] or 0) + math.random(1, 3)
     player_data.inventory["Apple"] = (player_data.inventory["Apple"] or 0) + math.random(1, 3)
     player_data.inventory["Bread"] = (player_data.inventory["Bread"] or 0) + math.random(1, 3)
     player_data.inventory["Water Bottle"] = (player_data.inventory["Water Bottle"] or 0) + math.random(1, 3)
