@@ -170,6 +170,39 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             local identifier = table.concat(command_parts, " ", 2)
             player = player_module.unequip_item(player, items_data, identifier)
         end
+    elseif command_parts[1] == "examine" then
+        if not player_module.check_player_alive("examine", player) then
+            return
+        end
+        if #command_parts < 2 then
+            output.add("Please specify an item or enemy to examine (e.g., 'examine Goblin').\n")
+            return
+        end
+        local name = table.concat(command_parts, " ", 2)
+        local item_key = items.find_item_key(player.inventory, name)
+        if item_key then
+            local item_data = items.get_item_data(items_data, item_key)
+            output.add(item_key .. ":\n\n")
+            output.add(item_data.description .. "\n\n")
+            output.add(table.concat(item_data.tags, ", ") .. "\n")
+            return
+        end
+        item_key = items.find_item_key(map_data[player.world].items[player.y][player.x], name)
+        if item_key then
+            local item_data = items.get_item_data(items_data, item_key)
+            output.add(item_key .. ":\n\n")
+            output.add(item_data.description .. "\n\n")
+            output.add(table.concat(item_data.tags, ", ") .. "\n")
+            return
+        end
+        local enemy_data = enemies.get_enemy_data(enemies_data, name)
+        if enemy_data and map_data[player.world].enemies[player.y][player.x][enemy_data.name] then
+            output.add(enemy_data.name .. ":\n\n")
+            output.add(enemy_data.description .. "\n\n")
+            output.add("Health: " .. enemy_data.health .. "\nAttack: " .. enemy_data.attack .. "\nDefense: " .. enemy_data.defense .. "\nExperience: " .. enemy_data.experience .. "\n")
+            return
+        end
+        output.add("No item or enemy named " .. name .. " found.\n")
     elseif command_parts[1] == "look" then
         commands.look()
     elseif command_parts[1] == "map" then
@@ -258,23 +291,23 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         if #command_parts < 2 then
             output.add("Please specify a volume level from 0 to 10 (e.g., 'volume 5').\n")
         else
-			local v = config.audio.volume
+            local v = config.audio.volume
             local vol = tonumber(command_parts[2])
             if vol and vol >= 0 and vol <= 10 then
-				if vol > 0 and config.audio.volume == 0 then
-					output.add("Music: on.\n")
-				end
+                if vol > 0 and config.audio.volume == 0 then
+                    output.add("Music: on.\n")
+                end
                 music.setVolume(vol / 10)
                 if vol == 0 then
                     music.stop()
                 elseif vol >= 1 then
                     music.play_random()
                 end
-				if config.audio.volume > 0 and vol > 0 then
-					output.add("Volume set to " .. vol .. ".\n")
-				else
-					output.add("Music: off.\n")
-				end
+                if config.audio.volume > 0 and vol > 0 then
+                    output.add("Volume set to " .. vol .. ".\n")
+                else
+                    output.add("Music: off.\n")
+                end
             else
                 output.add("Invalid volume level. Please use a number from 0 to 10.\n")
             end
