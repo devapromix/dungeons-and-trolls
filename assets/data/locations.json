@@ -27,7 +27,7 @@
       }
     },
     {
-      "symbol": "g",
+      "symbol": "\"",
       "name": "Grasslands",
       "description": "Lush grasslands teeming with wildflowers and gentle breezes.",
       "enemies": [
@@ -50,7 +50,7 @@
       }
     },
     {
-      "symbol": "p",
+      "symbol": ".",
       "name": "Plains",
       "description": "Open plains with scattered shrubs and rolling fields.",
       "enemies": [
@@ -73,7 +73,7 @@
       }
     },
     {
-      "symbol": "s",
+      "symbol": "'",
       "name": "Steppe",
       "description": "A vast steppe with rolling hills and sparse vegetation.",
       "enemies": [
@@ -95,7 +95,7 @@
       }
     },
     {
-      "symbol": "v",
+      "symbol": "`",
       "name": "Savanna",
       "description": "A dry savanna with acacia trees and roaming wildlife.",
       "enemies": [
@@ -118,7 +118,7 @@
       }
     },
     {
-      "symbol": "d",
+      "symbol": ":",
       "name": "Desert",
       "description": "A scorching desert with endless dunes and little life.",
       "enemies": [
@@ -137,7 +137,7 @@
       }
     },
     {
-      "symbol": "m",
+      "symbol": "^",
       "name": "Mountains",
       "description": "Rugged mountains with steep cliffs and rocky paths.",
       "enemies": [
@@ -160,7 +160,7 @@
       }
     },
     {
-      "symbol": "r",
+      "symbol": "=",
       "name": "River",
       "description": "A flowing river with clear water and fertile banks.",
       "enemies": [
@@ -184,7 +184,7 @@
       }
     },
     {
-      "symbol": "u",
+      "symbol": "_",
       "name": "Mushroom Cave",
       "description": "A damp cave filled with glowing mushrooms and eerie sounds.",
       "enemies": [
@@ -206,7 +206,7 @@
       }
     },
     {
-      "symbol": "l",
+      "symbol": "+",
       "name": "Lava Cave",
       "description": "A scorching cave with flowing lava and intense heat.",
       "enemies": [
@@ -226,7 +226,7 @@
       }
     },
     {
-      "symbol": "k",
+      "symbol": ";",
       "name": "Stone Cave",
       "description": "A rugged stone cave with narrow passages and stalactites.",
       "enemies": [
@@ -247,7 +247,7 @@
       }
     },
     {
-      "symbol": "o",
+      "symbol": "*",
       "name": "Corridor",
       "description": "A narrow tunnel connecting larger cave chambers.",
       "enemies": [
@@ -317,7 +317,7 @@
       }
     },
     {
-      "symbol": "w",
+      "symbol": "#",
       "name": "Granite Wall",
       "description": "An impassable granite wall blocking your path.",
       "enemies": [],
@@ -332,7 +332,7 @@
       }
     },
     {
-      "symbol": "b",
+      "symbol": "$",
       "name": "Basalt Wall",
       "description": "An impassable basalt wall blocking your path.",
       "enemies": [],
@@ -347,7 +347,7 @@
       }
     },
     {
-      "symbol": "n",
+      "symbol": "%",
       "name": "Obsidian Wall",
       "description": "An impassable obsidian wall blocking your path.",
       "enemies": [],
@@ -362,7 +362,7 @@
       }
     },
     {
-      "symbol": "q",
+      "symbol": "&",
       "name": "Quartz Wall",
       "description": "An impassable quartz wall blocking your path.",
       "enemies": [],
@@ -377,7 +377,7 @@
       }
     },
     {
-      "symbol": "e",
+      "symbol": "?",
       "name": "Limestone Wall",
       "description": "An impassable limestone wall blocking your path.",
       "enemies": [],
