@@ -58,7 +58,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         elseif command_parts[1] == "n" or command_parts[1] == "no" then
             commands.awaiting_confirmation = false
             commands.confirmation_type = nil
-			commands.look()
+            commands.look()
         else
             output.add("Please enter ('yes' or 'no').\n")
         end
@@ -71,7 +71,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
     end
 
     if command_parts[1] == "help" then
-		game.help()
+        game.help()
     elseif command_parts[1] == "new" then
         if game.initialized and player.alive then
             commands.awaiting_confirmation = true
@@ -171,7 +171,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             player = player_module.unequip_item(player, items_data, identifier)
         end
     elseif command_parts[1] == "look" then
-		commands.look()
+        commands.look()
     elseif command_parts[1] == "map" then
         for y = 1, config.map.height do
             local line = ""
@@ -230,7 +230,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             return
         end
         if map.move_up(player, map_data) then
-			music.play_random()
+            music.play_random()
             output.add("You climb up to the surface.\n")
             map.display_location(player, map_data)
         else
@@ -241,7 +241,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
             return
         end
         if map.move_down(player, map_data) then
-			music.play_random()
+            music.play_random()
             output.add("You descend into the underworld.\n")
             map.display_location(player, map_data)
         else
@@ -254,6 +254,30 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
         items.make_fire_item(player, map_data)
     elseif command_parts[1] == "about" then
         game.about()
+    elseif command_parts[1] == "volume" then
+        if #command_parts < 2 then
+            output.add("Please specify a volume level from 0 to 10 (e.g., 'volume 5').\n")
+        else
+            local vol = tonumber(command_parts[2])
+            if vol and vol >= 0 and vol <= 10 then
+				if config.audio.volume == 0 and vol > 0 then
+					output.add("Music: on.\n")
+				end
+                music.setVolume(vol / 10)
+                if vol == 0 then
+                    music.stop()
+                elseif vol >= 1 then
+                    music.play_random()
+                end
+				if config.audio.volume > 0 then
+					output.add("Volume set to " .. vol .. ".\n")
+				else
+					output.add("Music: off.\n")
+				end
+            else
+                output.add("Invalid volume level. Please use a number from 0 to 10.\n")
+            end
+        end
     elseif command_parts[1] == "quit" then
         if game.initialized then
             game.save_game()
