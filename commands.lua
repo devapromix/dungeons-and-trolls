@@ -11,7 +11,11 @@ local movement_map = {
 	n = "north",
 	s = "south",
 	e = "east",
-	w = "west"
+	w = "west",
+    up = "up",
+    down = "down",
+    u = "up",
+    d = "down"
 }
 
 function commands.table_contains(table, element)
@@ -87,15 +91,6 @@ function commands.handle_confirmation(command_parts, output)
 		commands.look()
 	else
 		output.add("Please enter ('yes' or 'no').\n")
-	end
-end
-
-function commands.handle_movement_command(direction, player, map_data, config, time, output, player_module)
-	if player_module.move_player(direction, player, map_data, config, time, output) then
-		local status_message = player_module.check_player_status(player)
-		if status_message ~= "" then
-			output.add(status_message)
-		end
 	end
 end
 
@@ -211,9 +206,9 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 			for item, quantity in pairs(player.inventory) do
 				local equipped = items.is_item_equipped(player, item) and " (equipped)" or ""
 				if quantity > 1 then
-					output.add(item .. " (" .. quantity .. ")" .. equipped .. "\n")
+					output.add(item .. " (" .. quantity .. ")" .. equipped)
 				else
-					output.add(item .. equipped .. "\n")
+					output.add(item .. equipped)
 				end
 			end
 		end
@@ -289,28 +284,6 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 				player_module.attack_enemy(enemy_name, map_data, player, enemies_data, items_data, skills_data, time, map, output)
 			end
 		end
-	elseif cmd == "up" or cmd == "u" then
-		if not player_module.check_player_alive("move up", player) then
-			return player
-		end
-		if map.move_up(player, map_data) then
-			music.play_random()
-			output.add("You climb up to the surface.\n")
-			map.display_location(player, map_data)
-		else
-			output.add("There is no exit here.\n")
-		end
-	elseif cmd == "down" or cmd == "d" then
-		if not player_module.check_player_alive("move down", player) then
-			return player
-		end
-		if map.move_down(player, map_data) then
-			music.play_random()
-			output.add("You descend into the underworld.\n")
-			map.display_location(player, map_data)
-		else
-			output.add("There is no entrance here.\n")
-		end
 	elseif cmd == "light" then
 		return command_light.exec(player, player_module, map_data)
 	elseif cmd == "volume" then
@@ -347,8 +320,8 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 
 	local direction = movement_map[cmd]
 	if direction then
-		commands.handle_movement_command(direction, player, map_data, config, time, output, player_module)
-	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "attack", "up", "u", "down", "d", "light", "volume", "cook", "recipes", "fish", "trollcave", "quit"}, cmd) then
+		player = command_move.exec(direction, player, map_data, config, time, output, player_module, map, music)
+	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "attack", "light", "volume", "cook", "recipes", "fish", "trollcave", "quit"}, cmd) then
 		output.add("Unknown command: '" .. cmd .. "'.\n")
 		output.add(const.TYPE_HELP_MSG)
 	end
