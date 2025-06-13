@@ -41,6 +41,11 @@
             "tags": ["edible=55"]
         },
         {
+            "name": "Grilled Mushroom",
+            "description": "A mushroom roasted over a fire, with a smoky flavor.",
+            "tags": ["edible=20"]
+        },
+        {
             "name": "Healing Potion",
             "description": "A red potion that heals your wounds when consumed.",
             "tags": ["drinkable=20", "healing=25"]

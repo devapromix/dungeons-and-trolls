@@ -12,4 +12,5 @@ time - Displays the current time.                               pick [quantity] 
 light - Light a fire.                                           drop [quantity] <item> - Drop an item.
 look - Displays the current location.                           attack <enemy> - Attack an enemy to engage in combat.
 items - Display player's inventory and gold.                    volume <level> - Set the audio volume (0 to 10).
-quit - Exit the game.                                           cook <item> - Cook an item of raw food.
+recipes - Display player's recipes.                             cook <recipe> - Cook a food.
+quit - Exit the game.                                           

@@ -9,25 +9,21 @@ function cook.exec(command_parts, player, map_data, items_data, output, items)
 		return player
 	end
 	if #command_parts < 2 then
-		output.add("Please specify an item to cook (e.g., 'cook Raw Meat').\n")
+		output.add("Please specify a recipe to cook (e.g., 'cook Meat').\n")
 		return player
 	end
-	local item_name = commands.get_item_name_from_parts(command_parts, 2)
-	if not commands.validate_parameter(item_name, "item", output) then
+	local recipe_name = commands.get_item_name_from_parts(command_parts, 2)
+	if not commands.validate_parameter(recipe_name, "recipe", output) then
 		return player
 	end
 	local recipes = utils.load_json_file("assets/data/recipes.json", "Recipes file")
-	for _, recipe in ipairs(recipes or {}) do
-		local input_items = type(recipe.input) == "table" and recipe.input or {recipe.input}
-		local item_name_lower = string.lower(item_name)
-		local matches_input = false
-		for _, input in ipairs(input_items) do
-			if string.lower(input) == item_name_lower then
-				matches_input = true
-				break
-			end
-		end
-		if matches_input and recipe.requires_fire then
+	if not recipes then
+		output.add("No recipes found.\n")
+		return player
+	end
+	for _, recipe in ipairs(recipes) do
+		if string.lower(recipe.name) == string.lower(recipe_name) and recipe.requires_fire then
+			local input_items = type(recipe.input) == "table" and recipe.input or {recipe.input}
 			local has_all_items = true
 			for _, input in ipairs(input_items) do
 				local found = false
@@ -58,7 +54,7 @@ function cook.exec(command_parts, player, map_data, items_data, output, items)
 			end
 		end
 	end
-	output.add("No recipe found for " .. item_name .. ".\n")
+	output.add("No recipe found for " .. recipe_name .. ".\n")
 	return player
 end
 

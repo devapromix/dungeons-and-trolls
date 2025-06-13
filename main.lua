@@ -13,6 +13,7 @@ player_module = require("player")
 skills = require("skills")
 commands = require("commands")
 volume = require("commands.volume")
+recipes = require("commands.recipes")
 cook = require("commands.cook")
 
 function love.load()

@@ -1,13 +1,22 @@
 [
     {
+		"name": "Meat",
         "input": "Raw Meat",
         "output": "Cooked Meat",
         "quantity": 1,
         "requires_fire": true
     },
     {
+		"name": "Stew",
         "input": ["Mushroom", "Water Bottle"],
         "output": "Stew",
+        "quantity": 1,
+        "requires_fire": true
+    },
+    {
+		"name": "Mushroom",
+        "input": "Mushroom",
+        "output": "Grilled Mushroom",
         "quantity": 1,
         "requires_fire": true
     }
