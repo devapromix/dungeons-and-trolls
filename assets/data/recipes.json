@@ -8,6 +8,30 @@
 		"cooking_time": 300
 	},
 	{
+		"name": "Fish",
+		"input": "Silver Pike",
+		"output": "Grilled Fish",
+		"quantity": 1,
+		"requires_fire": true,
+		"cooking_time": 50
+	},
+	{
+		"name": "Firegill",
+		"input": "Roach",
+		"output": "Firegill",
+		"quantity": 1,
+		"requires_fire": true,
+		"cooking_time": 60
+	},
+	{
+		"name": "Ashfish",
+		"input": "Zander",
+		"output": "Ashfish",
+		"quantity": 1,
+		"requires_fire": true,
+		"cooking_time": 120
+	},
+	{
 		"name": "Stew",
 		"input": ["Mushroom", "Water Bottle"],
 		"output": "Stew",

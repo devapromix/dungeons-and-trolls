@@ -46,6 +46,21 @@
 			"tags": ["edible=20"]
 		},
 		{
+			"name": "Grilled Fish",
+			"description": "A simple cooked fish.",
+			"tags": ["edible=15"]
+		},
+		{
+			"name": "Firegill",
+			"description": "A spicy grilled fish with a sharp kick.",
+			"tags": ["edible=20"]
+		},
+		{
+			"name": "Ashfish",
+			"description": "Fish baked in hot ashes. Simple but hearty.",
+			"tags": ["edible=25"]
+		},
+		{
 			"name": "Healing Potion",
 			"description": "A red potion that heals your wounds when consumed.",
 			"tags": ["drinkable=20", "healing=25"]
@@ -120,17 +135,17 @@
 		{
 			"name": "Silver Pike",
 			"description": "A sleek fish with silvery scales, caught from the river.",
-			"tags": ["fish", "edible=20"]
+			"tags": ["fish", "edible=5"]
 		},
 		{
 			"name": "Roach",
 			"description": "A common silver fish with red fins, adaptable to various freshwater habitats.",
-			"tags": ["fish", "edible=15"]
+			"tags": ["fish", "edible=5"]
 		},
 		{
 			"name": "Zander",
 			"description": "A predatory fish with a rich taste, caught from the river.",
-			"tags": ["fish", "edible=20"]
+			"tags": ["fish", "edible=5"]
 		}
 	]
 }
