@@ -16,6 +16,8 @@ volume = require("commands.volume")
 recipes = require("commands.recipes")
 cook = require("commands.cook")
 fishing = require("commands.fishing")
+command_skills = require("commands.skills")
+command_trollcave = require("commands.trollcave")
 
 function love.load()
     input = {

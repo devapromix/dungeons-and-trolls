@@ -164,7 +164,8 @@ function map.initialize_game(locations_data)
 			visited = {},
 			items = {},
 			enemies = {},
-			fire = { x = nil, y = nil, active = false }
+			fire = { x = nil, y = nil, active = false },
+			troll_cave = { x = nil, y = nil }
 		}
 	}
 	
@@ -246,7 +247,9 @@ function map.initialize_game(locations_data)
 		map.gen_world(map_data.underworld, true, 20, 150)
 	end
 	map.add_passages(map_data)
-	map.add_troll_cave()
+	local troll_x, troll_y = map.add_troll_cave()
+	map_data.underworld.troll_cave.x = troll_x
+	map_data.underworld.troll_cave.y = troll_y
 	map.update_visibility(player, map_data)
 end
 

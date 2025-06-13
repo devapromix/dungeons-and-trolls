@@ -197,8 +197,7 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 	if cmd == "status" then
 		player_module.draw_status(player)
 	elseif cmd == "skills" then
-		output.add("Skills:\n")
-		skills.draw()
+		command_skills.exec(skills, output)
 	elseif cmd == "time" then
 		output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
 	elseif cmd == "items" then
@@ -330,6 +329,8 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 		return cook.exec(command_parts, player, map_data, items_data, output, items, time)
 	elseif cmd == "fish" then
 		return fishing.exec(player, map_data, items_data, skills_data, time, output)
+	elseif cmd == "trollcave" then
+		return command_trollcave.exec(player, map_data, config, output, map)
 	end
 	return player
 end
@@ -355,7 +356,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 	local direction = movement_map[cmd]
 	if direction then
 		commands.handle_movement_command(direction, player, map_data, config, time, output, player_module)
-	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "attack", "up", "u", "down", "d", "light", "volume", "cook", "recipes", "fish", "quit"}, cmd) then
+	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "attack", "up", "u", "down", "d", "light", "volume", "cook", "recipes", "fish", "trollcave", "quit"}, cmd) then
 		output.add("Unknown command: '" .. cmd .. "'.\n")
 		output.add(const.TYPE_HELP_MSG)
 	end
