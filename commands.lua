@@ -312,23 +312,15 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 			output.add("There is no entrance here.\n")
 		end
 	elseif cmd == "light" then
-		if not player_module.check_player_alive("light a fire", player) then
-			return player
-		end
-		items.make_fire_item(player, map_data, player.world)
+		return command_light.exec(player, player_module, map_data)
 	elseif cmd == "volume" then
-		if #command_parts < 2 then
-			output.add("Please specify a volume level from 0 to 10 (e.g., 'volume 5').\n")
-		else
-			local vol = tonumber(command_parts[2])
-			volume.exec(vol)
-		end
+		command_volume.exec(command_parts)
 	elseif cmd == "recipes" then
-		recipes.exec(player)
+		command_recipes.exec(player)
 	elseif cmd == "cook" then
-		return cook.exec(command_parts, player, map_data, items_data, output, items, time)
+		return command_cook.exec(command_parts, player, map_data, items_data, output, items, time)
 	elseif cmd == "fish" then
-		return fishing.exec(player, map_data, items_data, skills_data, time, output)
+		return command_fishing.exec(player, map_data, items_data, skills_data, time, output)
 	elseif cmd == "trollcave" then
 		return command_trollcave.exec(player, map_data, config, output, map)
 	end
