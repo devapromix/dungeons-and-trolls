@@ -1,23 +1,26 @@
 [
-    {
+	{
 		"name": "Meat",
-        "input": "Raw Meat",
-        "output": "Cooked Meat",
-        "quantity": 1,
-        "requires_fire": true
-    },
-    {
+		"input": "Raw Meat",
+		"output": "Cooked Meat",
+		"quantity": 1,
+		"requires_fire": true,
+		"cooking_time": 300
+	},
+	{
 		"name": "Stew",
-        "input": ["Mushroom", "Water Bottle"],
-        "output": "Stew",
-        "quantity": 1,
-        "requires_fire": true
-    },
-    {
+		"input": ["Mushroom", "Water Bottle"],
+		"output": "Stew",
+		"quantity": 1,
+		"requires_fire": true,
+		"cooking_time": 120
+	},
+	{
 		"name": "Mushroom",
-        "input": "Mushroom",
-        "output": "Grilled Mushroom",
-        "quantity": 1,
-        "requires_fire": true
-    }
+		"input": "Mushroom",
+		"output": "Grilled Mushroom",
+		"quantity": 1,
+		"requires_fire": true,
+		"cooking_time": 30
+	}
 ]

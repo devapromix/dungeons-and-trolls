@@ -1,6 +1,6 @@
 local cook = {}
 
-function cook.exec(command_parts, player, map_data, items_data, output, items)
+function cook.exec(command_parts, player, map_data, items_data, output, items, time)
 	if not player_module.check_player_alive("cook an item", player) then
 		return player
 	end
@@ -46,6 +46,7 @@ function cook.exec(command_parts, player, map_data, items_data, output, items)
 					end
 				end
 				player.inventory[recipe.output] = (player.inventory[recipe.output] or 0) + recipe.quantity
+				time.tick_time(recipe.cooking_time)
 				output.add("You cooked " .. recipe.output .. ".\n")
 				return player
 			else

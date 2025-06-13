@@ -327,7 +327,7 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 	elseif cmd == "recipes" then
 		recipes.exec(player)
 	elseif cmd == "cook" then
-		return cook.exec(command_parts, player, map_data, items_data, output, items)
+		return cook.exec(command_parts, player, map_data, items_data, output, items, time)
 	end
 	return player
 end
