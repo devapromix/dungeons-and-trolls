@@ -206,9 +206,9 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 			for item, quantity in pairs(player.inventory) do
 				local equipped = items.is_item_equipped(player, item) and " (equipped)" or ""
 				if quantity > 1 then
-					output.add(item .. " (" .. quantity .. ")" .. equipped)
+					output.add(item .. " (" .. quantity .. ")" .. equipped .. "\n")
 				else
-					output.add(item .. equipped)
+					output.add(item .. equipped .. "\n")
 				end
 			end
 		end
@@ -275,15 +275,8 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 		output.add("No item or enemy named " .. name .. " found.\n")
 	elseif cmd == "look" then
 		commands.look()
-	elseif cmd == "attack" then
-		if #command_parts < 2 then
-			output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
-		else
-			local enemy_name = commands.get_item_name_from_parts(command_parts, 2)
-			if commands.validate_parameter(enemy_name, "enemy", output) then
-				player_module.attack_enemy(enemy_name, map_data, player, enemies_data, items_data, skills_data, time, map, output)
-			end
-		end
+	elseif cmd == "kill" then
+		return command_kill.exec(command_parts, player, map_data, items_data, enemies_data, skills_data, time, map, output, player_module)
 	elseif cmd == "light" then
 		return command_light.exec(player, player_module, map_data)
 	elseif cmd == "volume" then
@@ -321,7 +314,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 	local direction = movement_map[cmd]
 	if direction then
 		player = command_move.exec(direction, player, map_data, config, time, output, player_module, map, music)
-	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "attack", "light", "volume", "cook", "recipes", "fish", "trollcave", "quit"}, cmd) then
+	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "kill", "light", "volume", "cook", "recipes", "fish", "trollcave", "quit"}, cmd) then
 		output.add("Unknown command: '" .. cmd .. "'.\n")
 		output.add(const.TYPE_HELP_MSG)
 	end

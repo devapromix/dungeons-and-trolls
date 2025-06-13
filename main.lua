@@ -19,6 +19,7 @@ command_fishing = require("commands.fishing")
 command_volume = require("commands.volume")
 command_light = require("commands.light")
 command_skills = require("commands.skills")
+command_kill = require("commands.kill")
 command_trollcave = require("commands.trollcave")
 
 function love.load()
