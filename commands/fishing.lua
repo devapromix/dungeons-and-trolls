@@ -1,5 +1,15 @@
 local fishing = {}
 
+function get_fish_types(items_data)
+	local	fish_types = {}
+	for _, item in ipairs(items_data.items) do
+		if commands.table_contains(item.tags, "fish") then
+			table.insert(fish_types, item.name)
+		end
+	end
+	return	fish_types
+end
+
 function fishing.exec(player, map_data, items_data, skills_data, time, output)
 	if not player_module.check_player_alive("fish", player) then
 		return player
@@ -22,7 +32,11 @@ function fishing.exec(player, map_data, items_data, skills_data, time, output)
 	local fishing_skill = player.skills and player.skills.Fishing or 0
 	local success_chance = 0.25 + (fishing_skill / 100)
 	if math.random() < success_chance then
-		local fish_types = {"Silver Pike", "Roach", "Zander"}
+		local fish_types = get_fish_types(items_data)
+		if #fish_types == 0 then
+			output.add("No fish available to catch.\n")
+			return player
+		end
 		local caught_fish = fish_types[math.random(1, #fish_types)]
 		player.inventory[caught_fish] = (player.inventory[caught_fish] or 0) + 1
 		output.add("You caught a " .. caught_fish .. "!\n")
