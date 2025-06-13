@@ -186,6 +186,25 @@
       }
     },
     {
+      "symbol": "~",
+      "name": "Lake",
+      "description": "A calm lake with clear water and fish swimming beneath the surface.",
+      "enemies": [
+        {"name": "Goblin", "chance": 0.1, "quantity": [1, 1]}
+      ],
+      "items": [
+        {"name": "Water Bottle", "chance": 0.1, "quantity": [1, 1]}
+      ],
+      "effects": { "thirst": -1.5, "hunger": 0.5, "fatigue": 1.2 },
+      "passable": true,
+      "special": false,
+      "underworld": false,
+      "color": {
+        "foreground": [135, 206, 250],
+        "background": [70, 130, 180]
+      }
+    },
+    {
       "symbol": "_",
       "name": "Mushroom Cave",
       "description": "A damp cave filled with glowing mushrooms and eerie sounds.",

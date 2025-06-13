@@ -16,21 +16,24 @@ function fishing.exec(player, map_data, items_data, skills_data, time, output)
 	end
 	local current_symbol = map_data[player.world].tiles[player.y][player.x]
 	local location_data = map.get_location_description(current_symbol)
-	if location_data.name ~= "River" then
-		output.add("You can only fish in a river.\n")
+	if location_data.name ~= "River" and location_data.name ~= "Lake" then
+		output.add("You can only fish in a river or lake.\n")
 		return player
 	end
 	if not player.equipment or not player.equipment.weapon then
-		output.add("You need to equip a Fishing Rod to fish.\n")
+		output.add("You need to equip a Fishing Rod or Spear to fish.\n")
 		return player
 	end
 	local item_data = items.get_item_data(items_data, player.equipment.weapon)
-	if not item_data or not commands.table_contains(item_data.tags, "fishing_rod") then
-		output.add("You need to equip a Fishing Rod to fish.\n")
+	if not item_data or (not commands.table_contains(item_data.tags, "fishing_rod") and player.equipment.weapon ~= "Spear") then
+		output.add("You need to equip a Fishing Rod or Spear to fish.\n")
 		return player
 	end
-	local fishing_skill = player.skills and player.skills.Fishing or 0
-	local success_chance = 0.25 + (fishing_skill / 100)
+	local success_chance = 0.15
+	if commands.table_contains(item_data.tags, "fishing_rod") then
+		local fishing_skill = player.skills and player.skills.Fishing or 0
+		success_chance = 0.25 + (fishing_skill / 100)
+	end
 	if math.random() < success_chance then
 		local fish_types = get_fish_types(items_data)
 		if #fish_types == 0 then
@@ -40,7 +43,7 @@ function fishing.exec(player, map_data, items_data, skills_data, time, output)
 		local caught_fish = fish_types[math.random(1, #fish_types)]
 		player.inventory[caught_fish] = (player.inventory[caught_fish] or 0) + 1
 		output.add("You caught a " .. caught_fish .. "!\n")
-		if math.random() < 0.1 then
+		if commands.table_contains(item_data.tags, "fishing_rod") and math.random() < 0.1 then
 			skills.upgrade_skill(player, skills_data, {skill = "Fishing"})
 		end
 	else
