@@ -1,115 +1,136 @@
 {
-    "items": [
-        {
-            "name": "Apple",
-            "description": "A sweet, juicy fruit.",
-            "tags": ["edible=10"]
-        },
-        {
-            "name": "Strawberry",
-            "description": "A small red berry.",
-            "tags": ["edible=5"]
-        },
-        {
-            "name": "Watermelon",
-            "description": "A large fruit with sweet, watery flesh.",
-            "tags": ["edible=15"]
-        },
-        {
-            "name": "Bread",
-            "description": "A simple loaf of bread. Fills the stomach decently.",
-            "tags": ["edible=35"]
-        },
-        {
-            "name": "Mushroom",
-            "description": "A black mushroom. Edible, but be careful with unknown species.",
-            "tags": ["edible=10"]
-        },
-        {
-            "name": "Stew",
-            "description": "A hot stew made from fresh ingredients.",
-            "tags": ["edible=40", "healing=5"]
-        },
-        {
-            "name": "Raw Meat",
-            "description": "A bloody, uncooked chunk of meat. Needs cooking first.",
-            "tags": ["edible=15"]
-        },
-        {
-            "name": "Cooked Meat",
-            "description": "A nicely roasted piece of meat, ready to be eaten.",
-            "tags": ["edible=55"]
-        },
-        {
-            "name": "Grilled Mushroom",
-            "description": "A mushroom roasted over a fire, with a smoky flavor.",
-            "tags": ["edible=20"]
-        },
-        {
-            "name": "Healing Potion",
-            "description": "A red potion that heals your wounds when consumed.",
-            "tags": ["drinkable=20", "healing=25"]
-        },
-        {
-            "name": "Mana Potion",
-            "description": "A blue potion that restores magical energy.",
-            "tags": ["drinkable=5", "mana_restore=25"]
-        },
-        {
-            "name": "Water Bottle",
-            "description": "A bottle filled with clean water. Hydrates the body.",
-            "tags": ["drinkable=30"]
-        },
-        {
-            "name": "Dagger",
-            "description": "A short blade, quick and deadly in close combat.",
-            "tags": ["weapon=4"],
-            "skill": "Daggers"
-        },
-        {
-            "name": "Short Sword",
-            "description": "A light, versatile sword for swift melee attacks.",
-            "tags": ["weapon=5"],
-            "skill": "Swords"
-        },
-        {
-            "name": "Sword of Dawn",
-            "description": "A legendary blade that shines with morning light.",
-            "tags": ["weapon=50", "artifact"],
-            "skill": "Swords"
-        },
-        {
-            "name": "Hand Axe",
-            "description": "A one-handed axe. Good for chopping and combat.",
-            "tags": ["weapon=4"],
-            "skill": "Axes"
-        },
-        {
-            "name": "Spiked Club",
-            "description": "A crude club with metal spikes. Brutal but effective.",
-            "tags": ["weapon=3"],
-            "skill": "Maces"
-        },
-        {
-            "name": "Spear",
-            "description": "A long weapon for stabbing enemies from a distance.",
-            "tags": ["weapon=6"],
-            "skill": "Spears"
-        },
-        {
-            "name": "Leather Armor",
-            "description": "Basic protective armor made of treated animal hide.",
-            "tags": ["armor=3"]
-        },
-        {
-            "name": "Troll Crown",
-            "description": "A powerful crown said to be worn by ancient troll kings.",
-            "tags": ["armor=10", "artifact"]
-        },
-        {
-            "name": "Firewood",
-            "description": "Chopped wood used to start and maintain a fire.",
-            "tags": ["firewood"]
-        }
-    ]
+	"items": [
+		{
+			"name": "Apple",
+			"description": "A sweet, juicy fruit.",
+			"tags": ["edible=10"]
+		},
+		{
+			"name": "Strawberry",
+			"description": "A small red berry.",
+			"tags": ["edible=5"]
+		},
+		{
+			"name": "Watermelon",
+			"description": "A large fruit with sweet, watery flesh.",
+			"tags": ["edible=15"]
+		},
+		{
+			"name": "Bread",
+			"description": "A simple loaf of bread. Fills the stomach decently.",
+			"tags": ["edible=35"]
+		},
+		{
+			"name": "Mushroom",
+			"description": "A black mushroom. Edible, but be careful with unknown species.",
+			"tags": ["edible=10"]
+		},
+		{
+			"name": "Stew",
+			"description": "A hot stew made from fresh ingredients.",
+			"tags": ["edible=40", "healing=5"]
+		},
+		{
+			"name": "Raw Meat",
+			"description": "A bloody, uncooked chunk of meat. Needs cooking first.",
+			"tags": ["edible=15"]
+		},
+		{
+			"name": "Cooked Meat",
+			"description": "A nicely roasted piece of meat, ready to be eaten.",
+			"tags": ["edible=55"]
+		},
+		{
+			"name": "Grilled Mushroom",
+			"description": "A mushroom roasted over a fire, with a smoky flavor.",
+			"tags": ["edible=20"]
+		},
+		{
+			"name": "Healing Potion",
+			"description": "A red potion that heals your wounds when consumed.",
+			"tags": ["drinkable=20", "healing=25"]
+		},
+		{
+			"name": "Mana Potion",
+			"description": "A blue potion that restores magical energy.",
+			"tags": ["drinkable=5", "mana_restore=25"]
+		},
+		{
+			"name": "Water Bottle",
+			"description": "A bottle filled with clean water. Hydrates the body.",
+			"tags": ["drinkable=30"]
+		},
+		{
+			"name": "Dagger",
+			"description": "A short blade, quick and deadly in close combat.",
+			"tags": ["weapon=4"],
+			"skill": "Daggers"
+		},
+		{
+			"name": "Short Sword",
+			"description": "A light, versatile sword for swift melee attacks.",
+			"tags": ["weapon=5"],
+			"skill": "Swords"
+		},
+		{
+			"name": "Sword of Dawn",
+			"description": "A legendary blade that shines with morning light.",
+			"tags": ["weapon=50", "artifact"],
+			"skill": "Swords"
+		},
+		{
+			"name": "Hand Axe",
+			"description": "A one-handed axe. Good for chopping and combat.",
+			"tags": ["weapon=4"],
+			"skill": "Axes"
+		},
+		{
+			"name": "Spiked Club",
+			"description": "A crude club with metal spikes. Brutal but effective.",
+			"tags": ["weapon=3"],
+			"skill": "Maces"
+		},
+		{
+			"name": "Spear",
+			"description": "A long weapon for stabbing enemies from a distance.",
+			"tags": ["weapon=6"],
+			"skill": "Spears"
+		},
+		{
+			"name": "Leather Armor",
+			"description": "Basic protective armor made of treated animal hide.",
+			"tags": ["armor=3"]
+		},
+		{
+			"name": "Troll Crown",
+			"description": "A powerful crown said to be worn by ancient troll kings.",
+			"tags": ["armor=10", "artifact"]
+		},
+		{
+			"name": "Firewood",
+			"description": "Chopped wood used to start and maintain a fire.",
+			"tags": ["firewood"]
+		},
+		{
+			"name": "Fishing Rod",
+			"description": "A sturdy rod used for fishing.",
+			"tags": ["weapon=1", "fishing_rod"],
+			"skill": "Fishing"
+		},
+		{
+			"name": "Silver Pike",
+			"description": "A sleek fish with silvery scales, caught from the river.",
+			"tags": ["fish", "edible=20"]
+		},
+		{
+			"name": "Roach",
+			"description": "A common silver fish with red fins, adaptable to various freshwater habitats.",
+			"tags": ["fish", "edible=15"]
+		},
+		{
+			"name": "Zander",
+			"description": "A predatory fish with a rich taste, caught from the river.",
+			"tags": ["fish", "edible=20"]
+		}
+	]
 }

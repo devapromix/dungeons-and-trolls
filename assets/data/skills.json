@@ -1,24 +1,28 @@
 {
-    "skills": [
-        {
-            "name": "Daggers",
-            "max_level": 40
-        },
-        {
-            "name": "Swords",
-            "max_level": 50
-        },
-        {
-            "name": "Axes",
-            "max_level": 60
-        },
-        {
-            "name": "Maces",
-            "max_level": 40
-        },
-        {
-            "name": "Spears",
-            "max_level": 50
-        }
-    ]
+	"skills": [
+		{
+			"name": "Daggers",
+			"max_level": 40
+		},
+		{
+			"name": "Swords",
+			"max_level": 50
+		},
+		{
+			"name": "Axes",
+			"max_level": 60
+		},
+		{
+			"name": "Maces",
+			"max_level": 40
+		},
+		{
+			"name": "Spears",
+			"max_level": 50
+		},
+		{
+			"name": "Fishing",
+			"max_level": 50
+		}
+	]
 }

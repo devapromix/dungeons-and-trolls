@@ -328,6 +328,8 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 		recipes.exec(player)
 	elseif cmd == "cook" then
 		return cook.exec(command_parts, player, map_data, items_data, output, items, time)
+	elseif cmd == "fish" then
+		return fishing.exec(player, map_data, items_data, skills_data, time, output)
 	end
 	return player
 end
@@ -353,7 +355,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 	local direction = movement_map[cmd]
 	if direction then
 		commands.handle_movement_command(direction, player, map_data, config, time, output, player_module)
-	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "attack", "up", "u", "down", "d", "light", "volume", "cook", "recipes","quit"}, cmd) then
+	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "attack", "up", "u", "down", "d", "light", "volume", "cook", "recipes", "fish", "quit"}, cmd) then
 		output.add("Unknown command: '" .. cmd .. "'.\n")
 		output.add(const.TYPE_HELP_MSG)
 	end
