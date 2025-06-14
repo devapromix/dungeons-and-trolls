@@ -156,6 +156,10 @@ end
 function commands.handle_game_commands(cmd, command_parts, player, output)
 	if cmd == "help" then
 		game.help()
+	elseif cmd == "intro" then
+		game.intro()
+		output.add("\n")
+		output.add(const.TYPE_HELP_MSG)
 	elseif cmd == "new" then
 		if game.initialized and player.alive then
 			commands.awaiting_confirmation = true
@@ -314,7 +318,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 	local direction = movement_map[cmd]
 	if direction then
 		player = command_move.exec(direction, player, map_data, config, time, output, player_module, map, music)
-	elseif not commands.table_contains({"help", "new", "load", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "look", "map", "kill", "light", "volume", "cook", "recipes", "fish", "trollcave", "quit"}, cmd) then
+	elseif not commands.table_contains({"help", "new", "load", "about", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "intro", "look", "map", "kill", "light", "volume", "cook", "recipes", "fish", "trollcave", "quit"}, cmd) then
 		output.add("Unknown command: '" .. cmd .. "'.\n")
 		output.add(const.TYPE_HELP_MSG)
 	end

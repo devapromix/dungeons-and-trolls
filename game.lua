@@ -7,6 +7,7 @@ function game.welcome()
 	if config.debug then
 		output.add("Debug mode: on\n\n")
 	end
+	game.intro()
     game.initialized = false
     if love.filesystem.getInfo("game.json") then
         game.load_game()
@@ -24,6 +25,18 @@ end
 
 function game.help()
 	utils.output_text_file("assets/data/help.txt")
+end
+
+function game.intro()
+	utils.output_text_file("assets/data/intro.txt")
+end
+
+function game.victory()
+	utils.output_text_file("assets/data/victory.txt")
+end
+
+function game.defeat()
+	utils.output_text_file("assets/data/defeat.txt")
 end
 
 function game.new_game()
