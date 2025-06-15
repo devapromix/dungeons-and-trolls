@@ -108,6 +108,9 @@ function items.pick_item(player, map, item_name, quantity)
 	
 	local item_data = items.get_item_data(items_data, item_key)
 	if item_data then
+		if item_data.file then
+			utils.output_text_file(item_data.file)
+		end
 		for _, tag in ipairs(item_data.tags) do
 			if tag == "artifact" then
 				output.add("This is a legendary artifact!\n")
@@ -252,7 +255,7 @@ function items.drink_item(player, items_data, item_name)
 		return
 	end
 	
-	output.add("You drink one " .. item_key .. "...\n")
+	output.add("You drink one " .. item_key .. ".\n")
 	player.thirst = utils.clamp(player.thirst - drinkable_value, 0, 100)
 	if healing_value then
 		player.health = utils.clamp(player.health + healing_value, 0, 100)
@@ -279,7 +282,7 @@ function items.make_fire_item(player, map_data, world)
 	
 	local item_key = items.find_item_key(player.inventory, "Firewood")
 	if not item_key then
-		output.add("You don't have Firewood in your inventory.\n")
+		output.add("You don't have firewood in your inventory.\n")
 		return
 	end
 	
@@ -294,7 +297,7 @@ function items.make_fire_item(player, map_data, world)
 	end
 	
 	map_data[world].fire = { x = player.x, y = player.y, active = true }
-	output.add("You make a fire using Firewood.\n")
+	output.add("You make a fire.\n")
 	time.tick_time(15)
 end
 

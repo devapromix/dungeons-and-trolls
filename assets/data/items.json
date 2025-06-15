@@ -91,7 +91,8 @@
 			"name": "Sword of Dawn",
 			"description": "A legendary blade that shines with morning light.",
 			"tags": ["weapon=50", "artifact"],
-			"skill": "Swords"
+			"skill": "Swords",
+			"file": "assets/data/sword_of_dawn.txt"
 		},
 		{
 			"name": "Hand Axe",
@@ -119,7 +120,8 @@
 		{
 			"name": "Troll Crown",
 			"description": "A powerful crown said to be worn by ancient troll kings.",
-			"tags": ["armor=10", "artifact"]
+			"tags": ["armor=10", "artifact"],
+			"file": "assets/data/troll_crown.txt"
 		},
 		{
 			"name": "Firewood",
