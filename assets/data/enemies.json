@@ -2,6 +2,7 @@
   "enemies": [
     {
       "name": "Goblin",
+	  "level": 2,
       "health": 30,
       "attack": 3,
       "defense": 1,
@@ -9,9 +10,11 @@
       "description": "A small, sneaky creature with a crude weapon.",
       "tags": ["hostile", "melee"],
       "drops": [
-        {"name": "Dagger", "chance": 0.3, "type": "item"},
-        {"name": "Spear", "chance": 0.3, "type": "item"},
-        {"name": "Spiked Club", "chance": 0.4, "type": "item"},
+        {"name": "Dirk", "chance": 0.1, "type": "item"},
+        {"name": "Falchion", "chance": 0.1, "type": "item"},
+        {"name": "Double Axe", "chance": 0.1, "type": "item"},
+        {"name": "Pilum", "chance": 0.1, "type": "item"},
+        {"name": "Warden Armor", "chance": 0.1, "type": "item"},
         {"name": "Gold", "chance": 0.7, "quantity": [10, 20], "type": "gold"},
         {"name": "Apple", "chance": 0.4, "quantity": [2, 3], "type": "item"},
         {"name": "Strawberry", "chance": 0.3, "quantity": [2, 5], "type": "item"},
@@ -42,11 +45,12 @@
       "description": "A fierce wild animal with sharp teeth.",
       "tags": ["hostile", "animal"],
       "drops": [
-        {"name": "Raw Meat", "chance": 0.8, "quantity": [1, 1], "type": "item"}
+        {"name": "Raw Meat", "chance": 0.8, "quantity": [1, 2], "type": "item"}
       ]
     },
     {
       "name": "Bandit",
+	  "level": 2,
       "health": 40,
       "attack": 9,
       "defense": 4,
@@ -54,12 +58,14 @@
       "description": "A rogue human preying on travelers.",
       "tags": ["hostile", "human"],
       "drops": [
-        {"name": "Leather Armor", "chance": 0.1, "type": "item"},
-        {"name": "Dagger", "chance": 0.7, "type": "item"},
-        {"name": "Short Sword", "chance": 0.1, "type": "item"},
-        {"name": "Hand Axe", "chance": 0.1, "type": "item"},
-        {"name": "Spear", "chance": 0.2, "type": "item"},
-        {"name": "Spiked Club", "chance": 0.3, "type": "item"},
+        {"name": "Kris", "chance": 0.1, "type": "item"},
+        {"name": "Fishing Rod", "chance": 0.01, "type": "item"},
+        {"name": "Falchion", "chance": 0.1, "type": "item"},
+        {"name": "Broad Sword", "chance": 0.05, "type": "item"},
+        {"name": "Double Axe", "chance": 0.1, "type": "item"},
+        {"name": "Mace", "chance": 0.1, "type": "item"},
+        {"name": "Pilum", "chance": 0.1, "type": "item"},
+        {"name": "Sacred Armor", "chance": 0.1, "type": "item"},
         {"name": "Gold", "chance": 0.6, "quantity": [12, 25], "type": "gold"},
         {"name": "Water Bottle", "chance": 0.3, "quantity": [1, 2], "type": "item"},
         {"name": "Apple", "chance": 0.5, "quantity": [1, 3], "type": "item"},
@@ -83,6 +89,7 @@
     },
     {
       "name": "Spider",
+	  "level": 2,
       "health": 40,
       "attack": 7,
       "defense": 2,
@@ -93,6 +100,7 @@
     },
     {
       "name": "Kobold",
+	  "level": 1,
       "health": 25,
       "attack": 4,
       "defense": 2,
@@ -100,8 +108,15 @@
       "description": "A small, cunning creature lurking in the caves.",
       "tags": ["hostile", "melee"],
       "drops": [
-        {"name": "Dagger", "chance": 0.3, "type": "item"},
-        {"name": "Spear", "chance": 0.2, "type": "item"},
+        {"name": "Dagger", "chance": 0.1, "type": "item"},
+        {"name": "Dirk", "chance": 0.1, "type": "item"},
+        {"name": "Fishing Rod", "chance": 0.01, "type": "item"},
+        {"name": "Falchion", "chance": 0.2, "type": "item"},
+        {"name": "Double Axe", "chance": 0.2, "type": "item"},
+        {"name": "Mace", "chance": 0.2, "type": "item"},
+        {"name": "Pilum", "chance": 0.2, "type": "item"},
+        {"name": "Leather Armor", "chance": 0.1, "type": "item"},
+        {"name": "Warden Armor", "chance": 0.1, "type": "item"},
         {"name": "Gold", "chance": 0.5, "quantity": [5, 15], "type": "gold"},
         {"name": "Water Bottle", "chance": 0.3, "quantity": [1, 2], "type": "item"},
         {"name": "Mushroom", "chance": 0.4, "quantity": [1, 2], "type": "item"}
@@ -109,6 +124,7 @@
     },
     {
       "name": "Troll",
+	  "level": 3,
       "health": 50,
       "attack": 10,
       "defense": 5,
@@ -116,8 +132,11 @@
       "description": "A large, brutish creature with tough skin.",
       "tags": ["hostile", "melee"],
       "drops": [
-        {"name": "Spear", "chance": 0.3, "type": "item"},
-        {"name": "Spiked Club", "chance": 0.3, "type": "item"},
+        {"name": "Broad Sword", "chance": 0.2, "type": "item"},
+        {"name": "Kris", "chance": 0.2, "type": "item"},
+        {"name": "Harpoon", "chance": 0.2, "type": "item"},
+        {"name": "Hammer", "chance": 0.2, "type": "item"},
+        {"name": "Flamescale Armor", "chance": 0.1, "type": "item"},
         {"name": "Gold", "chance": 0.6, "quantity": [10, 20], "type": "gold"},
         {"name": "Water Bottle", "chance": 0.3, "quantity": [1, 2], "type": "item"},
         {"name": "Raw Meat", "chance": 0.1, "quantity": [1, 2], "type": "item"},
@@ -127,6 +146,7 @@
     },
     {
       "name": "Ogre",
+	  "level": 3,
       "health": 65,
       "attack": 12,
       "defense": 6,
@@ -134,8 +154,12 @@
       "description": "A hulking brute with unmatched strength and rage.",
       "tags": ["hostile", "melee"],
       "drops": [
-        {"name": "Spear", "chance": 0.3, "type": "item"},
-        {"name": "Spiked Club", "chance": 0.3, "type": "item"},
+        {"name": "Rondel", "chance": 0.1, "type": "item"},
+        {"name": "Harpoon", "chance": 0.2, "type": "item"},
+        {"name": "Hammer", "chance": 0.2, "type": "item"},
+        {"name": "War Axe", "chance": 0.2, "type": "item"},
+        {"name": "Ancient Armor", "chance": 0.1, "type": "item"},
+        {"name": "Sword of Dawn", "chance": 0.7, "type": "item"},
         {"name": "Gold", "chance": 0.6, "quantity": [15, 25], "type": "gold"},
         {"name": "Water Bottle", "chance": 0.1, "quantity": [1, 2], "type": "item"},
         {"name": "Raw Meat", "chance": 0.1, "quantity": [1, 2], "type": "item"},
@@ -146,16 +170,16 @@
     {
       "name": "Troll King",
       "health": 100,
-      "attack": 15,
+      "attack": 20,
       "defense": 10,
       "experience": 100,
-      "description": "The mighty ruler of the trolls, guarding his cave.",
+      "description": "The mighty ruler of the trolls, seeking to conquer the entire world.",
       "tags": ["hostile", "melee", "unique"],
       "drops": [
         {"name": "Troll Crown", "chance": 1.0, "type": "item"},
-        {"name": "Sword of Dawn", "chance": 1.0, "type": "item"},
+        {"name": "Ancient Armor", "chance": 0.1, "type": "item"},
         {"name": "Gold", "chance": 1.0, "quantity": [150, 200], "type": "gold"},
-        {"name": "Healing Potion", "chance": 0.8, "quantity": [2, 4], "type": "item"},
+        {"name": "Healing Potion", "chance": 0.8, "quantity": [2, 3], "type": "item"},
         {"name": "Mana Potion", "chance": 0.5, "quantity": [1, 3], "type": "item"}
       ]
     }
