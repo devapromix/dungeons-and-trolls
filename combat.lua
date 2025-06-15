@@ -30,8 +30,11 @@ end
 
 function combat.combat_round(enemy_name, enemy_data, map_data, player_data, items_data, skills_data, time, map, output, player_module)
 	local enemy_health = enemy_data.health
+	local round_count = 0
 	
-	while player_data.health > 0 and enemy_health > 0 do
+	while player_data.health > 0 and enemy_health > 0 and round_count < 10 do
+		round_count = round_count + 1
+		
 		local player_hit = combat.player_attack(player_data, enemy_data, skills_data, output, enemy_name)
 		if player_hit.hit then
 			enemy_health = enemy_health - player_hit.damage
@@ -49,6 +52,12 @@ function combat.combat_round(enemy_name, enemy_data, map_data, player_data, item
 		end
 		
 		time.tick_time(10)
+	end
+	
+	if round_count >= 10 and player_data.health > 0 and enemy_health > 0 then
+		output.add("You failed to defeat " .. enemy_name .. " and retreated.\n")
+		map.display_location(player_data, map_data)
+		return false
 	end
 	
 	return false
@@ -85,7 +94,7 @@ function combat.enemy_attack(enemy_data, player_data, output, enemy_name)
 		result.hit = true
 		result.damage = damage
 		output.add(enemy_name .. " hits you for " .. damage .. " damage.\n")
-		else
+	else
 		output.add(enemy_name .. "'s attack is blocked.\n")
 	end
 	
