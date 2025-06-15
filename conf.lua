@@ -11,7 +11,7 @@ config = {
 	
 	game = {
 		name = 'Dungeons and Trolls',
-		version = '0.3.0',
+		version = '0.4.0',
 	},
 	
 	map = {

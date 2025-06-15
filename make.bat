@@ -1,4 +1,4 @@
-"c:\Program Files\WinRAR\winrar.exe" a -afzip -r dat.love "assets" "game" "libraries" "states"
+"c:\Program Files\WinRAR\winrar.exe" a -afzip -r dat.love "assets" "game" "commands" "libraries" "states"
 "c:\Program Files\WinRAR\winrar.exe" a -afzip dat.love *.lua
 move dat.love distr
 copy "assets\icons\game.ico" distr

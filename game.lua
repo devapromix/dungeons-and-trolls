@@ -43,6 +43,7 @@ function game.new_game()
 	music.play_random()
     map.initialize_game(locations_data)
     player = player_module.starter_kit(player)
+    game_time = { year = 1280, month = 4, day = 1, hour = 6, minute = 0, playtime = 0 } -- Ініціалізація playtime
     game.initialized = true
     output.add("Created new game.\n\n")
     map.display_location(player, map_data)
@@ -57,7 +58,7 @@ function game.save_game()
         map = map_data,
         player = player,
         history = input.history,
-        time = game_time,
+        time = game_time, -- Зберігає game_time, включаючи playtime
         version = config.game.version,
         fire = {
             overworld = map_data.overworld.fire,
@@ -84,7 +85,7 @@ function game.load_game()
                 end
                 map_data = save_data.map or { overworld = {}, underworld = {} }
                 player = save_data.player
-                game_time = save_data.time or { year = 1280, month = 4, day = 1, hour = 6, minute = 0 }
+                game_time = save_data.time or { year = 1280, month = 4, day = 1, hour = 6, minute = 0, playtime = 0 } -- Додано playtime за замовчуванням
                 input.history = save_data.history or {}
                 map_data.overworld.fire = save_data.fire and save_data.fire.overworld or { x = nil, y = nil, active = false }
                 map_data.underworld.fire = save_data.fire and save_data.fire.underworld or { x = nil, y = nil, active = false }
