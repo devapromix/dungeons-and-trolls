@@ -265,7 +265,7 @@ function player.move_player(direction, player_data, map_data, config, time, outp
         local target_symbol = map_data[player_data.world].tiles[new_y][new_x]
         local location_data = map.get_location_description(target_symbol)
         if not location_data.passable then
-            output.add("You cannot pass through the granite wall.\n")
+            output.add("You cannot pass through the wall.\n")
             return false
         end
         if map_data[player_data.world].fire.active and (map_data[player_data.world].fire.x ~= new_x or map_data[player_data.world].fire.y ~= new_y) then
@@ -322,7 +322,8 @@ end
 
 function player.check_player_alive(action, player_data)
     if not player_data.alive then
-        output.add("You are dead and cannot " .. action .. ". " .. const.START_NEW_GAME_MSG)
+        output.add("You are DEAD and cannot " .. action .. ".\n\n")
+		output.add(const.START_NEW_GAME_MSG)
         return false
     end
     return true

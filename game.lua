@@ -120,7 +120,8 @@ function game.load_game()
                     end
                 end
                 if not player.alive then
-                    output.add("Cannot load game: player is dead. " .. const.START_NEW_GAME_MSG)
+                    output.add("Cannot load game: player is DEAD.\n\n")
+					output.add(const.START_NEW_GAME_MSG)
                     game.initialized = false
                     return false
                 end
