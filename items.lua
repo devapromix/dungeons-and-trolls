@@ -203,14 +203,13 @@ function items.eat_item(player, items_data, item_name)
 	end
 	
 	output.add("You eat one " .. item_key .. "...\n")
-	player.hunger = utils.clamp(player.hunger + edible_value, 0, 100)
-	player.thirst = utils.clamp(player.thirst + 1, 0, 100)
+	player.hunger = utils.clamp(player.hunger - edible_value, 0, 100)
 	player.inventory[item_key] = player.inventory[item_key] - 1
 	if player.inventory[item_key] <= 0 then
 		player.inventory[item_key] = nil
 	end
 	time.tick_time(15)
-	output.add("You feel less hungry but slightly thirstier.\n")
+	output.add("You feel less hungry.\n")
 	
 	return player
 end
