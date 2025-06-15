@@ -1,16 +1,22 @@
 local player = {}
 
 function player.starter_kit(player_data)
-    if not player_data.inventory then
-        player_data.inventory = {}
+    player_data.inventory = player_data.inventory or {}
+    
+    local starter_items = {
+        ["Firewood"] = math.random(1, 3),
+        ["Raw Meat"] = math.random(1, 3),
+        ["Mushroom"] = math.random(1, 3),
+        ["Apple"] = math.random(1, 3),
+        ["Bread"] = math.random(1, 3),
+        ["Water Bottle"] = math.random(1, 3),
+        ["Sword of Dawn"] = 1
+    }
+    
+    for item, quantity in pairs(starter_items) do
+        player_data.inventory[item] = (player_data.inventory[item] or 0) + quantity
     end
-    player_data.inventory["Firewood"] = (player_data.inventory["Firewood"] or 0) + math.random(1, 3)
-    player_data.inventory["Raw Meat"] = (player_data.inventory["Raw Meat"] or 0) + math.random(1, 3)
-    player_data.inventory["Mushroom"] = (player_data.inventory["Mushroom"] or 0) + math.random(1, 3)
-    player_data.inventory["Apple"] = (player_data.inventory["Apple"] or 0) + math.random(1, 3)
-    player_data.inventory["Bread"] = (player_data.inventory["Bread"] or 0) + math.random(1, 3)
-    player_data.inventory["Water Bottle"] = (player_data.inventory["Water Bottle"] or 0) + math.random(1, 3)
-    player_data.inventory["Sword of Dawn"] = (player_data.inventory["Sword of Dawn"] or 0) + 1
+    
     return player_data
 end
 
