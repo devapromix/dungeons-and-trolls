@@ -35,6 +35,14 @@ function combat.combat_round(enemy_name, enemy_data, map_data, player_data, item
 	while player_data.health > 0 and enemy_health > 0 and round_count < 10 do
 		round_count = round_count + 1
 		
+		player_data.fatigue = player_data.fatigue + 1
+		player_data = player_module.clamp_player_stats(player_data)
+		local status_message = player_module.check_player_status(player_data)
+		if status_message ~= "" then
+			output.add(status_message)
+			return combat.handle_defeat(enemy_name, map_data, player_data, time, output)
+		end
+		
 		local player_hit = combat.player_attack(player_data, enemy_data, skills_data, output, enemy_name)
 		if player_hit.hit then
 			enemy_health = enemy_health - player_hit.damage
