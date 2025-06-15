@@ -10,7 +10,7 @@ music = require("music")
 map = require("map")
 game = require("game")
 player_module = require("player")
-skills = require("skills")
+skills = require("game.skills")
 combat = require("combat")
 commands = require("commands")
 command_recipes = require("commands.recipes")
@@ -81,7 +81,10 @@ function love.keypressed(key)
 				end
 			end
 		end
-		table.insert(input.history, 1, command)
+		local skip = { yes = true, y = true, no = true, n = true }
+		if not skip[string.lower(command)] then
+			table.insert(input.history, 1, command)
+		end
 		input.text = ">"
 		input.history_index = 0
 	end
