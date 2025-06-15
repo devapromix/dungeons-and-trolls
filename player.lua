@@ -5,12 +5,14 @@ function player.starter_kit(player_data)
     
     local starter_items = {
         ["Firewood"] = math.random(1, 3),
-        ["Raw Meat"] = math.random(1, 3),
-        ["Mushroom"] = math.random(1, 3),
-        ["Apple"] = math.random(1, 3),
         ["Bread"] = math.random(1, 3),
         ["Water Bottle"] = math.random(1, 3),
-        ["Sword of Dawn"] = 1
+		if config.debug then
+			["Raw Meat"] = math.random(1, 3),
+			["Apple"] = math.random(1, 3),
+			["Mushroom"] = math.random(1, 3),
+			["Sword of Dawn"] = 1,
+		end
     }
     
     for item, quantity in pairs(starter_items) do
@@ -30,16 +32,17 @@ function player.draw_status(player_data)
     output.add("Attack: " .. player_data.attack .. "\n")
     output.add("Defense: " .. player_data.defense .. "\n")
     output.add("Level: " .. player_data.level .. "\n")
-    output.add("Experience: " .. player_data.experience .. "\n")
-    output.add("\nGold: " .. player_data.gold .. "\n")
-    output.add("Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n")
-    output.add("\nEquipment:\n")
+    output.add("Experience: " .. player_data.experience .. "\n\n")
+    output.add("Gold: " .. player_data.gold .. "\n")
+    output.add("Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n")
+    output.add("Equipment:\n")
     output.add("Weapon: " .. (player_data.equipment and player_data.equipment.weapon or "None") .. "\n")
-    output.add("Armor: " .. (player_data.equipment and player_data.equipment.armor or "None") .. "\n")
-    output.add("\nSkills:\n")
+    output.add("Armor: " .. (player_data.equipment and player_data.equipment.armor or "None") .. "\n\n")
+    output.add("Skills:\n")
     skills.draw()
     if not player_data.alive then
-        output.add("\nYou are dead. " .. const.START_NEW_GAME_MSG)
+        output.add("\nYou are DEAD.\n\n")
+		output.add(const.START_NEW_GAME_MSG)
     end
 end
 
