@@ -3,6 +3,14 @@ local commands = {}
 commands.awaiting_confirmation = false
 commands.confirmation_type = nil
 
+local command_map = {
+	game = {"help", "intro", "new", "load", "save", "about", "quit"},
+	info = {"status", "skills", "time", "items", "map"},
+	item = {"eat", "drink", "pick", "drop", "equip", "unequip"},
+	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave"},
+	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
+}
+
 local movement_map = {
 	north = "north",
 	south = "south",
@@ -12,10 +20,10 @@ local movement_map = {
 	s = "south",
 	e = "east",
 	w = "west",
-    up = "up",
-    down = "down",
-    u = "up",
-    d = "down"
+	up = "up",
+	down = "down",
+	u = "up",
+	d = "down"
 }
 
 function commands.table_contains(table, element)
@@ -33,6 +41,15 @@ function commands.table_count(table)
 		count = count + 1
 	end
 	return count
+end
+
+function commands.is_valid_command(cmd)
+	for _, category in pairs(command_map) do
+		if commands.table_contains(category, cmd) then
+			return true
+		end
+	end
+	return false
 end
 
 function commands.look()
@@ -284,7 +301,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 	local direction = movement_map[cmd]
 	if direction then
 		player = command_move.exec(direction, player, map_data, config, time, output, player_module, map, music)
-	elseif not commands.table_contains({"help", "new", "load", "about", "save", "status", "skills", "time", "rest", "eat", "drink", "items", "pick", "drop", "equip", "unequip", "examine", "intro", "look", "map", "kill", "light", "volume", "cook", "recipes", "fish", "trollcave", "quit"}, cmd) then
+	elseif not commands.is_valid_command(cmd) then
 		output.add("Unknown command: '" .. cmd .. "'.\n")
 		output.add(const.TYPE_HELP_MSG)
 	end
