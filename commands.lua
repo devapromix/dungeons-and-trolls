@@ -218,23 +218,7 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 		output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
 		output.add("Played: " .. time.format_playtime(game_time.playtime or 0) .. "\n")
 	elseif cmd == "items" then
-		if not player_module.check_player_alive("check your inventory", player) then
-			return
-		end
-		output.add("Inventory (" .. commands.table_count(player.inventory) .. "/" .. config.inventory.max_slots .. "):\n")
-		if next(player.inventory) == nil then
-			output.add("(empty)\n")
-		else
-			for item, quantity in pairs(player.inventory) do
-				local equipped = items.is_item_equipped(player, item) and " (equipped)" or ""
-				if quantity > 1 then
-					output.add(item .. " (" .. quantity .. ")" .. equipped .. "\n")
-				else
-					output.add(item .. equipped .. "\n")
-				end
-			end
-		end
-		output.add("Gold: " .. player.gold .. "\n")
+		command_items.exec(player, player_module, items)
 	elseif cmd == "map" then
 		map.draw()
 	end
