@@ -119,8 +119,7 @@ end
 function combat.handle_victory(enemy_name, enemy_data, map_data, player_data, items_data, skills_data, map, output, player_module)
 	output.add("You defeated " .. enemy_name .. "!\n")
 	
-	player_data.experience = player_data.experience + enemy_data.experience
-	output.add("Gained " .. enemy_data.experience .. " experience.\n")
+	player_data = player_module.add_experience(player_data, enemy_data.experience, output)
 	
 	combat.upgrade_weapon_skill(player_data, items_data, skills_data)
 	combat.handle_enemy_drops(enemy_data, map_data, player_data, output)

@@ -30,14 +30,14 @@ end
 function player.draw_status(player_data)
 	output.add("Player:\n")
 	output.add("Level: " .. player_data.level .. "\n")
-	output.add("Experience: " .. player_data.experience .. "\n\n")
+	output.add("Experience: " .. player_data.experience .. "/" .. player.experience_to_next_level(player_data.level) .. "\n\n")
 	output.add("Health: " .. player_data.health .. "\n")
 	output.add("Mana: " .. player_data.mana .. "\n")
 	output.add("Hunger: " .. player_data.hunger .. "\n")
 	output.add("Thirst: " .. player_data.thirst .. "\n")
 	output.add("Fatigue: " .. player_data.fatigue .. "\n")
 	output.add("Attack: " .. player_data.attack .. "\n")
-	output.add("Defense: " .. player_data.defense .. "\n")
+	output.add("Defense: " .. player_data.defense .. "\n\n")
 	output.add("Gold: " .. player_data.gold .. "\n")
 	output.add("Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n")
 	output.add("Equipment:\n")
@@ -173,7 +173,7 @@ function player.equip_item(player_data, items_data, item_name)
 	end
 	
 	if is_weapon then
-		if player_data.equipment.weapon then
+		if player_data.equipment and player_data.equipment.weapon then
 			local current_weapon_data = items.get_item_data(items_data, player_data.equipment.weapon)
 			if current_weapon_data then
 				for _, tag in ipairs(current_weapon_data.tags) do
@@ -184,11 +184,12 @@ function player.equip_item(player_data, items_data, item_name)
 				end
 			end
 		end
+		player_data.equipment = player_data.equipment or {}
 		player_data.equipment.weapon = item_key
 		player_data.attack = player_data.attack + weapon_value
 		output.add("You equipped " .. item_key .. ".\n")
 	elseif is_armor then
-		if player_data.equipment.armor then
+		if player_data.equipment and player_data.equipment.armor then
 			local current_armor_data = items.get_item_data(items_data, player_data.equipment.armor)
 			if current_armor_data then
 				for _, tag in ipairs(current_armor_data.tags) do
@@ -199,6 +200,7 @@ function player.equip_item(player_data, items_data, item_name)
 				end
 			end
 		end
+		player_data.equipment = player_data.equipment or {}
 		player_data.equipment.armor = item_key
 		player_data.defense = player_data.defense + armor_value
 		output.add("You equipped " .. item_key .. ".\n")
@@ -218,11 +220,16 @@ function player.unequip_item(player_data, items_data, identifier)
 	elseif identifier:lower() == "armor" then
 		slot = "armor"
 	else
-		slot = items.is_item_equipped(player_data, identifier) and (player_data.equipment.weapon == identifier and "weapon" or "armor") or nil
+		slot = items.is_item_equipped(player_data, identifier) and (player_data.equipment and player_data.equipment.weapon == identifier and "weapon" or "armor") or nil
 	end
 	
 	if not slot then
 		output.add(identifier .. " is not equipped or invalid slot specified.\n")
+		return player_data
+	end
+	
+	if not player_data.equipment then
+		output.add("No equipment is currently equipped.\n")
 		return player_data
 	end
 	
@@ -341,6 +348,27 @@ function player.check_player_alive(action, player_data)
 		return false
 	end
 	return true
+end
+
+function player.experience_to_next_level(value)
+	if value <= 1 then
+		return 150
+	end
+	return (value * 150) + ((value - 1) * 150)
+end
+
+function player.add_experience(player_data, experience, output)
+	player_data.experience = player_data.experience + experience
+	output.add("Gained " .. experience .. " experience.\n")
+	while player_data.experience >= player.experience_to_next_level(player_data.level) do
+		player_data.experience = player_data.experience - player.experience_to_next_level(player_data.level)
+		player_data.level = player_data.level + 1
+		player_data.health = 100
+		player_data.mana = 100
+		player_data.fatigue = 0
+		output.add("Congratulations! You reached level " .. player_data.level .. "!\n")
+	end
+	return player_data
 end
 
 return player
