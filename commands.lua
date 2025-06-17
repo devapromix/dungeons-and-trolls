@@ -11,19 +11,8 @@ local command_map = {
 	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
 }
 
-local movement_map = {
-	north = "north",
-	south = "south",
-	east = "east",
-	west = "west",
-	n = "north",
-	s = "south",
-	e = "east",
-	w = "west",
-	up = "up",
-	down = "down",
-	u = "up",
-	d = "down"
+local movement_map = {north = "north", south = "south",	east = "east", west = "west", up = "up", down = "down",
+						n = "north", s = "south", e = "east", w = "west", u = "up",	d = "down"
 }
 
 function commands.table_contains(table, element)
@@ -221,18 +210,6 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 		command_items.exec(player, player_module, items)
 	elseif cmd == "map" then
 		map.draw()
-	end
-end
-
-local function display_item_info(item_key, item_data, output)
-	output.add(item_key .. ":\n\n")
-	output.add(item_data.description .. "\n\n")
-	for _, tag in ipairs(item_data.tags) do
-		local key, value = tag:match("(%w+)=(%d+)")
-		if key and value then
-			local capitalized_key = key:sub(1, 1):upper() .. key:sub(2)
-			output.add(capitalized_key .. ": " .. value .. "\n")
-		end
 	end
 end
 
