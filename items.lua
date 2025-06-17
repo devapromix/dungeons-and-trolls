@@ -38,7 +38,7 @@ function items.find_item_key(item_table, name, is_show)
 		return matches[1]
 	end
 	
-	if is_show and is_show == true then output.add("No " .. name .. " found!\n") end
+	if is_show then output.add("No " .. name .. " found!\n") end
 	return nil
 end
 
@@ -94,6 +94,11 @@ function items.pick_item(player, map, item_name, quantity)
 
 	if quantity > available_qty then
 		output.add("There aren't enough " .. item_key .. " to pick up that amount.\n")
+		return
+	end
+
+	if commands.table_count(player.inventory) >= config.inventory.max_slots then
+		output.add("Cannot pick up " .. quantity .. " " .. item_key .. ": inventory is full (max " .. config.inventory.max_slots .. " slots).\n")
 		return
 	end
 
