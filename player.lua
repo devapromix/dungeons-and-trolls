@@ -30,7 +30,11 @@ function player.starter_kit(player_data)
 		add_rand_items("Raw Meat")
 		add_rand_items("Mushroom")
 		add_rand_item("Sacred Armor")
-		add_rand_item("Sword of Dawn")
+		local sword_data = items.get_item_data(items_data, "Sword of Dawn")
+		if sword_data and not game.unique_items["Sword of Dawn"] then
+			add_rand_item("Sword of Dawn")
+			game.unique_items["Sword of Dawn"] = true
+		end
 	end
 	
 	for item, quantity in pairs(starter_items) do
@@ -136,7 +140,7 @@ function player.rest(player_data, map_data, game_time, time)
 	output.add("Your health, mana, and fatigue have been restored.\n")
 	if rest_multiplier > 1 then
 		output.add("Resting by the fire makes you recover twice as fast!\n")
-	end
+		end
 	if rest_hours > 0 then
 		output.add("You feel hungrier and thirstier.\n")
 	end

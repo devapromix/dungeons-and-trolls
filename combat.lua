@@ -163,10 +163,19 @@ function combat.handle_enemy_drops(enemy_data, map_data, player_data, output)
 				player_data.gold = player_data.gold + quantity
 				output.add("Gained " .. quantity .. " gold.\n")
 			elseif drop.type == "item" then
+				local item_data = items.get_item_data(items_data, drop.name)
+				if item_data and items.is_artifact(item_data) and game.unique_items[drop.name] then
+					goto continue
+				end
 				local current_items = map_data[player_data.world].items[player_data.y][player_data.x]
 				current_items[drop.name] = (current_items[drop.name] or 0) + quantity
 				output.add(drop.name .. " (" .. quantity .. ") dropped on the ground.\n")
+				if item_data and items.is_artifact(item_data) then
+					game.unique_items[drop.name] = true
+					output.add("The legendary " .. drop.name .. " has appeared!\n")
+				end
 			end
+			::continue::
 		end
 	end
 end

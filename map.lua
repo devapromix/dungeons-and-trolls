@@ -179,6 +179,8 @@ function map.initialize_game(locations_data)
 		minute = 0
 	}
 	
+	game.initialize_unique_items(items_data)
+	
 	local function initialize_world(world, is_underworld)
 		for y = 1, config.map.height do
 			world.tiles[y] = {}
@@ -200,10 +202,18 @@ function map.initialize_game(locations_data)
 				end
 				if location_data and location_data.items then
 					for _, item in ipairs(location_data.items) do
+						local item_data = items.get_item_data(items_data, item.name)
+						if item_data and items.is_artifact(item_data) and game.unique_items[item.name] then
+							goto continue
+						end
 						if math.random() < item.chance then
 							local quantity = math.random(item.quantity[1], item.quantity[2])
 							world.items[y][x][item.name] = quantity
+							if item_data and items.is_artifact(item_data) then
+								game.unique_items[item.name] = true
+							end
 						end
+						::continue::
 					end
 				end
 				if location_data and location_data.enemies then

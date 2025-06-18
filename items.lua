@@ -116,11 +116,8 @@ function items.pick_item(player, map, item_name, quantity)
 		if item_data.file then
 			utils.output_text_file(item_data.file)
 		end
-		for _, tag in ipairs(item_data.tags) do
-			if tag == "artifact" then
-				output.add("This is a legendary artifact!\n")
-				break
-			end
+		if items.is_artifact(item_data) then
+			output.add("You acquired the legendary " .. item_key .. "!\n")
 		end
 	end
 end
@@ -303,6 +300,15 @@ function items.make_fire_item(player, map_data, world)
 	map_data[world].fire = { x = player.x, y = player.y, active = true }
 	output.add("You make a fire.\n")
 	time.tick_time(15)
+end
+
+function items.is_artifact(item_data)
+	for _, tag in ipairs(item_data.tags) do
+		if tag == "artifact" then
+			return true
+		end
+	end
+	return false
 end
 
 return items
