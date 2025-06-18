@@ -7,12 +7,12 @@ local command_map = {
 	game = {"help", "intro", "new", "load", "save", "about", "quit"},
 	info = {"status", "skills", "time", "items", "map"},
 	item = {"eat", "drink", "pick", "drop", "equip", "unequip"},
-	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave"},
+	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "train"},
 	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
 }
 
-local movement_map = {north = "north", south = "south",	east = "east", west = "west", up = "up", down = "down",
-						n = "north", s = "south", e = "east", w = "west", u = "up",	d = "down"
+local movement_map = {north = "north", south = "south", east = "east", west = "west", up = "up", down = "down",
+	n = "north", s = "south", e = "east", w = "west", u = "up", d = "down"
 }
 
 function commands.table_contains(table, element)
@@ -237,6 +237,8 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 		return command_fishing.exec(player, map_data, items_data, skills_data, time, output)
 	elseif cmd == "trollcave" then
 		return command_trollcave.exec(player, map_data, config, output, map)
+	elseif cmd == "train" then
+		return command_train.exec(command_parts, player, output)
 	end
 	return player
 end

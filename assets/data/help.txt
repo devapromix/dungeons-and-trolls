@@ -5,7 +5,7 @@ new - Starts a new game.                                        east (or e) - Mo
 save - Saves a game.                                            west (or w) - Move player west.
 load - Loads a saved game.                                      up (or u) - Climb up to the surface.
 map - Display the game map.                                     down (or d) - Descend into the underworld.
-intro - Show intro.
+intro - Show intro.                                             train <attribute> - Train an attribute.
 status - Display player's stats.                                examine <item or enemy> - Inspecting items or enemies.
 skills - Display player's skills.                               eat <item> - Eats an item.
 rest - Rest to restore health and mana.                         drink <item> - Drinks an item.

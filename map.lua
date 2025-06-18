@@ -188,7 +188,13 @@ function map.initialize_game(locations_data)
 		skills = {},
 		radius = 3,
 		level = 1,
-		experience = 0
+		experience = 0,
+		strength = 10,
+		dexterity = 10,
+		willpower = 10,
+		intelligence = 10,
+		perception = 10,
+		levelpoints = 0
 	}
 	
 	game_time = {

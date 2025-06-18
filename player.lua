@@ -2,6 +2,12 @@ local player = {}
 
 function player.starter_kit(player_data)
 	player_data.inventory = player_data.inventory or {}
+	player_data.strength = 10
+	player_data.dexterity = 10
+	player_data.willpower = 10
+	player_data.intelligence = 10
+	player_data.perception = 10
+	player_data.levelpoints = 0
 	
 	local starter_items = {}    
 
@@ -30,7 +36,13 @@ end
 function player.draw_status(player_data)
 	output.add("Player:\n")
 	output.add("Level: " .. player_data.level .. "\n")
-	output.add("Experience: " .. player_data.experience .. "/" .. player.experience_to_next_level(player_data.level) .. "\n\n")
+	output.add("Experience: " .. player_data.experience .. "/" .. player.experience_to_next_level(player_data.level) .. "\n")
+	output.add("Level Points: " .. player_data.levelpoints .. "\n\n")
+	output.add("Strength: " .. player_data.strength .. "\n")
+	output.add("Dexterity: " .. player_data.dexterity .. "\n")
+	output.add("Willpower: " .. player_data.willpower .. "\n")
+	output.add("Intelligence: " .. player_data.intelligence .. "\n")
+	output.add("Perception: " .. player_data.perception .. "\n\n")
 	output.add("Health: " .. player_data.health .. "\n")
 	output.add("Mana: " .. player_data.mana .. "\n")
 	output.add("Hunger: " .. player_data.hunger .. "\n")
@@ -363,10 +375,11 @@ function player.add_experience(player_data, experience, output)
 	while player_data.experience >= player.experience_to_next_level(player_data.level) do
 		player_data.experience = player_data.experience - player.experience_to_next_level(player_data.level)
 		player_data.level = player_data.level + 1
+		player_data.levelpoints = player_data.levelpoints + 3
 		player_data.health = 100
 		player_data.mana = 100
 		player_data.fatigue = 0
-		output.add("Congratulations! You reached level " .. player_data.level .. "!\n")
+		output.add("Congratulations! You reached level " .. player_data.level .. "! Gained 3 level points.\n")
 	end
 	return player_data
 end
