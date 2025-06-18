@@ -71,13 +71,17 @@ function combat.combat_round(enemy_name, enemy_data, map_data, player_data, item
 	return false
 end
 
+function combat.calculate_damage(attacker_stat, defender_stat)
+	return math.max(attacker_stat - defender_stat, 0)
+end
+
 function combat.player_attack(player_data, enemy_data, skills_data, output, enemy_name)
 	local result = { hit = false, damage = 0 }
 	
-	local miss_chance = combat.calculate_miss_chance(player_data.fatigue)
+	local miss_chance = combat.calculate_miss_chance(player_data.fatigue, player_data.dexterity)
 	
 	if math.random() >= miss_chance then
-		local base_damage = math.max(player_data.attack - enemy_data.defense, 0)
+		local base_damage = combat.calculate_damage(player_data.attack, enemy_data.defense)
 		local final_damage = skills.apply_skill_effects(player_data, skills_data, base_damage)
 		
 		if final_damage > 0 then
@@ -88,7 +92,7 @@ function combat.player_attack(player_data, enemy_data, skills_data, output, enem
 			output.add("Your attack is blocked by " .. enemy_name .. ".\n")
 		end
 	else
-		output.add("You missed your attack due to fatigue!\n")
+		output.add("You missed your attack!\n")
 	end
 	
 	return result
@@ -96,24 +100,31 @@ end
 
 function combat.enemy_attack(enemy_data, player_data, output, enemy_name)
 	local result = { hit = false, damage = 0 }
-	local damage = math.max(enemy_data.attack - player_data.defense, 0)
+	local dodge_chance = math.min(math.floor(player_data.dexterity / 10) * 0.05, 0.5)
 	
-	if damage > 0 then
-		result.hit = true
-		result.damage = damage
-		output.add(enemy_name .. " hits you for " .. damage .. " damage.\n")
+	if math.random() >= dodge_chance then
+		local damage = combat.calculate_damage(enemy_data.attack, player_data.defense)
+		if damage > 0 then
+			result.hit = true
+			result.damage = damage
+			output.add(enemy_name .. " hits you for " .. damage .. " damage.\n")
+		else
+			output.add(enemy_name .. "'s attack is blocked.\n")
+		end
 	else
-		output.add(enemy_name .. "'s attack is blocked.\n")
+		output.add("You dodged " .. enemy_name .. "'s attack!\n")
 	end
 	
 	return result
 end
 
-function combat.calculate_miss_chance(fatigue)
+function combat.calculate_miss_chance(fatigue, dexterity)
+	local base_miss_chance = 0
 	if fatigue > 70 then
-		return ((fatigue - 70) / 30) * 0.5
+		base_miss_chance = ((fatigue - 70) / 30) * 0.5
 	end
-	return 0
+	local dexterity_modifier = math.floor(dexterity / 10) * 0.05
+	return math.max(base_miss_chance - dexterity_modifier, 0)
 end
 
 function combat.handle_victory(enemy_name, enemy_data, map_data, player_data, items_data, skills_data, map, output, player_module)

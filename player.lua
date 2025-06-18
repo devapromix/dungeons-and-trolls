@@ -30,6 +30,7 @@ function player.starter_kit(player_data)
 		player_data.inventory[item] = (player_data.inventory[item] or 0) + quantity
 	end
 	
+	player_data = player.clamp_player_stats(player_data)
 	return player_data
 end
 
@@ -69,6 +70,12 @@ function player.clamp_player_stats(player_data)
 	player_data.thirst = utils.clamp(player_data.thirst, 0, 100)
 	player_data.attack = utils.clamp(player_data.attack, 0, math.huge)
 	player_data.defense = utils.clamp(player_data.defense, 0, math.huge)
+	player_data.strength = utils.clamp(player_data.strength, 0, 100)
+	player_data.dexterity = utils.clamp(player_data.dexterity, 0, 100)
+	player_data.willpower = utils.clamp(player_data.willpower, 0, 100)
+	player_data.intelligence = utils.clamp(player_data.intelligence, 0, 100)
+	player_data.perception = utils.clamp(player_data.perception, 0, 100)
+	player_data.levelpoints = utils.clamp(player_data.levelpoints, 0, 100)
 	return player_data
 end
 
