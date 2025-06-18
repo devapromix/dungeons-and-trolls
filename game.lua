@@ -42,7 +42,6 @@ end
 function game.new_game()
 	music.play_random()
     map.initialize_game(locations_data)
-    player = player_module.starter_kit(player)
     game_time = { year = 1280, month = 4, day = 1, hour = 6, minute = 0, playtime = 0 }
 	input.history = {}
     game.initialized = true

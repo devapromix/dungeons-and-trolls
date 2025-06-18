@@ -41,30 +41,34 @@ function player.starter_kit(player_data)
 end
 
 function player.draw_status(player_data)
-	output.add("Player:\n")
-	output.add("Level: " .. player_data.level .. "\n")
-	output.add("Experience: " .. player_data.experience .. "/" .. player.experience_to_next_level(player_data.level) .. "\n")
-	output.add("Level Points: " .. player_data.levelpoints .. "\n\n")
-	output.add("Strength: " .. player_data.strength .. "\n")
-	output.add("Dexterity: " .. player_data.dexterity .. "\n")
-	output.add("Vitality: " .. player_data.vitality .. "\n")
-	output.add("Intelligence: " .. player_data.intelligence .. "\n\n")
-	output.add("Health: " .. player_data.health .. "\n")
-	output.add("Mana: " .. player_data.mana .. "\n")
-	output.add("Hunger: " .. player_data.hunger .. "\n")
-	output.add("Thirst: " .. player_data.thirst .. "\n")
-	output.add("Fatigue: " .. player_data.fatigue .. "\n")
-	output.add("Attack: " .. player_data.attack .. "\n")
-	output.add("Defense: " .. player_data.defense .. "\n\n")
-	output.add("Gold: " .. player_data.gold .. "\n")
-	output.add("Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n")
-	output.add("Equipment:\n")
-	output.add("Weapon: " .. (player_data.equipment and player_data.equipment.weapon or "None") .. "\n")
-	output.add("Armor: " .. (player_data.equipment and player_data.equipment.armor or "None") .. "\n\n")
-	if not player_data.alive then
-		output.add("\nYou are DEAD.\n\n")
-		output.add(const.START_NEW_GAME_MSG)
+	local lines = {
+		"Player:\n",
+		"Level: " .. player_data.level .. "\n",
+		"Experience: " .. player_data.experience .. "/" .. player.experience_to_next_level(player_data.level) .. "\n",
+		"Level points: " .. player_data.levelpoints .. "\n\n",
+		"Strength: " .. player_data.strength .. "\n",
+		"Dexterity: " .. player_data.dexterity .. "\n",
+		"Vitality: " .. player_data.vitality .. "\n",
+		"Intelligence: " .. player_data.intelligence .. "\n\n",
+		"Health: " .. player_data.health .. "\n",
+		"Mana: " .. player_data.mana .. "\n",
+		"Hunger: " .. player_data.hunger .. "\n",
+		"Thirst: " .. player_data.thirst .. "\n",
+		"Fatigue: " .. player_data.fatigue .. "\n",
+		"Attack: " .. player_data.attack .. "\n",
+		"Defense: " .. player_data.defense .. "\n\n",
+		"Gold: " .. player_data.gold .. "\n",
+		"Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n",
+		"Equipment:\n",
+		"Weapon: " .. (player_data.equipment and player_data.equipment.weapon or "None") .. "\n",
+		"Armor: " .. (player_data.equipment and player_data.equipment.armor or "None") .. "\n"
+	}
+	if player_data.alive then
+		table.insert(lines, "\nYou are DEAD.\n\n")
+		table.insert(lines, const.aliveSTART_NEW)
 	end
+	output.add(table.concat(lines))
+	return player_data
 end
 
 function player.clamp_player_stats(player_data)
