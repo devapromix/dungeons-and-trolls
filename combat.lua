@@ -1,26 +1,30 @@
 local combat = {}
 
-function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, items_data, skills_data, time, map, output, player_module)
-	if not player_module.check_player_alive("attack", player_data) then
-		return
+function combat.format_combat_message(attacker, target, action, damage)
+	if action == "hit" then
+		return attacker .. " hit " .. target .. " for " .. damage .. " damage.\n"
+	elseif action == "block" then
+		return attacker .. "'s attack is blocked by " .. target .. ".\n"
+	elseif action == "miss" then
+		return attacker .. " missed their attack on " .. target .. "!\n"
+	elseif action == "dodge" then
+		return target .. " dodged " .. attacker .. "'s attack!\n"
 	end
-	
-	if not enemy_name or enemy_name == "" then
-		output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
+	return ""
+end
+
+function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, items_data, skills_data, time, map, output, player_module)
+	if not player_module.check_player_alive("attack", player_data) or not enemy_name or enemy_name == "" then
+		output.add(not enemy_name or enemy_name == "" and "Please specify an enemy to attack (e.g., 'attack Goblin').\n" or "")
 		return
 	end
 	
 	local enemy_list = map_data[player_data.world].enemies[player_data.y][player_data.x]
 	local enemy_key = items.find_item_key(enemy_list, enemy_name)
+	local enemy_data = enemy_key and enemies.get_enemy_data(enemies_data, enemy_key)
 	
-	if not enemy_key then
-		output.add("No " .. enemy_name .. " found here.\n")
-		return
-	end
-	
-	local enemy_data = enemies.get_enemy_data(enemies_data, enemy_key)
 	if not enemy_data then
-		output.add("No data found for " .. enemy_key .. ".\n")
+		output.add("No " .. (enemy_key or enemy_name) .. " found here.\n")
 		return
 	end
 	
@@ -29,14 +33,13 @@ function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, it
 end
 
 function combat.combat_round(enemy_name, enemy_data, map_data, player_data, items_data, skills_data, time, map, output, player_module)
-	local enemy_health = enemy_data.health
 	local round_count = 0
 	
-	while player_data.health > 0 and enemy_health > 0 and round_count < 10 do
+	while player_data.health > 0 and enemy_data.health > 0 and round_count < 10 do
 		round_count = round_count + 1
-		
 		player_data.fatigue = player_data.fatigue + 1
 		player_data = player_module.clamp_player_stats(player_data)
+		
 		local status_message = player_module.check_player_status(player_data)
 		if status_message ~= "" then
 			output.add(status_message)
@@ -45,8 +48,8 @@ function combat.combat_round(enemy_name, enemy_data, map_data, player_data, item
 		
 		local player_hit = combat.player_attack(player_data, enemy_data, skills_data, output, enemy_name)
 		if player_hit.hit then
-			enemy_health = enemy_health - player_hit.damage
-			if enemy_health <= 0 then
+			enemy_data.health = enemy_data.health - player_hit.damage
+			if enemy_data.health <= 0 then
 				return combat.handle_victory(enemy_name, enemy_data, map_data, player_data, items_data, skills_data, map, output, player_module)
 			end
 		end
@@ -62,22 +65,20 @@ function combat.combat_round(enemy_name, enemy_data, map_data, player_data, item
 		time.tick_time(10)
 	end
 	
-	if round_count >= 10 and player_data.health > 0 and enemy_health > 0 then
+	if round_count >= 10 then
 		output.add("You failed to defeat " .. enemy_name .. " and retreated.\n")
-		map.display_location(player_data, map_data)
-		return false
 	end
 	
+	map.display_location(player_data, map_data)
 	return false
 end
 
 function combat.calculate_damage(attacker_stat, defender_stat)
-	return math.max(attacker_stat - defender_stat, 0)
+	return attacker_stat > defender_stat and attacker_stat - defender_stat or 0
 end
 
 function combat.player_attack(player_data, enemy_data, skills_data, output, enemy_name)
 	local result = { hit = false, damage = 0 }
-	
 	local miss_chance = combat.calculate_miss_chance(player_data.fatigue, player_data.dexterity)
 	
 	if math.random() >= miss_chance then
@@ -87,12 +88,12 @@ function combat.player_attack(player_data, enemy_data, skills_data, output, enem
 		if final_damage > 0 then
 			result.hit = true
 			result.damage = final_damage
-			output.add("You hit " .. enemy_name .. " for " .. final_damage .. " damage.\n")
+			output.add(combat.format_combat_message("You", enemy_name, "hit", final_damage))
 		else
-			output.add("Your attack is blocked by " .. enemy_name .. ".\n")
+			output.add(combat.format_combat_message("You", enemy_name, "block"))
 		end
 	else
-		output.add("You missed your attack!\n")
+		output.add(combat.format_combat_message("You", enemy_name, "miss"))
 	end
 	
 	return result
@@ -107,22 +108,19 @@ function combat.enemy_attack(enemy_data, player_data, output, enemy_name)
 		if damage > 0 then
 			result.hit = true
 			result.damage = damage
-			output.add(enemy_name .. " hits you for " .. damage .. " damage.\n")
+			output.add(combat.format_combat_message(enemy_name, "you", "hit", damage))
 		else
-			output.add(enemy_name .. "'s attack is blocked.\n")
+			output.add(combat.format_combat_message(enemy_name, "you", "block"))
 		end
 	else
-		output.add("You dodged " .. enemy_name .. "'s attack!\n")
+		output.add(combat.format_combat_message(enemy_name, "you", "dodge"))
 	end
 	
 	return result
 end
 
 function combat.calculate_miss_chance(fatigue, dexterity)
-	local base_miss_chance = 0
-	if fatigue > 70 then
-		base_miss_chance = ((fatigue - 70) / 30) * 0.5
-	end
+	local base_miss_chance = fatigue > 70 and ((fatigue - 70) / 30) * 0.5 or 0
 	local dexterity_modifier = math.floor(dexterity / 10) * 0.05
 	return math.max(base_miss_chance - dexterity_modifier, 0)
 end
@@ -139,8 +137,6 @@ function combat.handle_victory(enemy_name, enemy_data, map_data, player_data, it
 	if enemy_name == "Troll King" then
 		game.victory()
 	end
-	
-	map.display_location(player_data, map_data)
 	
 	return true
 end
