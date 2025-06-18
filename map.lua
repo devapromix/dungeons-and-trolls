@@ -189,12 +189,11 @@ function map.initialize_game(locations_data)
 		radius = 3,
 		level = 1,
 		experience = 0,
+		levelpoints = 0,
 		strength = 10,
 		dexterity = 10,
-		willpower = 10,
-		intelligence = 10,
-		perception = 10,
-		levelpoints = 0
+		vitality = 10,
+		intelligence = 10
 	}
 	
 	game_time = {

@@ -3,7 +3,7 @@ local train = {}
 function train.find_attribute_key(attribute_name)
 	if not attribute_name or attribute_name == "" then return nil end
 	local lower_name = string.lower(attribute_name)
-	local attributes = {"strength", "dexterity", "willpower", "intelligence", "perception"}
+	local attributes = {"strength", "dexterity", "vitality", "intelligence"}
 	for _, attr in ipairs(attributes) do
 		if string.lower(attr) == lower_name or (#lower_name >= 3 and string.find(string.lower(attr), lower_name, 1, true)) then
 			return attr

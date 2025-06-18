@@ -4,9 +4,8 @@ function player.starter_kit(player_data)
 	player_data.inventory = player_data.inventory or {}
 	player_data.strength = 10
 	player_data.dexterity = 10
-	player_data.willpower = 10
+	player_data.vitality = 10
 	player_data.intelligence = 10
-	player_data.perception = 10
 	player_data.levelpoints = 0
 	
 	local starter_items = {}    
@@ -41,9 +40,8 @@ function player.draw_status(player_data)
 	output.add("Level Points: " .. player_data.levelpoints .. "\n\n")
 	output.add("Strength: " .. player_data.strength .. "\n")
 	output.add("Dexterity: " .. player_data.dexterity .. "\n")
-	output.add("Willpower: " .. player_data.willpower .. "\n")
-	output.add("Intelligence: " .. player_data.intelligence .. "\n")
-	output.add("Perception: " .. player_data.perception .. "\n\n")
+	output.add("Vitality: " .. player_data.vitality .. "\n")
+	output.add("Intelligence: " .. player_data.intelligence .. "\n\n")
 	output.add("Health: " .. player_data.health .. "\n")
 	output.add("Mana: " .. player_data.mana .. "\n")
 	output.add("Hunger: " .. player_data.hunger .. "\n")
@@ -72,10 +70,8 @@ function player.clamp_player_stats(player_data)
 	player_data.defense = utils.clamp(player_data.defense, 0, math.huge)
 	player_data.strength = utils.clamp(player_data.strength, 0, 100)
 	player_data.dexterity = utils.clamp(player_data.dexterity, 0, 100)
-	player_data.willpower = utils.clamp(player_data.willpower, 0, 100)
+	player_data.vitality = utils.clamp(player_data.vitality, 0, 100)
 	player_data.intelligence = utils.clamp(player_data.intelligence, 0, 100)
-	player_data.perception = utils.clamp(player_data.perception, 0, 100)
-	player_data.levelpoints = utils.clamp(player_data.levelpoints, 0, 100)
 	return player_data
 end
 
