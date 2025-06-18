@@ -169,32 +169,7 @@ function map.initialize_game(locations_data)
 		}
 	}
 	
-	player = {
-		x = math.floor(config.map.width / 2),
-		y = math.floor(config.map.height / 2),
-		world = "overworld",
-		symbol = "@",
-		health = 100,
-		mana = 100,
-		hunger = 0,
-		fatigue = 0,
-		thirst = 0,
-		attack = 5,
-		defense = 3,
-		alive = true,
-		gold = 0,
-		inventory = { ["Short Sword"] = 1, ["Leather Armor"] = 1 },
-		equipment = { weapon = "Short Sword", armor = "Leather Armor" },
-		skills = {},
-		radius = 3,
-		level = 1,
-		experience = 0,
-		levelpoints = 0,
-		strength = 10,
-		dexterity = 10,
-		vitality = 10,
-		intelligence = 10
-	}
+	player = player_module.initialize_player(config)
 	
 	game_time = {
 		year = 1280,
