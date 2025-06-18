@@ -97,7 +97,7 @@ function items.pick_item(player, map, item_name, quantity)
 		return
 	end
 
-	if commands.table_count(player.inventory) >= config.inventory.max_slots then
+	if commands.table_count(player.inventory) >= config.inventory.max_slots and not player.inventory[item_key] then
 		output.add("Cannot pick up " .. quantity .. " " .. item_key .. ": inventory is full (max " .. config.inventory.max_slots .. " slots).\n")
 		return
 	end
