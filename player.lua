@@ -30,11 +30,6 @@ function player.starter_kit(player_data)
 		add_rand_items("Raw Meat")
 		add_rand_items("Mushroom")
 		add_rand_item("Sacred Armor")
-		local sword_data = items.get_item_data(items_data, "Sword of Dawn")
-		if sword_data and not game.unique_items["Sword of Dawn"] then
-			add_rand_item("Sword of Dawn")
-			game.unique_items["Sword of Dawn"] = true
-		end
 	end
 	
 	for item, quantity in pairs(starter_items) do

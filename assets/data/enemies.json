@@ -10,6 +10,7 @@
       "description": "A small, sneaky creature with a crude weapon.",
       "tags": ["hostile", "melee"],
       "drops": [
+        {"name": "Sword of Dawn", "chance": 1.0, "type": "item"},
         {"name": "Dirk", "chance": 0.1, "type": "item"},
         {"name": "Falchion", "chance": 0.1, "type": "item"},
         {"name": "Double Axe", "chance": 0.1, "type": "item"},
