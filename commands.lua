@@ -5,7 +5,7 @@ commands.confirmation_type = nil
 
 local command_map = {
 	game = {"help", "intro", "new", "load", "save", "about", "quit"},
-	info = {"status", "skills", "time", "items", "map"},
+	info = {"status", "skills", "time", "items", "map", "gear"},
 	item = {"eat", "drink", "pick", "drop", "equip", "unequip"},
 	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "train"},
 	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
@@ -184,6 +184,7 @@ function commands.handle_game_commands(cmd, command_parts, player, output)
 			output.add(const.TYPE_HELP_MSG)
 		end
 	elseif cmd == "save" then
+
 		if not player_module.check_player_alive("save the game", player) then
 			return
 		end
@@ -210,6 +211,8 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 		command_items.exec(player, player_module, items)
 	elseif cmd == "map" then
 		map.draw()
+	elseif cmd == "gear" then
+		return command_gear.exec(command_parts, player, player_module)
 	end
 end
 

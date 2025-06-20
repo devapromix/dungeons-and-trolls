@@ -57,10 +57,7 @@ function player.draw_status(player_data)
 		"Attack: " .. player_data.attack .. "\n",
 		"Defense: " .. player_data.defense .. "\n\n",
 		"Gold: " .. player_data.gold .. "\n",
-		"Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n",
-		"Equipment:\n",
-		"Weapon: " .. (player_data.equipment and player_data.equipment.weapon or "None") .. "\n",
-		"Armor: " .. (player_data.equipment and player_data.equipment.armor or "None") .. "\n"
+		"Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n"
 	}
 	if not player_data.alive then
 		table.insert(lines, "\nYou are DEAD.\n\n")

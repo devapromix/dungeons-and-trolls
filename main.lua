@@ -23,6 +23,7 @@ command_train = require("commands.train")
 command_skills = require("commands.skills")
 command_kill = require("commands.kill")
 command_examine = require("commands.examine")
+command_gear = require("commands.gear")
 command_trollcave = require("commands.trollcave")
 
 function love.load()
