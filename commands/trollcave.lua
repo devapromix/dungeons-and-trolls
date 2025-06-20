@@ -1,6 +1,6 @@
 local trollcave = {}
 
-function trollcave.exec(player, map_data, config, output, map)
+function trollcave.exec(player, map_data, map)
 	if not player_module.check_player_alive("teleport", player) then
 		return player
 	end

@@ -236,9 +236,9 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 	elseif cmd == "fish" then
 		return command_fishing.exec(player, map_data, items_data, skills_data, time, output)
 	elseif cmd == "trollcave" then
-		return command_trollcave.exec(player, map_data, config, output, map)
+		return command_trollcave.exec(player, map_data, map)
 	elseif cmd == "train" then
-		return command_train.exec(command_parts, player, output)
+		return command_train.exec(command_parts, player)
 	end
 	return player
 end

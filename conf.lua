@@ -1,6 +1,6 @@
 config = {
 	inventory = {
-		max_slots = 12,
+		max_slots = 8,
 	},
 	
 	debug = false,
@@ -17,6 +17,10 @@ config = {
 	map = {
         width = 127,
         height = 37,
+	},
+	
+	skill = {
+		max = 50,
 	}
 }
 
