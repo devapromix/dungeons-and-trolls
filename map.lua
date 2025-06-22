@@ -135,6 +135,18 @@ function map.add_passages(map_data)
 	end
 end
 
+function map.add_village()
+	local village_x, village_y
+	local center_x, center_y = math.floor(config.map.width / 2), math.floor(config.map.height / 2)
+	repeat
+		village_x = center_x + math.random(-5, 5)
+		village_y = center_y + math.random(-5, 5)
+		local distance = math.sqrt((village_x - center_x)^2 + (village_y - center_y)^2)
+	until distance >= 2 and distance <= 5 and is_valid_position(village_x, village_y) and not map_data.overworld.tiles[village_y][village_x]:match("[><]")
+	map_data.overworld.tiles[village_y][village_x] = "v"
+	return village_x, village_y
+end
+
 function map.add_troll_cave()
 	local troll_x, troll_y
 	local center_x, center_y = math.floor(config.map.width / 2), math.floor(config.map.height / 2)
@@ -157,7 +169,8 @@ function map.initialize_game(locations_data)
 			visited = {},
 			items = {},
 			enemies = {},
-			fire = { x = nil, y = nil, active = false }
+			fire = { x = nil, y = nil, active = false },
+			village = { x = nil, y = nil }
 		},
 		underworld = {
 			tiles = {},
@@ -237,6 +250,9 @@ function map.initialize_game(locations_data)
 		map.gen_world(map_data.underworld, true, 20, 150)
 	end
 	map.add_passages(map_data)
+	local village_x, village_y = map.add_village()
+	map_data.overworld.village.x = village_x
+	map_data.overworld.village.y = village_y
 	local troll_x, troll_y = map.add_troll_cave()
 	map_data.underworld.troll_cave.x = troll_x
 	map_data.underworld.troll_cave.y = troll_y
