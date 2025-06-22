@@ -296,6 +296,7 @@ function map.display_location(player, map_data)
 		output.add("You are inside the tavern. The warm glow of the hearth and the chatter of patrons welcome you.\n")
 		return
 	end
+	
 	local location = map.get_location_description(map_data[player.world].tiles[player.y][player.x])
 	output.add("You are in " .. location.name .. ". " .. location.description .. "\n")
 	

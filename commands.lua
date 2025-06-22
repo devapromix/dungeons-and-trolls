@@ -245,7 +245,7 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 	elseif cmd == "enter" then
 		return command_enter.exec(command_parts, player, map_data)
 	elseif cmd == "leave" then
-		return command_leave.exec(command_parts, player, output)
+		return command_leave.exec(player, map_data)
 	end
 	return player
 end

@@ -1,6 +1,6 @@
 local leave = {}
 
-function leave.exec(command_parts, player, map_data)
+function leave.exec(player, map_data)
 	if not player_module.check_player_alive("leave a building", player) then
 		return player
 	end

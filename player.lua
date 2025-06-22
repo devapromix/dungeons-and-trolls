@@ -106,41 +106,6 @@ function player.update_max_mana(player_data)
 	return player_data
 end
 
-function player.rest(player_data, map_data, game_time, time)
-	if player_data.health >= player_data.max_health and player_data.mana >= player_data.max_mana and player_data.fatigue <= 0 then
-		output.add("You don't need to rest.\n")
-		return player_data
-	end
-	local hours_to_full = math.max(
-		math.ceil((player_data.max_health - player_data.health) / 10),
-		math.ceil((player_data.max_mana - player_data.mana) / 10),
-		math.ceil(player_data.fatigue / 10)
-	)
-	local hours_to_morning = game_time.hour >= 18 and (24 - game_time.hour + 6) or game_time.hour < 6 and (6 - game_time.hour) or 0
-	local rest_hours = hours_to_morning > 0 and utils.clamp(hours_to_full, 0, hours_to_morning) or hours_to_full
-	local rest_multiplier = map_data[player_data.world].fire.active and map_data[player_data.world].fire.x == player_data.x and map_data[player_data.world].fire.y == player_data.y and 2 or 1
-	output.add("You rest for " .. rest_hours .. " hour(s)...\n")
-	player_data.health = player_data.health + rest_hours * 10 * rest_multiplier
-	player_data.mana = player_data.mana + rest_hours * 10 * rest_multiplier
-	player_data.fatigue = player_data.fatigue - rest_hours * 10 * rest_multiplier
-	player_data.hunger = player_data.hunger + rest_hours * 0.5
-	player_data.thirst = player_data.thirst + rest_hours * 2.5
-	player_data = player.clamp_player_stats(player_data)
-	time.tick_time(rest_hours * 60)
-	output.add("Your health, mana, and fatigue have been restored.\n")
-	if rest_multiplier > 1 then
-		output.add("Resting by the fire makes you recover twice as fast!\n")
-	end
-	if rest_hours > 0 then
-		output.add("You feel hungrier and thirstier.\n")
-	end
-	local status_message = player.check_player_status(player_data)
-	if status_message ~= "" then
-		output.add(status_message)
-	end
-	return player_data
-end
-
 function player.equip_item(player_data, items_data, item_name)
 	if not player.check_player_alive("equip items", player_data) then
 		return player_data
