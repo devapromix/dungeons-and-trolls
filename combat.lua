@@ -136,6 +136,7 @@ function combat.player_attack(player_data, enemy_data, skills_data, output, enem
 	
 	local fatigue = player_data.fatigue or 0
 	local dexterity = player_data.dexterity or 1
+	local strength = player_data.strength or 0
 	local attack = player_data.attack or 1
 	local enemy_defense = enemy_data.defense or 0
 	
@@ -151,6 +152,11 @@ function combat.player_attack(player_data, enemy_data, skills_data, output, enem
 		
 		if final_damage > 0 then
 			result.hit = true
+			local crit_chance = math.min(math.floor(dexterity / 10) * 0.05, 0.5)
+			if math.random() < crit_chance then
+				final_damage = final_damage + strength
+				output.add("Critical hit!\n")
+			end
 			result.damage = final_damage
 			output.add(combat.format_combat_message("You", enemy_name, "hit", final_damage))
 		else

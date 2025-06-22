@@ -320,9 +320,9 @@ end
 
 function player.experience_to_next_level(value)
 	if value <= 1 then
-		return 150
+		return 120
 	end
-	return (value * 150) + ((value - 1) * 150)
+	return (value * 120) + ((value - 1) * 120)
 end
 
 function player.add_experience(player_data, experience, output)

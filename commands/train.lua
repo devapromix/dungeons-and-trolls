@@ -40,12 +40,8 @@ function train.exec(command_parts, player)
 	end
 	player[attr_key] = player[attr_key] + 1
 	player.levelpoints = player.levelpoints - 1
-	if attr_key == "vitality" then
-		player = player_module.update_max_health(player)
-	end
-	if attr_key == "intelligence" then
-		player = player_module.update_max_mana(player)
-	end
+	if attr_key == "vitality" then player = player_module.update_max_health(player) end
+	if attr_key == "intelligence" then player = player_module.update_max_mana(player) end
 	output.add("You trained " .. attr_key .. "!\n")
 	output.add("Current value: " .. player[attr_key] .. ".\n")
 	output.add("Level points remaining: " .. player.levelpoints .. ".\n")
