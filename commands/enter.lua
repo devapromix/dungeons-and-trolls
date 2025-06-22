@@ -1,6 +1,6 @@
-local command_enter = {}
+local enter = {}
 
-function command_enter.exec(command_parts, player, map_data)
+function enter.exec(command_parts, player, map_data)
 	if not player_module.check_player_alive("enter a building", player) then
 		return player
 	end
@@ -30,4 +30,4 @@ function command_enter.exec(command_parts, player, map_data)
 	return player
 end
 
-return command_enter
+return enter

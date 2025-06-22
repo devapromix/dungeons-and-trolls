@@ -246,7 +246,7 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 	elseif cmd == "train" then
 		return command_train.exec(command_parts, player)
 	elseif cmd == "enter" then
-		return command_enter.exec(command_parts, player, map_data, output)
+		return command_enter.exec(command_parts, player, map_data)
 	end
 	return player
 end
