@@ -11,19 +11,15 @@ end
 
 function player.starter_kit(player_data)
 	player_data.inventory = player_data.inventory or {}
-	
 	local starter_items = {}
-	
 	local function add_rand_items(item_name)
 		starter_items[item_name] = math.random(2, 5)
 	end
-
 	local function add_rand_item(item_name)
 		starter_items[item_name] = 1
 	end
-	
 	add_rand_items("Firewood")
-		add_rand_items("Apple")
+	add_rand_items("Apple")
 	add_rand_items("Bread")
 	add_rand_items("Water Bottle")
 	if config.debug then
@@ -31,11 +27,9 @@ function player.starter_kit(player_data)
 		add_rand_items("Mushroom")
 		add_rand_item("Sacred Armor")
 	end
-	
 	for item, quantity in pairs(starter_items) do
 		player_data.inventory[item] = (player_data.inventory[item] or 0) + quantity
 	end
-	
 	return player_data
 end
 
@@ -49,15 +43,14 @@ function player.draw_status(player_data)
 		"Dexterity: " .. player_data.dexterity .. "\n",
 		"Vitality: " .. player_data.vitality .. "\n",
 		"Intelligence: " .. player_data.intelligence .. "\n\n",
-		"Health: " .. player_data.health .. "\n",
+		"Health: " .. player_data.health .. "/" .. player_data.max_health .. "\n",
 		"Mana: " .. player_data.mana .. "\n",
 		"Hunger: " .. player_data.hunger .. "\n",
 		"Thirst: " .. player_data.thirst .. "\n",
 		"Fatigue: " .. player_data.fatigue .. "\n",
 		"Attack: " .. player_data.attack .. "\n",
 		"Defense: " .. player_data.defense .. "\n\n",
-		"Gold: " .. player_data.gold .. "\n",
-		"Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n"
+		"Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n",
 	}
 	if not player_data.alive then
 		table.insert(lines, "\nYou are DEAD.\n\n")
@@ -68,7 +61,7 @@ function player.draw_status(player_data)
 end
 
 function player.clamp_player_stats(player_data)
-	player_data.health = utils.clamp(player_data.health, 0, 100)
+	player_data.health = utils.clamp(player_data.health, 0, player_data.max_health)
 	player_data.mana = utils.clamp(player_data.mana, 0, 100)
 	player_data.hunger = utils.clamp(player_data.hunger, 0, 100)
 	player_data.fatigue = utils.clamp(player_data.fatigue, 0, 100)
@@ -101,47 +94,44 @@ function player.clamp_player_skills(player_data, skills_data)
 	return player_data
 end
 
+function player.update_max_health(player_data)
+	player_data.max_health = player_data.vitality * 10
+	player_data.health = utils.clamp(player_data.health, 0, player_data.max_health)
+	return player_data
+end
+
 function player.rest(player_data, map_data, game_time, time)
-	if player_data.health >= 100 and player_data.mana >= 100 and player_data.fatigue <= 0 then
+	if player_data.health >= player_data.max_health and player_data.mana >= 100 and player_data.fatigue <= 0 then
 		output.add("You don't need to rest.\n")
 		return player_data
 	end
-	
 	local hours_to_full = math.max(
-		math.ceil((100 - player_data.health) / 10),
+		math.ceil((player_data.max_health - player_data.health) / 10),
 		math.ceil((100 - player_data.mana) / 10),
 		math.ceil(player_data.fatigue / 10)
 	)
-	
 	local hours_to_morning = game_time.hour >= 18 and (24 - game_time.hour + 6) or game_time.hour < 6 and (6 - game_time.hour) or 0
 	local rest_hours = hours_to_morning > 0 and utils.clamp(hours_to_full, 0, hours_to_morning) or hours_to_full
-	
 	local rest_multiplier = map_data[player_data.world].fire.active and map_data[player_data.world].fire.x == player_data.x and map_data[player_data.world].fire.y == player_data.y and 2 or 1
-	
 	output.add("You rest for " .. rest_hours .. " hour(s)...\n")
-	
 	player_data.health = player_data.health + rest_hours * 10 * rest_multiplier
 	player_data.mana = player_data.mana + rest_hours * 10 * rest_multiplier
 	player_data.fatigue = player_data.fatigue - rest_hours * 10 * rest_multiplier
 	player_data.hunger = player_data.hunger + rest_hours * 0.5
 	player_data.thirst = player_data.thirst + rest_hours * 2.5
-	
 	player_data = player.clamp_player_stats(player_data)
-	
 	time.tick_time(rest_hours * 60)
 	output.add("Your health, mana, and fatigue have been restored.\n")
 	if rest_multiplier > 1 then
 		output.add("Resting by the fire makes you recover twice as fast!\n")
-		end
+	end
 	if rest_hours > 0 then
 		output.add("You feel hungrier and thirstier.\n")
 	end
-	
 	local status_message = player.check_player_status(player_data)
 	if status_message ~= "" then
 		output.add(status_message)
 	end
-	
 	return player_data
 end
 
@@ -149,35 +139,28 @@ function player.equip_item(player_data, items_data, item_name)
 	if not player.check_player_alive("equip items", player_data) then
 		return player_data
 	end
-	
 	local item_key = items.find_item_key(player_data.inventory, item_name)
 	if not item_key then
 		output.add("You don't have " .. item_name .. " in your inventory.\n")
 		return player_data
 	end
-	
 	local item_data = items.get_item_data(items_data, item_key)
 	if not item_data then
 		output.add("No data found for " .. item_key .. ".\n")
 		return player_data
 	end
-	
 	local item_level = player.get_item_tag_value(item_data, "level")
 	if item_level and item_level > player_data.level then
 		output.add("You need to be level " .. item_level .. " to equip " .. item_key .. ".\n")
 		return player_data
 	end
-	
 	local weapon_value = player.get_item_tag_value(item_data, "weapon")
 	local armor_value = player.get_item_tag_value(item_data, "armor")
-	
 	if not weapon_value and not armor_value then
 		output.add(item_key .. " cannot be equipped.\n")
 		return player_data
 	end
-	
 	player_data.equipment = player_data.equipment or {}
-	
 	if weapon_value then
 		if player_data.equipment.weapon then
 			local current_weapon_data = items.get_item_data(items_data, player_data.equipment.weapon)
@@ -205,7 +188,6 @@ function player.equip_item(player_data, items_data, item_name)
 		player_data.defense = player_data.defense + armor_value
 		output.add("You equipped " .. item_key .. ".\n")
 	end
-	
 	return player_data
 end
 
@@ -213,7 +195,6 @@ function player.unequip_item(player_data, items_data, identifier)
 	if not player.check_player_alive("unequip items", player_data) then
 		return player_data
 	end
-	
 	local slot
 	if identifier:lower() == "weapon" then
 		slot = "weapon"
@@ -222,24 +203,20 @@ function player.unequip_item(player_data, items_data, identifier)
 	else
 		slot = items.is_item_equipped(player_data, identifier) and (player_data.equipment and (player_data.equipment.weapon == identifier and "weapon" or player_data.equipment.armor == identifier and "armor"))
 	end
-	
 	if not slot then
 		output.add(identifier .. " is not equipped or invalid slot specified.\n")
 		return player_data
 	end
-	
 	if not player_data.equipment or not player_data.equipment[slot] then
 		output.add("No " .. slot .. " is currently equipped.\n")
 		return player_data
 	end
-	
 	local equipped_item = player_data.equipment[slot]
 	local item_data = items.get_item_data(items_data, equipped_item)
 	if not item_data then
 		output.add("No data found for " .. equipped_item .. ".\n")
 		return player_data
 	end
-	
 	local tag_value = player.get_item_tag_value(item_data, slot)
 	if tag_value then
 		if slot == "weapon" then
@@ -250,7 +227,6 @@ function player.unequip_item(player_data, items_data, identifier)
 		player_data.equipment[slot] = nil
 		output.add("You unequipped " .. equipped_item .. ".\n")
 	end
-	
 	return player_data
 end
 
@@ -316,7 +292,7 @@ function player.check_player_status(player_data)
 		player_data.alive = false
 		return "You died from exhaustion.\n"
 	elseif player_data.health <= 0 then
-		player_data.health = utils.clamp(player_data.health, 0, 100)
+		player_data.health = utils.clamp(player_data.health, 0, player_data.max_health)
 		player_data.alive = false
 		return "You died from injuries.\n"
 	elseif player_data.thirst >= 100 then
@@ -350,7 +326,7 @@ function player.add_experience(player_data, experience, output)
 		player_data.experience = player_data.experience - player.experience_to_next_level(player_data.level)
 		player_data.level = player_data.level + 1
 		player_data.levelpoints = player_data.levelpoints + 3
-		player_data.health = 100
+		player_data.health = player_data.max_health
 		player_data.mana = 100
 		player_data.fatigue = 0
 		output.add("Congratulations! You reached level " .. player_data.level .. "! Gained 3 level points.\n")
@@ -364,8 +340,9 @@ function player.initialize_player(config)
 		y = math.floor(config.map.height / 2),
 		world = "overworld",
 		symbol = "@",
-		health = 100,
+		health = 1000,
 		mana = 100,
+		max_health = 0,
 		hunger = 0,
 		fatigue = 0,
 		thirst = 0,
@@ -385,10 +362,9 @@ function player.initialize_player(config)
 		vitality = 10,
 		intelligence = 10
 	}
-	
+	player_data = player.update_max_health(player_data)
 	player_data = player.starter_kit(player_data)
 	player_data = player.clamp_player_stats(player_data)
-	
 	return player_data
 end
 

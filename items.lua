@@ -25,7 +25,6 @@ function items.find_item_key(item_table, name, is_show)
 	if not item_table or not name or name == "" then return nil end
 	local lower_name = string.lower(name)
 	local matches = {}
-	
 	for key in pairs(item_table) do
 		if string.lower(key) == lower_name then
 			return key
@@ -33,11 +32,9 @@ function items.find_item_key(item_table, name, is_show)
 			table.insert(matches, key)
 		end
 	end
-	
 	if #matches > 0 then
 		return matches[1]
 	end
-	
 	if is_show then output.add("No " .. name .. " found!\n") end
 	return nil
 end
@@ -73,44 +70,36 @@ function items.pick_item(player, map, item_name, quantity)
 		output.add("Invalid item quantity specified.\n")
 		return
 	end
-
 	local tile_items = map.items[player.y][player.x]
 	if not next(tile_items) then
 		output.add("No items found here.\n")
 		return
 	end
-
 	local item_key = items.find_item_key(tile_items, item_name)
 	if not item_key then
 		output.add("No " .. item_name .. " found here.\n")
 		return
 	end
-
 	local available_qty = tile_items[item_key]
 	if not available_qty or type(available_qty) ~= "number" or available_qty <= 0 then
 		output.add("Error: Invalid quantity for " .. item_key .. ".\n")
 		return
 	end
-
 	if quantity > available_qty then
 		output.add("There aren't enough " .. item_key .. " to pick up that amount.\n")
 		return
 	end
-
 	if commands.table_count(player.inventory) >= config.inventory.max_slots and not player.inventory[item_key] then
 		output.add("Cannot pick up " .. quantity .. " " .. item_key .. ": inventory is full (max " .. config.inventory.max_slots .. " slots).\n")
 		return
 	end
-
 	local pickup_qty = math.floor(quantity)
 	player.inventory[item_key] = (player.inventory[item_key] or 0) + pickup_qty
 	tile_items[item_key] = tile_items[item_key] - pickup_qty
 	if tile_items[item_key] <= 0 then
 		tile_items[item_key] = nil
 	end
-
 	output.add("You picked up " .. pickup_qty .. " " .. item_key .. ".\n")
-	
 	local item_data = items.get_item_data(items_data, item_key)
 	if item_data then
 		if item_data.file then
@@ -126,45 +115,37 @@ function items.drop_item(player, map, item_name, quantity)
 	if not player_module.check_player_alive("drop items", player) then
 		return
 	end
-	
 	if not item_name or item_name == "" then
 		output.add("Please specify a valid item name.\n")
 		return
 	end
-	
 	local item_key = items.find_item_key(player.inventory, item_name)
 	if not item_key then
 		output.add("You don't have " .. item_name .. " in your inventory.\n")
 		return
 	end
-
 	if items.is_item_equipped(player, item_key) then
 		output.add("You cannot drop " .. item_key .. " because it is equipped.\n")
 		return
 	end
-	
 	if not quantity or type(quantity) ~= "number" or quantity <= 0 then
 		output.add("Invalid item quantity specified.\n")
 		return
 	end
-	
 	local available_qty = player.inventory[item_key]
 	if quantity > available_qty then
 		output.add("You don't have enough " .. item_key .. " to drop that amount.\n")
 		return
 	end
-	
 	if not map or not map.items or not map.items[player.y] or not map.items[player.y][player.x] then
 		output.add("Error: Cannot drop items due to invalid map data.\n")
 		return
 	end
-	
 	map.items[player.y][player.x][item_key] = (map.items[player.y][player.x][item_key] or 0) + quantity
 	player.inventory[item_key] = player.inventory[item_key] - quantity
 	if player.inventory[item_key] <= 0 then
 		player.inventory[item_key] = nil
 	end
-	
 	output.add("You dropped " .. quantity .. " " .. item_key .. ".\n")
 	output.add(items.get_tile_items_string(map, player.x, player.y))
 end
@@ -173,24 +154,20 @@ function items.eat_item(player, items_data, item_name)
 	if not player_module.check_player_alive("eat", player) then
 		return
 	end
-	
 	local item_key = items.find_item_key(player.inventory, item_name)
 	if not item_key then
 		output.add("You don't have " .. item_name .. " in your inventory.\n")
 		return
 	end
-	
 	if items.is_item_equipped(player, item_key) then
 		output.add("You cannot eat " .. item_key .. " because it is equipped.\n")
 		return
 	end
-	
 	local item_data = items.get_item_data(items_data, item_key)
 	if not item_data then
 		output.add("No data found for " .. item_key .. ".\n")
 		return
 	end
-	
 	local edible_value = nil
 	for _, tag in ipairs(item_data.tags) do
 		if tag:match("^edible=") then
@@ -198,12 +175,10 @@ function items.eat_item(player, items_data, item_name)
 			break
 		end
 	end
-	
 	if not edible_value then
 		output.add(item_key .. " is not edible.\n")
 		return
 	end
-	
 	output.add("You eat one " .. item_key .. "...\n")
 	player.hunger = utils.clamp(player.hunger - edible_value, 0, 100)
 	player.inventory[item_key] = player.inventory[item_key] - 1
@@ -212,7 +187,6 @@ function items.eat_item(player, items_data, item_name)
 	end
 	time.tick_time(15)
 	output.add("You feel less hungry.\n")
-	
 	return player
 end
 
@@ -220,24 +194,20 @@ function items.drink_item(player, items_data, item_name)
 	if not player_module.check_player_alive("drink", player) then
 		return
 	end
-	
 	local item_key = items.find_item_key(player.inventory, item_name)
 	if not item_key then
 		output.add("You don't have " .. item_name .. " in your inventory.\n")
 		return
 	end
-	
 	if items.is_item_equipped(player, item_key) then
 		output.add("You cannot drink " .. item_key .. " because it is equipped.\n")
 		return
 	end
-	
 	local item_data = items.get_item_data(items_data, item_key)
 	if not item_data then
 		output.add("No data found for " .. item_key .. ".\n")
 		return
 	end
-	
 	local drinkable_value = nil
 	local healing_value = nil
 	local mana_restore_value = nil
@@ -250,16 +220,14 @@ function items.drink_item(player, items_data, item_name)
 			mana_restore_value = tonumber(tag:match("^MANA_RESTORE=(%S+)"))
 		end
 	end
-	
 	if not drinkable_value then
 		output.add(item_key .. " is not drinkable.\n")
 		return
 	end
-	
 	output.add("You drink one " .. item_key .. ".\n")
 	player.thirst = utils.clamp(player.thirst - drinkable_value, 0, 100)
 	if healing_value then
-		player.health = utils.clamp(player.health + healing_value, 0, 100)
+		player.health = utils.clamp(player.health + healing_value, 0, player.max_health)
 		output.add("Your health is restored.\n")
 	end
 	if mana_restore_value then
@@ -272,7 +240,6 @@ function items.drink_item(player, items_data, item_name)
 	end
 	time.tick_time(15)
 	output.add("You feel less thirsty.\n")
-	
 	return player
 end
 
@@ -280,23 +247,19 @@ function items.make_fire_item(player, map_data, world)
 	if not player_module.check_player_alive("make a fire", player) then
 		return
 	end
-	
 	local item_key = items.find_item_key(player.inventory, "Firewood")
 	if not item_key then
 		output.add("You don't have firewood in your inventory.\n")
 		return
 	end
-	
 	if map_data[world].fire.active and map_data[world].fire.x == player.x and map_data[world].fire.y == player.y then
 		output.add(const.FIRE_IS_BURNING)
 		return
 	end
-	
 	player.inventory[item_key] = player.inventory[item_key] - 1
 	if player.inventory[item_key] <= 0 then
 		player.inventory[item_key] = nil
 	end
-	
 	map_data[world].fire = { x = player.x, y = player.y, active = true }
 	output.add("You make a fire.\n")
 	time.tick_time(15)
