@@ -218,10 +218,7 @@ end
 
 function commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config)
 	if cmd == "rest" then
-		if not player_module.check_player_alive("rest", player) then
-			return player
-		end
-		return player_module.rest(player, map_data, game_time, time)
+		return command_rest.exec(player, map_data, game_time, time)
 	elseif cmd == "examine" then
 		return command_examine.exec(command_parts, player, map_data, items_data, enemies_data, items, enemies, player_module)
 	elseif cmd == "look" then

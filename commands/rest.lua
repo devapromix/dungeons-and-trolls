@@ -1,7 +1,11 @@
 local rest = {}
 
-function rest.exec(command_parts, player, map_data, game_time, time, output)
+function rest.exec(player, map_data, game_time, time)
 	if not player_module.check_player_alive("rest", player) then
+		return player
+	end
+	if player.state ~= "overworld" then
+		output.add("You cannot rest inside a building.\n")
 		return player
 	end
 	if player.health >= player.max_health and player.mana >= player.max_mana and player.fatigue <= 0 then
