@@ -15,4 +15,9 @@ look - Displays the current location.                           kill <enemy> - A
 items - Display player's inventory and gold.                    volume <level> - Set the audio volume (0 to 10).
 recipes - Display player's recipes.                             cook <recipe> - Cook a food.
 fish - Try to catch a fish.                                     gear - Show worn equipment.
+equip <item>
+unequip <item>
+spells
+read <item>
+cast <spell>
 quit - Exit the game.                                           

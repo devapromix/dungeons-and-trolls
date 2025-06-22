@@ -1,6 +1,23 @@
 {
   "locations": [
     {
+      "symbol": "V",
+      "name": "Village",
+      "description": "",
+      "enemies": [],
+      "items": [
+        {"name": "Water Bottle", "chance": 0.5, "quantity": [1, 3]}
+      ],
+      "effects": { "thirst": 0.5, "hunger": 0.5, "fatigue": 0.5 },
+      "passable": true,
+      "special": true,
+      "underworld": false,
+      "color": {
+        "foreground": [100, 191, 255],
+        "background": [130, 144, 255]
+      }
+    },
+    {
       "symbol": "f",
       "name": "Forest",
       "description": "A dense forest with tall trees and abundant wildlife.",
