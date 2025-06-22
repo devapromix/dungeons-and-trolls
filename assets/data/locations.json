@@ -2,8 +2,8 @@
   "locations": [
     {
       "symbol": "v",
-      "name": "Village",
-      "description": "",
+      "name": "Village Dork",
+      "description": "A small village with a few buildings, quiet paths, and the scent of smoke in the air.",
       "enemies": [],
       "items": [
         {"name": "Water Bottle", "chance": 0.5, "quantity": [1, 3]}

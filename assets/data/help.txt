@@ -17,5 +17,5 @@ recipes - Display player's known recipes.                       cook <recipe> - 
 fish - Try to catch a fish.                                     gear - Show currently worn equipment.
 equip <item> - Equip an item.                                   unequip <item> - Remove an equipped item.
 spells - Display player's spells.                               cast <spell> - Cast a known spell.
-read <item> - Read a scroll or book.                            enter [place] - Enter a village, house, cave, etc.
-leave [place] - Leave the current place.                        quit - Exit the game.
+read <item> - Read a scroll or book.                            enter [interior] - Enter a tavern, shop, etc.
+leave - Leave the current place.                                quit - Exit the game.
