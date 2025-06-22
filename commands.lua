@@ -101,7 +101,33 @@ function commands.handle_confirmation(command_parts, output)
 end
 
 function commands.handle_item_commands(cmd, command_parts, player, map_data, items_data, items, player_module)
-	if cmd == "eat" then
+	if cmd == "pick" then
+		if player.state ~= "overworld" then
+			output.add("You cannot pick up items while inside a building.\n")
+			return player
+		end
+		if #command_parts < 2 then
+			output.add("Please specify a quantity and item to pick up (e.g., 'pick 2 Healing Potion').\n")
+		else
+			local quantity, item_name = commands.parse_item_command(command_parts, 2)
+			if quantity and item_name then
+				items.pick_item(player, map_data[player.world], item_name, quantity)
+			end
+		end
+	elseif cmd == "drop" then
+		if player.state ~= "overworld" then
+			output.add("You cannot drop items while inside a building.\n")
+			return player
+		end
+		if #command_parts < 2 then
+			output.add("Please specify a quantity and item to drop (e.g., 'drop 2 Healing Potion').\n")
+		else
+			local quantity, item_name = commands.parse_item_command(command_parts, 2)
+			if quantity and item_name then
+				items.drop_item(player, map_data[player.world], item_name, quantity)
+			end
+		end
+	elseif cmd == "eat" then
 		if #command_parts < 2 then
 			output.add("Please specify an item to eat (e.g., 'eat Apple').\n")
 		else
@@ -117,24 +143,6 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 			local item_name = commands.get_item_name_from_parts(command_parts, 2)
 			if commands.validate_parameter(item_name, "item", output) then
 				player = items.drink_item(player, items_data, item_name) or player
-			end
-		end
-	elseif cmd == "pick" then
-		if #command_parts < 2 then
-			output.add("Please specify a quantity and item to pick up (e.g., 'pick 2 Healing Potion').\n")
-		else
-			local quantity, item_name = commands.parse_item_command(command_parts, 2)
-			if quantity and item_name then
-				items.pick_item(player, map_data[player.world], item_name, quantity)
-			end
-		end
-	elseif cmd == "drop" then
-		if #command_parts < 2 then
-			output.add("Please specify a quantity and item to drop (e.g., 'drop 2 Healing Potion').\n")
-		else
-			local quantity, item_name = commands.parse_item_command(command_parts, 2)
-			if quantity and item_name then
-				items.drop_item(player, map_data[player.world], item_name, quantity)
 			end
 		end
 	elseif cmd == "equip" then
