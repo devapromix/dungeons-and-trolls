@@ -145,11 +145,20 @@ function player.equip_item(player_data, items_data, item_name)
 	if not player.check_player_alive("equip items", player_data) then
 		return player_data
 	end
-	local item_key = items.find_item_key(player_data.inventory, item_name)
-	if not item_key then
-		output.add("You don't have " .. item_name .. " in your inventory.\n")
+	local matches = {}
+	for item, _ in pairs(player_data.inventory) do
+		if item:lower():find(item_name:lower(), 1, true) then
+			table.insert(matches, item)
+		end
+	end
+	if #matches == 0 then
+		output.add("You don't have any item matching '" .. item_name .. "' in your inventory.\n")
+		return player_data
+	elseif #matches > 1 then
+		output.add("Multiple items match '" .. item_name .. "'. Please specify: " .. table.concat(matches, ", ") .. ".\n")
 		return player_data
 	end
+	local item_key = matches[1]
 	local item_data = items.get_item_data(items_data, item_key)
 	if not item_data then
 		output.add("No data found for " .. item_key .. ".\n")
@@ -207,7 +216,21 @@ function player.unequip_item(player_data, items_data, identifier)
 	elseif identifier:lower() == "armor" then
 		slot = "armor"
 	else
-		slot = items.is_item_equipped(player_data, identifier) and (player_data.equipment and (player_data.equipment.weapon == identifier and "weapon" or player_data.equipment.armor == identifier and "armor"))
+		local matches = {}
+		for item, _ in pairs(player_data.inventory) do
+			if item:lower():find(identifier:lower(), 1, true) then
+				table.insert(matches, item)
+			end
+		end
+		if #matches == 0 then
+			output.add("No item matching '" .. identifier .. "' is equipped.\n")
+			return player_data
+		elseif #matches > 1 then
+			output.add("Multiple items match '" .. identifier .. "'. Please specify: " .. table.concat(matches, ", ") .. ".\n")
+			return player_data
+		end
+		local item_key = matches[1]
+		slot = player_data.equipment and (player_data.equipment.weapon == item_key and "weapon" or player_data.equipment.armor == item_key and "armor")
 	end
 	if not slot then
 		output.add(identifier .. " is not equipped or invalid slot specified.\n")
