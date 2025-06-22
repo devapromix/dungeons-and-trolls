@@ -41,13 +41,6 @@ function commands.is_valid_command(cmd)
 	return false
 end
 
-function commands.look()
-	if not player_module.check_player_alive("look around", player) then
-		return
-	end
-	map.display_location(player, map_data)
-end
-
 function commands.get_item_name_from_parts(command_parts, start_index)
 	return table.concat(command_parts, " ", start_index)
 end
@@ -94,7 +87,7 @@ function commands.handle_confirmation(command_parts, output)
 	elseif cmd == "n" or cmd == "no" then
 		commands.awaiting_confirmation = false
 		commands.confirmation_type = nil
-		commands.look()
+		command_look.exec({}, player, output)
 	else
 		output.add("Please enter ('yes' or 'no').\n")
 	end
@@ -230,15 +223,11 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 		end
 		return player_module.rest(player, map_data, game_time, time)
 	elseif cmd == "examine" then
-		return command_examine.exec(command_parts, player, map_data, items_data, enemies_data, output, items, enemies, player_module)
+		return command_examine.exec(command_parts, player, map_data, items_data, enemies_data, items, enemies, player_module)
 	elseif cmd == "look" then
-		commands.look()
+		return command_look.exec(player, map_data)
 	elseif cmd == "kill" then
-		if player.state ~= "overworld" then
-			output.add("You cannot fight while inside a building.\n")
-			return player
-		end
-		return command_kill.exec(command_parts, player, map_data, items_data, enemies_data, skills_data, time, map, output, player_module)
+		return command_kill.exec(command_parts, player, map_data, items_data, enemies_data, skills_data, time, map, player_module)
 	elseif cmd == "light" then
 		return command_light.exec(player, player_module, map_data)
 	elseif cmd == "volume" then
@@ -256,7 +245,7 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 	elseif cmd == "enter" then
 		return command_enter.exec(command_parts, player, map_data)
 	elseif cmd == "leave" then
-		return command_leave.exec(command_parts, player, map_data)
+		return command_leave.exec(command_parts, player, output)
 	end
 	return player
 end

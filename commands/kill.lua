@@ -1,6 +1,10 @@
 local kill = {}
 
-function kill.exec(command_parts, player, map_data, items_data, enemies_data, skills_data, time, map, output, player_module)
+function kill.exec(command_parts, player, map_data, items_data, enemies_data, skills_data, time, map, player_module)
+	if player.state ~= "overworld" then
+		output.add("You cannot fight while inside a building.\n")
+		return player
+	end
     if #command_parts < 2 then
         output.add("Please specify an enemy to kill (e.g., 'kill Goblin').\n")
         return player
