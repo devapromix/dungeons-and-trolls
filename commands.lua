@@ -7,7 +7,7 @@ local command_map = {
 	game = {"help", "intro", "new", "load", "save", "about", "quit"},
 	info = {"status", "skills", "time", "items", "map", "gear"},
 	item = {"eat", "drink", "pick", "drop", "equip", "unequip"},
-	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "train"},
+	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "train", "enter"},
 	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
 }
 
@@ -184,7 +184,6 @@ function commands.handle_game_commands(cmd, command_parts, player, output)
 			output.add(const.TYPE_HELP_MSG)
 		end
 	elseif cmd == "save" then
-
 		if not player_module.check_player_alive("save the game", player) then
 			return
 		end
@@ -227,6 +226,10 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 	elseif cmd == "look" then
 		commands.look()
 	elseif cmd == "kill" then
+		if player.state ~= "overworld" then
+			output.add("You cannot fight while inside a building.\n")
+			return player
+		end
 		return command_kill.exec(command_parts, player, map_data, items_data, enemies_data, skills_data, time, map, output, player_module)
 	elseif cmd == "light" then
 		return command_light.exec(player, player_module, map_data)
@@ -242,6 +245,8 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 		return command_trollcave.exec(player, map_data, map)
 	elseif cmd == "train" then
 		return command_train.exec(command_parts, player)
+	elseif cmd == "enter" then
+		return command_enter.exec(command_parts, player, map_data, output)
 	end
 	return player
 end
@@ -266,6 +271,10 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 
 	local direction = movement_map[cmd]
 	if direction then
+		if player.state ~= "overworld" then
+			output.add("You cannot move while inside a building.\n")
+			return
+		end
 		player = command_move.exec(direction, player, map_data, config, time, output, player_module, map, music)
 	elseif not commands.is_valid_command(cmd) then
 		output.add("Unknown command: '" .. cmd .. "'.\n")

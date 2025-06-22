@@ -345,6 +345,7 @@ function player.initialize_player(config)
 		x = math.floor(config.map.width / 2),
 		y = math.floor(config.map.height / 2),
 		world = "overworld",
+		state = "overworld",
 		symbol = "@",
 		health = 0,
 		max_health = 0,
