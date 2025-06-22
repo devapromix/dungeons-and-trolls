@@ -25,6 +25,7 @@ command_kill = require("commands.kill")
 command_examine = require("commands.examine")
 command_gear = require("commands.gear")
 command_enter = require("commands.enter")
+command_leave = require("commands.leave")
 command_trollcave = require("commands.trollcave")
 
 function love.load()
