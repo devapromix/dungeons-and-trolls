@@ -6,18 +6,16 @@ save - Saves a game.                                            west (or w) - Mo
 load - Loads a saved game.                                      up (or u) - Climb up to the surface.
 map - Display the game map.                                     down (or d) - Descend into the underworld.
 intro - Show intro.                                             train <attribute> - Train an attribute.
-status - Display player's stats.                                examine <item or enemy> - Inspecting items or enemies.
-skills - Display player's skills.                               eat <item> - Eats an item.
-rest - Rest to restore health and mana.                         drink <item> - Drinks an item.
+status - Display player's stats.                                examine <item or enemy> - Inspect an item or enemy.
+skills - Display player's skills.                               eat <item> - Eat an item.
+rest - Rest to restore health and mana.                         drink <item> - Drink an item.
 time - Displays the current time.                               pick [quantity] <item> - Pick up an item.
 light - Light a fire.                                           drop [quantity] <item> - Drop an item.
 look - Displays the current location.                           kill <enemy> - Attack an enemy to engage in combat.
 items - Display player's inventory and gold.                    volume <level> - Set the audio volume (0 to 10).
-recipes - Display player's recipes.                             cook <recipe> - Cook a food.
-fish - Try to catch a fish.                                     gear - Show worn equipment.
-equip <item>
-unequip <item>
-spells
-read <item>
-cast <spell>
-quit - Exit the game.                                           
+recipes - Display player's known recipes.                       cook <recipe> - Cook a recipe if conditions are met.
+fish - Try to catch a fish.                                     gear - Show currently worn equipment.
+equip <item> - Equip an item.                                   unequip <item> - Remove an equipped item.
+spells - Display player's spells.                               cast <spell> - Cast a known spell.
+read <item> - Read a scroll or book.                            enter [place] - Enter a village, house, cave, etc.
+leave [place] - Leave the current place.                        quit - Exit the game.
