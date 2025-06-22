@@ -231,7 +231,7 @@ function items.drink_item(player, items_data, item_name)
 		output.add("Your health is restored.\n")
 	end
 	if mana_restore_value then
-		player.mana = utils.clamp(player.mana + mana_restore_value, 0, 100)
+		player.mana = utils.clamp(player.mana + mana_restore_value, 0, player.max_mana)
 		output.add("Your mana is restored.\n")
 	end
 	player.inventory[item_key] = player.inventory[item_key] - 1

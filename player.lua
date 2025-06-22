@@ -44,7 +44,7 @@ function player.draw_status(player_data)
 		"Vitality: " .. player_data.vitality .. "\n",
 		"Intelligence: " .. player_data.intelligence .. "\n\n",
 		"Health: " .. player_data.health .. "/" .. player_data.max_health .. "\n",
-		"Mana: " .. player_data.mana .. "\n",
+		"Mana: " .. player_data.mana .. "/" .. player_data.max_mana .. "\n",
 		"Hunger: " .. player_data.hunger .. "\n",
 		"Thirst: " .. player_data.thirst .. "\n",
 		"Fatigue: " .. player_data.fatigue .. "\n",
@@ -62,7 +62,7 @@ end
 
 function player.clamp_player_stats(player_data)
 	player_data.health = utils.clamp(player_data.health, 0, player_data.max_health)
-	player_data.mana = utils.clamp(player_data.mana, 0, 100)
+	player_data.mana = utils.clamp(player_data.mana, 0, player_data.max_mana)
 	player_data.hunger = utils.clamp(player_data.hunger, 0, 100)
 	player_data.fatigue = utils.clamp(player_data.fatigue, 0, 100)
 	player_data.thirst = utils.clamp(player_data.thirst, 0, 100)
@@ -100,14 +100,20 @@ function player.update_max_health(player_data)
 	return player_data
 end
 
+function player.update_max_mana(player_data)
+	player_data.max_mana = player_data.intelligence * 10
+	player_data.mana = utils.clamp(player_data.mana, 0, player_data.max_mana)
+	return player_data
+end
+
 function player.rest(player_data, map_data, game_time, time)
-	if player_data.health >= player_data.max_health and player_data.mana >= 100 and player_data.fatigue <= 0 then
+	if player_data.health >= player_data.max_health and player_data.mana >= player_data.max_mana and player_data.fatigue <= 0 then
 		output.add("You don't need to rest.\n")
 		return player_data
 	end
 	local hours_to_full = math.max(
 		math.ceil((player_data.max_health - player_data.health) / 10),
-		math.ceil((100 - player_data.mana) / 10),
+		math.ceil((player_data.max_mana - player_data.mana) / 10),
 		math.ceil(player_data.fatigue / 10)
 	)
 	local hours_to_morning = game_time.hour >= 18 and (24 - game_time.hour + 6) or game_time.hour < 6 and (6 - game_time.hour) or 0
@@ -327,7 +333,7 @@ function player.add_experience(player_data, experience, output)
 		player_data.level = player_data.level + 1
 		player_data.levelpoints = player_data.levelpoints + 3
 		player_data.health = player_data.max_health
-		player_data.mana = 100
+		player_data.mana = player_data.max_mana
 		player_data.fatigue = 0
 		output.add("Congratulations! You reached level " .. player_data.level .. "! Gained 3 level points.\n")
 	end
@@ -340,9 +346,10 @@ function player.initialize_player(config)
 		y = math.floor(config.map.height / 2),
 		world = "overworld",
 		symbol = "@",
-		health = 1000,
-		mana = 100,
+		health = 0,
 		max_health = 0,
+		mana = 0,
+		max_mana = 0,
 		hunger = 0,
 		fatigue = 0,
 		thirst = 0,
@@ -363,6 +370,9 @@ function player.initialize_player(config)
 		intelligence = 10
 	}
 	player_data = player.update_max_health(player_data)
+	player_data = player.update_max_mana(player_data)
+	player_data.health = player_data.max_health
+	player_data.mana = player_data.max_mana
 	player_data = player.starter_kit(player_data)
 	player_data = player.clamp_player_stats(player_data)
 	return player_data
