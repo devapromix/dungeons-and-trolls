@@ -139,10 +139,10 @@ function map.add_village()
 	local village_x, village_y
 	local center_x, center_y = math.floor(config.map.width / 2), math.floor(config.map.height / 2)
 	repeat
-		village_x = center_x + math.random(-5, 5)
+		village_x = center_x + math.random(-7, 7)
 		village_y = center_y + math.random(-5, 5)
 		local distance = math.sqrt((village_x - center_x)^2 + (village_y - center_y)^2)
-	until distance >= 2 and distance <= 5 and is_valid_position(village_x, village_y) and not map_data.overworld.tiles[village_y][village_x]:match("[><]")
+	until distance >= 2 and distance <= 7 and is_valid_position(village_x, village_y) and not map_data.overworld.tiles[village_y][village_x]:match("[><]")
 	map_data.overworld.tiles[village_y][village_x] = "v"
 	return village_x, village_y
 end
@@ -288,6 +288,9 @@ function map.update_visibility(player, map_data)
 end
 
 function map.display_location(player, map_data)
+	if map_data[player.world].tiles[player.y][player.x] == "v" then
+		music.play("village_ambient")
+	end
 	if player.state == "shop" then
 		output.add("You are inside the shop. The shelves are filled with various goods for sale.\n")
 		return
@@ -339,9 +342,6 @@ function map.display_location(player, map_data)
 	output.add(enemies_string)
 	if map_data[player.world].fire.active and map_data[player.world].fire.x == player.x and map_data[player.world].fire.y == player.y then
 		output.add(const.FIRE_IS_BURNING)
-	end
-	if map_data[player.world].tiles[player.y][player.x] == "v" then
-		music.play("village_ambient")
 	end
 end
 
