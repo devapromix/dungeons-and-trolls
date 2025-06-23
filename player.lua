@@ -1,14 +1,5 @@
 local player = {}
 
-function player.get_item_tag_value(item_data, tag_prefix)
-	for _, tag in ipairs(item_data.tags) do
-		if tag:match("^" .. tag_prefix .. "=") then
-			return tonumber(tag:match("^" .. tag_prefix .. "=(%S+)"))
-		end
-	end
-	return nil
-end
-
 function player.starter_kit(player_data)
 	player_data.inventory = player_data.inventory or {}
 	local starter_items = {}
@@ -120,13 +111,13 @@ function player.equip_item(player_data, items_data, item_name)
 		output.add("No data found for " .. item_key .. ".\n")
 		return player_data
 	end
-	local item_level = player.get_item_tag_value(item_data, "level")
+	local item_level = utils.get_item_tag_value(item_data, "level")
 	if item_level and item_level > player_data.level then
 		output.add("You need to be level " .. item_level .. " to equip " .. item_key .. ".\n")
 		return player_data
 	end
-	local weapon_value = player.get_item_tag_value(item_data, "weapon")
-	local armor_value = player.get_item_tag_value(item_data, "armor")
+	local weapon_value = utils.get_item_tag_value(item_data, "weapon")
+	local armor_value = utils.get_item_tag_value(item_data, "armor")
 	if not weapon_value and not armor_value then
 		output.add(item_key .. " cannot be equipped.\n")
 		return player_data
@@ -136,7 +127,7 @@ function player.equip_item(player_data, items_data, item_name)
 		if player_data.equipment.weapon then
 			local current_weapon_data = items.get_item_data(items_data, player_data.equipment.weapon)
 			if current_weapon_data then
-				local current_weapon_value = player.get_item_tag_value(current_weapon_data, "weapon")
+				local current_weapon_value = utils.get_item_tag_value(current_weapon_data, "weapon")
 				if current_weapon_value then
 					player_data.attack = player_data.attack - current_weapon_value
 				end
@@ -149,7 +140,7 @@ function player.equip_item(player_data, items_data, item_name)
 		if player_data.equipment.armor then
 			local current_armor_data = items.get_item_data(items_data, player_data.equipment.armor)
 			if current_armor_data then
-				local current_armor_value = player.get_item_tag_value(current_armor_data, "armor")
+				local current_armor_value = utils.get_item_tag_value(current_armor_data, "armor")
 				if current_armor_value then
 					player_data.defense = player_data.defense - current_armor_value
 				end
@@ -188,7 +179,7 @@ function player.unequip_item(player_data, items_data, identifier)
 		output.add("No data found for " .. equipped_item .. ".\n")
 		return player_data
 	end
-	local tag_value = player.get_item_tag_value(item_data, slot)
+	local tag_value = utils.get_item_tag_value(item_data, slot)
 	if tag_value then
 		if slot == "weapon" then
 			player_data.attack = player_data.attack - tag_value

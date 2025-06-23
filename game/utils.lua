@@ -32,4 +32,13 @@ function utils.clamp(value, min, max)
   return value < min and min or (value > max and max or value)
 end
 
+function utils.get_item_tag_value(item_data, tag_prefix)
+	for _, tag in ipairs(item_data.tags) do
+		if tag:match("^" .. tag_prefix .. "=") then
+			return tonumber(tag:match("^" .. tag_prefix .. "=(%S+)"))
+		end
+	end
+	return nil
+end
+
 return utils
