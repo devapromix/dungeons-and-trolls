@@ -15,26 +15,9 @@ local movement_map = {north = "north", south = "south", east = "east", west = "w
 	n = "north", s = "south", e = "east", w = "west", u = "up", d = "down"
 }
 
-function commands.table_contains(table, element)
-	for _, value in ipairs(table) do
-		if value == element then
-			return true
-		end
-	end
-	return false
-end
-
-function commands.table_count(table)
-	local count = 0
-	for _ in pairs(table) do
-		count = count + 1
-	end
-	return count
-end
-
 function commands.is_valid_command(cmd)
 	for _, category in pairs(command_map) do
-		if commands.table_contains(category, cmd) then
+		if utils.table_contains(category, cmd) then
 			return true
 		end
 	end
@@ -203,7 +186,7 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 	if cmd == "status" then
 		player_module.draw_status(player)
 	elseif cmd == "skills" then
-		command_skills.exec(skills, output)
+		command_skills.exec(skills)
 	elseif cmd == "time" then
 		output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
 		output.add("Played: " .. time.format_playtime(game_time.playtime or 0) .. "\n")
@@ -253,7 +236,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 		return
 	end
 
-	if not game.initialized and not commands.table_contains({"help", "quit", "new", "about", "load"}, command_parts[1]) then
+	if not game.initialized and not utils.table_contains({"help", "quit", "new", "about", "load"}, command_parts[1]) then
 		output.add("No game loaded or saved game version is incompatible. " .. const.START_NEW_GAME_MSG)
 		return
 	end

@@ -79,7 +79,7 @@ function love.keypressed(key)
 			table.insert(command_parts, part)
 		end
 		commands.handle_command(command_parts, player, map_data, items_data, enemies_data, skills_data, config, game_time, input, output, time, player_module, items, enemies, map, skills, json)
-		if commands.table_contains(input.history, command) then
+		if utils.table_contains(input.history, command) then
 			for i, hist_command in ipairs(input.history) do
 				if hist_command == command then
 					table.remove(input.history, i)

@@ -41,4 +41,21 @@ function utils.get_item_tag_value(item_data, tag_prefix)
 	return nil
 end
 
+function utils.table_contains(table, element)
+	for _, value in ipairs(table) do
+		if value == element then
+			return true
+		end
+	end
+	return false
+end
+
+function utils.table_count(table)
+	local count = 0
+	for _ in pairs(table) do
+		count = count + 1
+	end
+	return count
+end
+
 return utils
