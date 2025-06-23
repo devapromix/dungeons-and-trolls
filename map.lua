@@ -340,6 +340,9 @@ function map.display_location(player, map_data)
 	if map_data[player.world].fire.active and map_data[player.world].fire.x == player.x and map_data[player.world].fire.y == player.y then
 		output.add(const.FIRE_IS_BURNING)
 	end
+	if map_data[player.world].tiles[player.y][player.x] == "v" then
+		music.play("village_ambient")
+	end
 end
 
 function map.draw()
