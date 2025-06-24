@@ -290,14 +290,17 @@ end
 function map.display_location(player, map_data)
 	if map_data[player.world].tiles[player.y][player.x] == "v" then
 		music.play("village_ambient")
+	
+	if player.state ~= "overworld" then
+	local interiors_data = map.load_interiors()
+	for _, interior in ipairs(interiors_data.interiors or {}) do
+		if interior.id == player.state then
+			output.add(interior.name .. "\n")
+			output.add(interior.description .. "\n\n")
+			return
+		end
 	end
-	if player.state == "shop" then
-		output.add("You are inside the shop. The shelves are filled with various goods for sale.\n")
-		return
 	end
-	if player.state == "tavern" then
-		output.add("You are inside the tavern. The warm glow of the hearth and the chatter of patrons welcome you.\n")
-		return
 	end
 	
 	local location = map.get_location_description(map_data[player.world].tiles[player.y][player.x])
@@ -363,6 +366,10 @@ function map.draw()
 		end
 		output.add(line .. "\n")
 	end
+end
+
+function map.load_interiors()
+    return utils.load_json_file("assets/data/interiors.json", "Interiors file")
 end
 
 return map

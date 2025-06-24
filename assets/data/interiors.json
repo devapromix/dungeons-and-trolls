@@ -1,0 +1,14 @@
+{
+	"interiors": [
+		{
+			"id": "shop",
+			"name": "Shop",
+			"description": "The shelves are filled with various goods for sale."
+		},
+		{
+			"id": "tavern",
+			"name": "Tavern",
+			"description": "The warm glow of the hearth and the chatter of patrons welcome you."
+		}
+	]
+}

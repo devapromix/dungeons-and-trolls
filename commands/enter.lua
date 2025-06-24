@@ -17,16 +17,16 @@ function enter.exec(command_parts, player, map_data)
 		return player
 	end
 	local building = command_parts[2]:lower()
-	if building == "shop" then
-		player.state = "shop"
-		output.add("You enter the shop. The shelves are filled with various goods for sale.\n")
-	elseif building == "tavern" then
-		player.state = "tavern"
-		output.add("You enter the tavern. The warm glow of the hearth and the chatter of patrons welcome you.\n")
-	else
-		output.add("Unknown building: " .. building .. ". Try 'shop' or 'tavern'.\n")
-		return player
+	local interiors_data = map.load_interiors()
+	for _, interior in ipairs(interiors_data.interiors or {}) do
+		if interior.id == building then
+			player.state = building
+			output.add(interior.name .. "\n")
+			output.add(interior.description .. "\n\n")
+			return player
+		end
 	end
+	output.add("Unknown building: " .. building .. ". Try 'shop' or 'tavern'.\n")
 	return player
 end
 
