@@ -4,7 +4,7 @@ function module.exec(player, player_module, items)
 	if not player_module.check_player_alive("check your inventory", player) then
 		return
 	end
-	output.add("Inventory (" .. commands.table_count(player.inventory) .. "/" .. config.inventory.max_slots .. "):\n")
+	output.add("Inventory (" .. utils.table_count(player.inventory) .. "/" .. config.inventory.max_slots .. "):\n")
 	if next(player.inventory) == nil then
 		output.add("(empty)\n")
 	else
