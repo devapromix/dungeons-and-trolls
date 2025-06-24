@@ -3,22 +3,22 @@
 		{
 			"name": "Apple",
 			"description": "A sweet, juicy fruit.",
-			"tags": ["edible=10"]
+			"tags": ["edible=10", "tavern", "price=5"]
 		},
 		{
 			"name": "Strawberry",
 			"description": "A small red berry.",
-			"tags": ["edible=5"]
+			"tags": ["edible=5", "tavern", "price=2"]
 		},
 		{
 			"name": "Watermelon",
 			"description": "A large fruit with sweet, watery flesh.",
-			"tags": ["edible=15"]
+			"tags": ["edible=15", "tavern", "price=7"]
 		},
 		{
 			"name": "Bread",
 			"description": "A simple loaf of bread. Fills the stomach decently.",
-			"tags": ["edible=35"]
+			"tags": ["edible=35", "tavern", "price=9"]
 		},
 		{
 			"name": "Mushroom",
@@ -28,7 +28,7 @@
 		{
 			"name": "Stew",
 			"description": "A hot stew made from fresh ingredients.",
-			"tags": ["edible=40", "healing=5"]
+			"tags": ["edible=40", "healing=5", "tavern", "price=10"]
 		},
 		{
 			"name": "Raw Meat",
@@ -38,27 +38,27 @@
 		{
 			"name": "Cooked Meat",
 			"description": "A nicely roasted piece of meat, ready to be eaten.",
-			"tags": ["edible=55"]
+			"tags": ["edible=55", "tavern", "price=22"]
 		},
 		{
 			"name": "Grilled Mushroom",
 			"description": "A mushroom roasted over a fire, with a smoky flavor.",
-			"tags": ["edible=20"]
+			"tags": ["edible=20", "tavern", "price=12"]
 		},
 		{
 			"name": "Grilled Fish",
 			"description": "A simple cooked fish.",
-			"tags": ["edible=15"]
+			"tags": ["edible=15", "tavern", "price=6"]
 		},
 		{
 			"name": "Firegill",
 			"description": "A spicy grilled fish with a sharp kick.",
-			"tags": ["edible=20"]
+			"tags": ["edible=20", "tavern", "price=8"]
 		},
 		{
 			"name": "Ashfish",
 			"description": "Fish baked in hot ashes. Simple but hearty.",
-			"tags": ["edible=25"]
+			"tags": ["edible=25", "tavern", "price=9"]
 		},
 		{
 			"name": "Healing Potion",
@@ -73,7 +73,7 @@
 		{
 			"name": "Water Bottle",
 			"description": "A bottle filled with clean water. Hydrates the body.",
-			"tags": ["drinkable=30"]
+			"tags": ["drinkable=30", "tavern", "price=2"]
 		},
 		{
 			"name": "Dagger",

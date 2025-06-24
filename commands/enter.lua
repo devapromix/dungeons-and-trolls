@@ -13,20 +13,51 @@ function enter.exec(command_parts, player, map_data)
 		return player
 	end
 	if #command_parts < 2 then
-		output.add("Please specify a building to enter (e.g., 'enter shop' or 'enter tavern').\n")
+		output.add("Please specify a building to enter:\n")
+		output.add("- enter weapon shop\n")
+		output.add("- enter armor shop\n")
+		output.add("- enter magic shop\n")
+		output.add("- enter tavern\n")
 		return player
 	end
-	local building = command_parts[2]:lower()
+	
+	local building_parts = {}
+	for i = 2, #command_parts do
+		table.insert(building_parts, command_parts[i]:lower())
+	end
+	local building = table.concat(building_parts, " ")
+	
+	local aliases = {
+		["shop"] = "weapon shop",
+		["weapon"] = "weapon shop",
+		["armor"] = "armor shop",
+		["magic"] = "magic shop",
+		["tavern"] = "tavern"
+	}
+	
+	if aliases[building] then
+		building = aliases[building]
+	end
+	
 	local interiors_data = map.load_interiors()
 	for _, interior in ipairs(interiors_data.interiors or {}) do
 		if interior.id == building then
 			player.state = building
 			output.add(interior.name .. "\n")
-			output.add(interior.description .. "\n\n")
+			if interior.description and interior.description ~= "" then
+				output.add(interior.description .. "\n")
+			end
+			output.add("\n")
 			return player
 		end
 	end
-	output.add("Unknown building: " .. building .. ". Try 'shop' or 'tavern'.\n")
+	
+	output.add("Unknown building: " .. building .. "\n")
+	output.add("Available buildings:\n")
+	output.add("- weapon shop\n")
+	output.add("- armor shop\n")
+	output.add("- magic shop\n")
+	output.add("- tavern\n")
 	return player
 end
 

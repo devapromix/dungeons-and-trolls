@@ -1,14 +1,24 @@
 {
 	"interiors": [
 		{
-			"id": "shop",
-			"name": "Shop",
-			"description": "The shelves are filled with various goods for sale."
+			"id": "weapon shop",
+			"name": "Weapon Shop",
+			"description": "Racks of sharpened swords and polished axes line the workshop walls, while hammers and tongs hang near the roaring forge. The rhythmic clang of metal on metal echoes through the room as sparks fly from red-hot steel being shaped into deadly instruments."
+		},
+		{
+			"id": "armor shop",
+			"name": "Armor Shop",
+			"description": "Heavy suits of plate mail stand like silent sentinels around the dimly lit shop, their polished surfaces reflecting the flickering candlelight. Chainmail shirts drape over wooden mannequins while leather bracers and studded vests hang from iron hooks along the stone walls."
+		},
+		{
+			"id": "magic shop",
+			"name": "Magic Shop",
+			"description": "Shelves overflow with dusty grimoires and glowing crystal orbs, while bubbling cauldrons release wisps of colorful smoke into the air. Ancient scrolls covered in arcane symbols rest beside bottles filled with swirling, luminescent potions that seem to pulse with their own inner light."
 		},
 		{
 			"id": "tavern",
 			"name": "Tavern",
-			"description": "The warm glow of the hearth and the chatter of patrons welcome you."
+			"description": "Wooden tables are crowded with weary travelers and local folk sharing ale and stories. The crackling fireplace casts dancing shadows on the stone walls, while the aroma of roasted meat and fresh bread fills the cozy interior."
 		}
 	]
 }
