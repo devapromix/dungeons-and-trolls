@@ -14,11 +14,7 @@ function enter.exec(command_parts, player, map_data)
     end
     if #command_parts < 2 then
         output.add("Please specify a building to enter:\n")
-        output.add("Available buildings:\n")
-        output.add("- weapon shop\n")
-        output.add("- armor shop\n")
-        output.add("- magic shop\n")
-        output.add("- tavern\n")
+		print_available_buildings()
         return player
     end
 
@@ -47,13 +43,19 @@ function enter.exec(command_parts, player, map_data)
         end
     end
     
-    output.add("Unknown building: " .. building .. ".\n")
+    output.add("Unknown building: '" .. building .. "'.\n")
+	print_available_buildings()
+    return player
+end
+
+local function print_available_buildings()
     output.add("Available buildings:\n")
     output.add("- weapon shop\n")
     output.add("- armor shop\n")
     output.add("- magic shop\n")
+    output.add("- healer\n")
+    output.add("- forge\n")
     output.add("- tavern\n")
-    return player
 end
 
 return enter
