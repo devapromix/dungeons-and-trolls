@@ -72,10 +72,10 @@ end
 function map.biome(world, x, y, tile, size)
     local biome_x, biome_y = x, y
     for i = 1, size do
-        if not world.tiles[y][x]:match("[><]") then
+        if not world.tiles[biome_y][biome_x]:match("[><]") then
             world.tiles[biome_y][biome_x] = tile
         end
-        d = math.random(1, 4)
+        local d = math.random(1, 4)
         if d == 1 and biome_x - 1 >= 1 then
             biome_x = biome_x - 1
         elseif d == 2 and biome_x + 1 <= config.map.width then
@@ -107,8 +107,8 @@ end
 
 function map.gen_world(world, is_underworld, biome_amount, biome_size)
     for i = 1, biome_amount do
-        x = math.random(1, config.map.width - 1)
-        y = math.random(1, config.map.height - 1)
+        local x = math.random(1, config.map.width - 1)
+        local y = math.random(1, config.map.height - 1)
         map.biome(world, x, y, map.get_random_location_symbol(true, is_underworld), biome_size)
     end
 end
@@ -148,7 +148,7 @@ function map.add_village()
 end
 
 function map.add_troll_cave()
-    local troll_x, troll_y
+    local village_x, village_y
     local center_x, center_y = math.floor(config.map.width / 2), math.floor(config.map.height / 2)
     repeat
         troll_x = center_x + math.random(-15, 15)
@@ -245,7 +245,7 @@ function map.initialize_game(locations_data)
     initialize_world(map_data.underworld, true)
     map.fill(map_data.overworld, map.get_random_location_symbol(true, false))
     map.gen_world(map_data.overworld, false, 45, 200)
-    map.fill(map_data.underworld, map.get_random_location_symbol(false, true))
+    map.fill(map_data.underworld, map.get_random_location_symbol(true, true))
     if not config.debug then
         map.gen_world(map_data.underworld, true, 20, 150)
     end
@@ -278,8 +278,12 @@ function map.move_down(player, map_data)
 end
 
 function map.update_visibility(player, map_data)
-    for y = utils.clamp(player.y - player.radius, 1, config.map.height), utils.clamp(player.y + player.radius, 1, config.map.height) do
-        for x = utils.clamp(player.x - player.radius, 1, config.map.width), utils.clamp(player.x + player.radius, 1, config.map.width) do
+    local y_start = utils.clamp(player.y - player.radius, 1, config.map.height)
+    local y_end = utils.clamp(player.y + player.radius, 1, config.map.height)
+    local x_start = utils.clamp(player.x - player.radius, 1, config.map.width)
+    local x_end = utils.clamp(player.x + player.radius, 1, config.map.width)
+    for y = y_start, y_end do
+        for x = x_start, x_end do
             if math.sqrt((x - player.x)^2 + (y - player.y)^2) <= player.radius then
                 map_data[player.world].visited[y][x] = true
             end

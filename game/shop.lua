@@ -1,29 +1,47 @@
 local shop = {}
 
 function shop.load_interiors()
-    return utils.load_json_file("assets/data/interiors.json", "Interiors file")
+    local interiors_data = utils.load_json_file("assets/data/interiors.json", "Interiors file")
+    return interiors_data
 end
 
-function shop.display_interior(building_id, player)
+function shop.display_interior(shop_type, player)
     local interiors_data = shop.load_interiors()
     for _, interior in ipairs(interiors_data.interiors or {}) do
-        if interior.id == building_id then
+        if interior.id == shop_type then
             output.add(interior.name .. "\n")
             if interior.description and interior.description ~= "" then
                 output.add(interior.description .. "\n")
             end
             if interior.id ~= "" then
                 local items_data = items.load_items()
-                output.add(shop.get_items_string(items_data, interior.id, player.level))
+                output.add(shop.get_items_string(items_data, shop_type, player.level))
             end
             output.add("\n")
             return
         end
     end
-    output.add("Unknown building: " .. building_id .. "\n")
+    output.add("Unknown building: " .. shop_type .. "\n")
 end
 
 function shop.get_items_string(items_data, shop_type, player_level)
+    if game.shop_items_cache[shop_type] then
+        local item_list = {}
+        for _, item in ipairs(game.shop_items_cache[shop_type]) do
+            table.insert(item_list, item.name .. " (" .. item.price .. ")")
+        end
+        local str = table.concat(item_list, ", ")
+        local result = ""
+        if str ~= "" then
+            local shopkeeper_text = shop_type == "tavern" and "The shopkeeper's gaze follows you as you examine his goods: " or
+                                   shop_type == "armor shop" and "The armorer presents their wares: " or
+                                   shop_type == "weapon shop" and "The weaponsmith presents their wares: " or
+                                   "The shopkeeper presents their wares: "
+            result = "\n" .. shopkeeper_text .. str .. ".\n"
+        end
+        return result
+    end
+
     local shop_items = {}
     for _, item in ipairs(items_data.items) do
         local item_level = nil
@@ -47,22 +65,32 @@ function shop.get_items_string(items_data, shop_type, player_level)
         end
     end
     local selected_items = {}
-    local count = math.min(3, #shop_items)
+    local count = math.min(4, #shop_items)
     for i = 1, count do
         if #shop_items == 0 then break end
         local index = math.random(1, #shop_items)
         table.insert(selected_items, shop_items[index])
         table.remove(shop_items, index)
     end
+    game.shop_items_cache[shop_type] = selected_items
     local item_list = {}
     for _, item in ipairs(selected_items) do
         table.insert(item_list, item.name .. " (" .. item.price .. ")")
     end
     local str = table.concat(item_list, ", ")
+    local result = ""
     if str ~= "" then
-        return "\nThe shopkeeper's gaze follows you as you examine his goods: " .. str .. ".\n"
+        local shopkeeper_text = shop_type == "tavern" and "The shopkeeper's gaze follows you as you examine his goods: " or
+                               shop_type == "armor shop" and "The armorer presents their wares: " or
+                               shop_type == "weapon shop" and "The weaponsmith presents their wares: " or
+                               "The shopkeeper presents their wares: "
+        result = "\n" .. shopkeeper_text .. str .. ".\n"
     end
-    return ""
+    return result
+end
+
+function shop.reset_items()
+    game.shop_items_cache = {}
 end
 
 return shop
