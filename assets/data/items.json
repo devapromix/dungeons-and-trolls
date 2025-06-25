@@ -90,31 +90,31 @@
 		{
 			"name": "Kris",
 			"description": "A wavy-bladed ceremonial dagger with mystical properties.",
-			"tags": ["level=3", "weapon=12", "weapon shop", "price=140"],
+			"tags": ["level=3", "weapon=12", "forge", "weapon shop", "price=140"],
 			"skill": "Daggers"
 		},
 		{
 			"name": "Rondel",
 			"description": "A heavy thrusting dagger with a rigid blade, perfect for piercing armor.",
-			"tags": ["level=4", "weapon=16", "weapon shop", "price=220"],
+			"tags": ["level=4", "weapon=16", "forge", "weapon shop", "price=220"],
 			"skill": "Daggers"
 		},
 		{
 			"name": "Short Sword",
 			"description": "A light, versatile sword for swift melee attacks.",
-			"tags": ["level=1", "weapon=5", "weapon shop", "price=75"],
+			"tags": ["level=1", "weapon=5", "forge", "weapon shop", "price=75"],
 			"skill": "Swords"
 		},
 		{
 			"name": "Falchion",
 			"description": "A curved, single-edged sword with a heavy blade for powerful slashing strikes.",
-			"tags": ["level=2", "weapon=10", "weapon shop", "price=140"],
+			"tags": ["level=2", "weapon=10", "forge", "weapon shop", "price=140"],
 			"skill": "Swords"
 		},
 		{
 			"name": "Broad Sword",
 			"description": "A wide, double-edged sword offering excellent balance between offense and defense.",
-			"tags": ["level=3", "weapon=15", "weapon shop", "price=170"],
+			"tags": ["level=3", "weapon=15", "forge", "weapon shop", "price=170"],
 			"skill": "Swords"
 		},
 		{
@@ -133,13 +133,13 @@
 		{
 			"name": "Double Axe",
 			"description": "A dual-bladed axe that can cleave through multiple enemies with devastating force.",
-			"tags": ["level=2", "weapon=11", "weapon shop", "price=160"],
+			"tags": ["level=2", "weapon=11", "forge", "weapon shop", "price=160"],
 			"skill": "Axes"
 		},
 		{
 			"name": "War Axe",
 			"description": "A massive battle axe designed for breaking through heavy armor and shields.",
-			"tags": ["level=3", "weapon=20", "weapon shop", "price=250"],
+			"tags": ["level=3", "weapon=20", "forge", "weapon shop", "price=250"],
 			"skill": "Axes"
 		},
 		{
@@ -151,13 +151,13 @@
 		{
 			"name": "Mace",
 			"description": "A heavy, flanged weapon designed to crush armor and bones with blunt force.",
-			"tags": ["level=2", "weapon=8", "weapon shop", "price=110"],
+			"tags": ["level=2", "weapon=8", "forge", "weapon shop", "price=110"],
 			"skill": "Maces"
 		},
 		{
 			"name": "Hammer",
 			"description": "A two-handed war hammer capable of delivering devastating crushing blows.",
-			"tags": ["level=3", "weapon=14", "weapon shop", "price=200"],
+			"tags": ["level=3", "weapon=14", "forge", "weapon shop", "price=200"],
 			"skill": "Maces"
 		},
 		{
@@ -175,7 +175,7 @@
 		{
 			"name": "Harpoon",
 			"description": "A barbed spear originally used for fishing, now adapted for deadly combat.",
-			"tags": ["level=3", "weapon=17", "weapon shop", "price=120"],
+			"tags": ["level=3", "weapon=17", "forge", "weapon shop", "price=120"],
 			"skill": "Spears"
 		},
 		{
@@ -191,12 +191,12 @@
 		{
 			"name": "Sacred Armor",
 			"description": "Blessed chainmail that glows faintly with divine protection.",
-			"tags": ["level=3", "armor shop", "armor=9", "price=200"]
+			"tags": ["level=3", "armor shop", "forge", "armor=9", "price=200"]
 		},
 		{
 			"name": "Flamescale Armor",
 			"description": "Armor crafted from dragon scales, providing excellent protection against fire.",
-			"tags": ["level=4", "armor shop", "armor=12", "price=250"]
+			"tags": ["level=4", "armor shop", "forge", "armor=12", "price=250"]
 		},
 		{
 			"name": "Ancient Armor",
@@ -217,7 +217,7 @@
 		{
 			"name": "Fishing Rod",
 			"description": "A sturdy rod used for fishing.",
-			"tags": ["level=1", "weapon=1", "fishing_rod"],
+			"tags": ["level=1", "weapon=1", "fishing_rod", "healer", "price=10"],
 			"skill": "Fishing"
 		},
 		{
