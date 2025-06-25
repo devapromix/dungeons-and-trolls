@@ -63,58 +63,58 @@
 		{
 			"name": "Healing Potion",
 			"description": "A red potion that heals your wounds when consumed.",
-			"tags": ["drinkable=20", "healing=25"]
+			"tags": ["drinkable=20", "healing=25", "magic shop", "price=25"]
 		},
 		{
 			"name": "Mana Potion",
 			"description": "A blue potion that restores magical energy.",
-			"tags": ["drinkable=5", "mana_restore=25"]
+			"tags": ["drinkable=5", "mana_restore=25", "magic shop", "price=20"]
 		},
 		{
 			"name": "Water Bottle",
 			"description": "A bottle filled with clean water. Hydrates the body.",
-			"tags": ["drinkable=30", "tavern", "price=2"]
+			"tags": ["drinkable=30", "tavern", "magic shop", "price=2"]
 		},
 		{
 			"name": "Dagger",
 			"description": "A short blade, quick and deadly in close combat.",
-			"tags": ["level=1", "weapon=4"],
+			"tags": ["level=1", "weapon=4", "weapon shop", "price=60"],
 			"skill": "Daggers"
 		},
 		{
 			"name": "Dirk",
 			"description": "A long, thin dagger with a razor-sharp point designed for thrusting.",
-			"tags": ["level=2", "weapon=8"],
+			"tags": ["level=2", "weapon=8", "weapon shop", "price=90"],
 			"skill": "Daggers"
 		},
 		{
 			"name": "Kris",
 			"description": "A wavy-bladed ceremonial dagger with mystical properties.",
-			"tags": ["level=3", "weapon=12"],
+			"tags": ["level=3", "weapon=12", "weapon shop", "price=140"],
 			"skill": "Daggers"
 		},
 		{
 			"name": "Rondel",
 			"description": "A heavy thrusting dagger with a rigid blade, perfect for piercing armor.",
-			"tags": ["level=4", "weapon=16"],
+			"tags": ["level=4", "weapon=16", "weapon shop", "price=220"],
 			"skill": "Daggers"
 		},
 		{
 			"name": "Short Sword",
 			"description": "A light, versatile sword for swift melee attacks.",
-			"tags": ["level=1", "weapon=5"],
+			"tags": ["level=1", "weapon=5", "weapon shop", "price=75"],
 			"skill": "Swords"
 		},
 		{
 			"name": "Falchion",
 			"description": "A curved, single-edged sword with a heavy blade for powerful slashing strikes.",
-			"tags": ["level=2", "weapon=10"],
+			"tags": ["level=2", "weapon=10", "weapon shop", "price=140"],
 			"skill": "Swords"
 		},
 		{
 			"name": "Broad Sword",
 			"description": "A wide, double-edged sword offering excellent balance between offense and defense.",
-			"tags": ["level=3", "weapon=15"],
+			"tags": ["level=3", "weapon=15", "weapon shop", "price=170"],
 			"skill": "Swords"
 		},
 		{
@@ -127,76 +127,76 @@
 		{
 			"name": "Hand Axe",
 			"description": "A one-handed axe. Good for chopping and combat.",
-			"tags": ["level=1", "weapon=4"],
+			"tags": ["level=1", "weapon=4", "weapon shop", "price=80"],
 			"skill": "Axes"
 		},
 		{
 			"name": "Double Axe",
 			"description": "A dual-bladed axe that can cleave through multiple enemies with devastating force.",
-			"tags": ["level=2", "weapon=11"],
+			"tags": ["level=2", "weapon=11", "weapon shop", "price=160"],
 			"skill": "Axes"
 		},
 		{
 			"name": "War Axe",
 			"description": "A massive battle axe designed for breaking through heavy armor and shields.",
-			"tags": ["level=3", "weapon=20"],
+			"tags": ["level=3", "weapon=20", "weapon shop", "price=250"],
 			"skill": "Axes"
 		},
 		{
 			"name": "Spiked Club",
 			"description": "A crude club with metal spikes. Brutal but effective.",
-			"tags": ["level=1", "weapon=3"],
+			"tags": ["level=1", "weapon=3", "weapon shop", "price=20"],
 			"skill": "Maces"
 		},
 		{
 			"name": "Mace",
 			"description": "A heavy, flanged weapon designed to crush armor and bones with blunt force.",
-			"tags": ["level=2", "weapon=8"],
+			"tags": ["level=2", "weapon=8", "weapon shop", "price=110"],
 			"skill": "Maces"
 		},
 		{
 			"name": "Hammer",
 			"description": "A two-handed war hammer capable of delivering devastating crushing blows.",
-			"tags": ["level=3", "weapon=14"],
+			"tags": ["level=3", "weapon=14", "weapon shop", "price=200"],
 			"skill": "Maces"
 		},
 		{
 			"name": "Spear",
 			"description": "A long weapon for stabbing enemies from a distance.",
-			"tags": ["level=1", "weapon=6"],
+			"tags": ["level=1", "weapon=6", "weapon shop", "price=50"],
 			"skill": "Spears"
 		},
 		{
 			"name": "Pilum",
 			"description": "A heavy javelin designed to penetrate shields and disable enemy formations.",
-			"tags": ["level=2", "weapon=11"],
+			"tags": ["level=2", "weapon=11", "weapon shop", "price=90"],
 			"skill": "Spears"
 		},
 		{
 			"name": "Harpoon",
 			"description": "A barbed spear originally used for fishing, now adapted for deadly combat.",
-			"tags": ["level=3", "weapon=17"],
+			"tags": ["level=3", "weapon=17", "weapon shop", "price=120"],
 			"skill": "Spears"
 		},
 		{
 			"name": "Leather Armor",
 			"description": "Basic protective armor made of treated animal hide.",
-			"tags": ["level=1", "armor=3"]
+			"tags": ["level=1", "armor shop", "armor=3", "price=100"]
 		},
 		{
 			"name": "Warden Armor",
 			"description": "Reinforced leather armor with metal studs, worn by guards and sentries.",
-			"tags": ["level=2", "armor=6"]
+			"tags": ["level=2", "armor shop", "armor=6", "price=150"]
 		},
 		{
 			"name": "Sacred Armor",
 			"description": "Blessed chainmail that glows faintly with divine protection.",
-			"tags": ["level=3", "armor=9"]
+			"tags": ["level=3", "armor shop", "armor=9", "price=200"]
 		},
 		{
 			"name": "Flamescale Armor",
 			"description": "Armor crafted from dragon scales, providing excellent protection against fire.",
-			"tags": ["level=4", "armor=12"]
+			"tags": ["level=4", "armor shop", "armor=12", "price=250"]
 		},
 		{
 			"name": "Ancient Armor",
@@ -206,7 +206,7 @@
 		{
 			"name": "Troll Crown",
 			"description": "A powerful crown said to be worn by ancient troll kings.",
-			"tags": ["armor=5", "artifact"],
+			"tags": ["artifact"],
 			"file": "assets/data/troll_crown.txt"
 		},
 		{
