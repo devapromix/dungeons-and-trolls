@@ -47,6 +47,10 @@ function enter.exec(command_parts, player, map_data)
 			if interior.description and interior.description ~= "" then
 				output.add(interior.description .. "\n")
 			end
+			if building == "tavern" then
+				local items_data = items.load_items()
+				output.add(items.get_tavern_items_string(items_data))
+			end
 			output.add("\n")
 			return player
 		end

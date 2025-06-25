@@ -274,4 +274,42 @@ function items.is_artifact(item_data)
 	return false
 end
 
+function items.get_tavern_items_string(items_data)
+	local tavern_items = {}
+	for _, item in ipairs(items_data.items) do
+		for _, tag in ipairs(item.tags) do
+			if tag == "tavern" then
+				local price = nil
+				for _, t in ipairs(item.tags) do
+					if t:match("^price=") then
+						price = tonumber(t:match("^price=(%d+)"))
+						break
+					end
+				end
+				if price then
+					table.insert(tavern_items, { name = item.name, price = price })
+				end
+				break
+			end
+		end
+	end
+	local selected_items = {}
+	local count = math.min(4, #tavern_items)
+	for i = 1, count do
+		if #tavern_items == 0 then break end
+		local index = math.random(1, #tavern_items)
+		table.insert(selected_items, tavern_items[index])
+		table.remove(tavern_items, index)
+		end
+	local item_list = {}
+	for _, item in ipairs(selected_items) do
+		table.insert(item_list, item.name .. " (" .. item.price .. ")")
+	end
+	local str = table.concat(item_list, ", ")
+	if str ~= "" then
+		return "\nYou see items in the tavern: " .. str .. ".\n"
+	end
+	return ""
+end
+
 return items

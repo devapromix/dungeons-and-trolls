@@ -297,6 +297,10 @@ function map.display_location(player, map_data)
 		if interior.id == player.state then
 			output.add(interior.name .. "\n")
 			output.add(interior.description .. "\n\n")
+			if interior.id == "tavern" then
+				local items_data = items.load_items()
+				output.add(items.get_tavern_items_string(items_data))
+			end
 			return
 		end
 	end
