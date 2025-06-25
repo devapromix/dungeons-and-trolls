@@ -19,6 +19,11 @@
 			"id": "tavern",
 			"name": "Tavern",
 			"description": "Wooden tables are crowded with weary travelers and local folk sharing ale and stories. The crackling fireplace casts dancing shadows on the stone walls, while the aroma of roasted meat and fresh bread fills the cozy interior."
+		},
+		{
+			"id": "healer",
+			"name": "Healer's Cottage",
+			"description": "The small, herb-scented cottage is filled with the soothing aroma of mint, chamomile, and dried roots hanging from the beams. Wooden shelves are stacked with clay jars, each labeled in a faded script, and a cot rests in the corner beneath a woven blanket. A soft light filters through the shuttered windows, casting a calm, warm glow over the tidy interior."
 		}
 	]
 }

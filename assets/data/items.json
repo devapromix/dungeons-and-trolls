@@ -3,12 +3,12 @@
 		{
 			"name": "Apple",
 			"description": "A sweet, juicy fruit.",
-			"tags": ["edible=10", "tavern", "price=5"]
+			"tags": ["edible=10", "tavern", "healer", "price=5"]
 		},
 		{
 			"name": "Strawberry",
 			"description": "A small red berry.",
-			"tags": ["edible=5", "tavern", "price=2"]
+			"tags": ["edible=5", "tavern", "healer", "price=2"]
 		},
 		{
 			"name": "Watermelon",
@@ -63,7 +63,7 @@
 		{
 			"name": "Healing Potion",
 			"description": "A red potion that heals your wounds when consumed.",
-			"tags": ["drinkable=20", "healing=25", "magic shop", "price=25"]
+			"tags": ["drinkable=20", "healing=25", "healer", "price=25"]
 		},
 		{
 			"name": "Mana Potion",
@@ -73,7 +73,7 @@
 		{
 			"name": "Water Bottle",
 			"description": "A bottle filled with clean water. Hydrates the body.",
-			"tags": ["drinkable=30", "tavern", "magic shop", "price=2"]
+			"tags": ["drinkable=30", "tavern", "price=2"]
 		},
 		{
 			"name": "Dagger",
