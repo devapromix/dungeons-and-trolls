@@ -7,7 +7,7 @@ local command_map = {
 	game = {"help", "intro", "new", "load", "save", "about", "quit"},
 	info = {"status", "skills", "time", "items", "map", "gear"},
 	item = {"eat", "drink", "pick", "drop", "equip", "unequip"},
-	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "train", "enter", "leave", "buy"},
+	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "village", "train", "enter", "leave", "buy", "sell"},
 	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
 }
 
@@ -218,6 +218,8 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 		return command_cook.exec(command_parts, player, map_data, items_data, output, items, time)
 	elseif cmd == "fish" then
 		return command_fishing.exec(player, map_data, items_data, skills_data, time, output)
+	elseif cmd == "village" then
+		return command_village.exec(player, map_data, map)
 	elseif cmd == "trollcave" then
 		return command_trollcave.exec(player, map_data, map)
 	elseif cmd == "train" then
