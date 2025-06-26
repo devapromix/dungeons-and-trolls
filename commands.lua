@@ -230,6 +230,8 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 		return command_leave.exec(player, map_data)
 	elseif cmd == "buy" then
 		return command_buy.exec(command_parts, player, game_time, time, player_module)
+	elseif cmd == "sell" then
+		return command_sell.exec(command_parts, player, items_data, player_module)
 	elseif cmd == "gold" then
 		return command_gold.exec(command_parts, player, player_module)
 	end
