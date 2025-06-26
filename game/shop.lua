@@ -33,11 +33,15 @@ function shop.get_items_string(items_data, shop_type, player_level)
         local str = table.concat(item_list, ", ")
         local result = ""
         if str ~= "" then
-            local shopkeeper_text = shop_type == "tavern" and "The shopkeeper's gaze follows you as you examine his goods: " or
-                                   shop_type == "armor shop" and "The armorer presents their wares: " or
-                                   shop_type == "weapon shop" and "The weaponsmith presents their wares: " or
-                                   "The shopkeeper presents their wares: "
-            result = "\n" .. shopkeeper_text .. str .. ".\n"
+            local interiors_data = shop.load_interiors()
+            local greeting = "The shopkeeper presents their wares:"
+            for _, interior in ipairs(interiors_data.interiors or {}) do
+                if interior.id == shop_type and interior.greeting and interior.greeting ~= "" then
+                    greeting = interior.greeting
+                    break
+                end
+            end
+            result = "\n" .. greeting .. " " .. str .. ".\n"
         end
         return result
     end
@@ -80,11 +84,15 @@ function shop.get_items_string(items_data, shop_type, player_level)
     local str = table.concat(item_list, ", ")
     local result = ""
     if str ~= "" then
-        local shopkeeper_text = shop_type == "tavern" and "The shopkeeper's gaze follows you as you examine his goods: " or
-                               shop_type == "armor shop" and "The armorer presents their wares: " or
-                               shop_type == "weapon shop" and "The weaponsmith presents their wares: " or
-                               "The shopkeeper presents their wares: "
-        result = "\n" .. shopkeeper_text .. str .. ".\n"
+        local interiors_data = shop.load_interiors()
+        local greeting = "The shopkeeper presents their wares: "
+        for _, interior in ipairs(interiors_data.interiors or {}) do
+            if interior.id == shop_type and interior.greeting and interior.greeting ~= "" then
+                greeting = interior.greeting
+                break
+            end
+        end
+        result = "\n" .. greeting .. " " .. str .. ".\n"
     end
     return result
 end

@@ -1,5 +1,13 @@
 local enter = {}
 
+local function print_available_buildings()
+    output.add("Available buildings:\n")
+	local interiors_data = shop.load_interiors()
+    for _, interior in ipairs(interiors_data.interiors or {}) do
+		output.add(" * '" .. interior.id .. "' - " .. interior.hint .. "\n")
+	end
+end
+
 function enter.exec(command_parts, player, map_data)
     if not player_module.check_player_alive("enter a building", player) then
         return player
@@ -29,7 +37,8 @@ function enter.exec(command_parts, player, map_data)
         ["weapon"] = "weapon shop",
         ["armor"] = "armor shop",
         ["magic"] = "magic shop",
-        ["tavern"] = "tavern"
+        ["tavern"] = "tavern",
+        ["smith"] = "forge"
     }
     
     local building = aliases[str_building] or str_building
@@ -46,16 +55,6 @@ function enter.exec(command_parts, player, map_data)
     output.add("Unknown building: '" .. building .. "'.\n")
 	print_available_buildings()
     return player
-end
-
-local function print_available_buildings()
-    output.add("Available buildings:\n")
-    output.add("- weapon shop\n")
-    output.add("- armor shop\n")
-    output.add("- magic shop\n")
-    output.add("- healer\n")
-    output.add("- forge\n")
-    output.add("- tavern\n")
 end
 
 return enter
