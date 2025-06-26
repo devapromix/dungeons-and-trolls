@@ -28,34 +28,6 @@ function commands.get_item_name_from_parts(command_parts, start_index)
 	return table.concat(command_parts, " ", start_index)
 end
 
-function commands.validate_parameter(param, param_type, output)
-	if #param < 3 then
-		output.add("Parameter '" .. param .. "' must be at least 3 characters long.\n")
-		return false
-	end
-	return true
-end
-
-function commands.parse_item_command(command_parts, start_index)
-	local quantity = 1
-	local item_name
-	if tonumber(command_parts[start_index]) then
-		quantity = math.floor(tonumber(command_parts[start_index]))
-		if #command_parts >= start_index + 1 then
-			item_name = commands.get_item_name_from_parts(command_parts, start_index + 1)
-		else
-			output.add("Please specify an item name after the quantity (e.g., 'pick 3 Healing Potion').\n")
-			return nil, nil
-		end
-	else
-		item_name = commands.get_item_name_from_parts(command_parts, start_index)
-	end
-	if item_name and not commands.validate_parameter(item_name, "item", output) then
-		return nil, nil
-	end
-	return quantity, item_name
-end
-
 function commands.handle_confirmation(command_parts, output)
 	local cmd = command_parts[1]
 	if cmd == "y" or cmd == "yes" then
@@ -85,7 +57,7 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 		if #command_parts < 2 then
 			output.add("Please specify a quantity and item to pick up (e.g., 'pick 2 Healing Potion').\n")
 		else
-			local quantity, item_name = commands.parse_item_command(command_parts, 2)
+			local quantity, item_name = utils.parse_item_command(command_parts, 2, output)
 			if quantity and item_name then
 				items.pick_item(player, map_data[player.world], item_name, quantity)
 			end
@@ -98,7 +70,7 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 		if #command_parts < 2 then
 			output.add("Please specify a quantity and item to drop (e.g., 'drop 2 Healing Potion').\n")
 		else
-			local quantity, item_name = commands.parse_item_command(command_parts, 2)
+			local quantity, item_name = utils.parse_item_command(command_parts, 2, output)
 			if quantity and item_name then
 				items.drop_item(player, map_data[player.world], item_name, quantity)
 			end
@@ -107,8 +79,8 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 		if #command_parts < 2 then
 			output.add("Please specify an item to eat (e.g., 'eat Apple').\n")
 		else
-			local item_name = commands.get_item_name_from_parts(command_parts, 2)
-			if commands.validate_parameter(item_name, "item", output) then
+			local _, item_name = utils.parse_item_command(command_parts, 2, output)
+			if item_name then
 				player = items.eat_item(player, items_data, item_name) or player
 			end
 		end
@@ -116,8 +88,8 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 		if #command_parts < 2 then
 			output.add("Please specify an item to drink (e.g., 'drink Healing Potion').\n")
 		else
-			local item_name = commands.get_item_name_from_parts(command_parts, 2)
-			if commands.validate_parameter(item_name, "item", output) then
+			local _, item_name = utils.parse_item_command(command_parts, 2, output)
+			if item_name then
 				player = items.drink_item(player, items_data, item_name) or player
 			end
 		end
@@ -125,8 +97,8 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 		if #command_parts < 2 then
 			output.add("Please specify an item to equip (e.g., 'equip Sword').\n")
 		else
-			local item_name = commands.get_item_name_from_parts(command_parts, 2)
-			if commands.validate_parameter(item_name, "item", output) then
+			local _, item_name = utils.parse_item_command(command_parts, 2, output)
+			if item_name then
 				player = player_module.equip_item(player, items_data, item_name)
 			end
 		end
@@ -134,8 +106,8 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 		if #command_parts < 2 then
 			output.add("Please specify an item or slot to unequip (e.g., 'unequip Sword' or 'unequip weapon').\n")
 		else
-			local identifier = commands.get_item_name_from_parts(command_parts, 2)
-			if commands.validate_parameter(identifier, "item", output) then
+			local _, identifier = utils.parse_item_command(command_parts, 2, output)
+			if identifier then
 				player = player_module.unequip_item(player, items_data, identifier)
 			end
 		end

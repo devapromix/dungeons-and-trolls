@@ -1,24 +1,5 @@
 local sell = {}
 
-function sell.find_shop_item(items_data, shop_type, item_name)
-	if not items_data or not items_data.items or not shop_type or not item_name or item_name == "" then return nil, nil end
-	local lower_name = string.lower(item_name)
-	for _, item in ipairs(items_data.items) do
-		if string.lower(item.name) == lower_name then
-			for _, tag in ipairs(item.tags) do
-				if tag == shop_type or (shop_type == "forge" and tag == "weapon shop") then
-					for _, price_tag in ipairs(item.tags) do
-						if price_tag:match("^price=") then
-							return item.name, tonumber(price_tag:match("^price=(%S+)"))
-						end
-					end
-				end
-			end
-		end
-	end
-	return nil, nil
-end
-
 function sell.exec(command_parts, player, items_data, player_module)
 	if not player_module.check_player_alive("sell", player) then
 		return player
@@ -32,22 +13,11 @@ function sell.exec(command_parts, player, items_data, player_module)
 		return player
 	end
 	local shop_type = player.state
-	local quantity = 1
-	local item_name_start_index = 2
-	if tonumber(command_parts[2]) then
-		quantity = math.floor(tonumber(command_parts[2]))
-		item_name_start_index = 3
-		if #command_parts < 3 then
-			output.add("Please specify an item name after the quantity (e.g., 'sell 5 Apple').\n")
-			return player
-		end
-	end
-	if quantity <= 0 then
-		output.add("Invalid item quantity specified.\n")
+	local quantity, item_name = utils.parse_item_command(command_parts, 2, output)
+	if not quantity or not item_name then
 		return player
 	end
-	local item_name = table.concat(command_parts, " ", item_name_start_index)
-	local item_key = items.find_item_key(player.inventory, item_name)
+	local item_key = utils.find_item_key(player.inventory, item_name, true)
 	if not item_key then
 		output.add("You don't have " .. item_name .. " in your inventory.\n")
 		return player
@@ -61,7 +31,22 @@ function sell.exec(command_parts, player, items_data, player_module)
 		output.add("You don't have enough " .. item_key .. " to sell that amount.\n")
 		return player
 	end
-	local shop_item_key, price = sell.find_shop_item(items_data, shop_type, item_key)
+	local shop_item_key, price
+	for _, item in ipairs(items_data.items) do
+		if utils.find_item_key({[item.name] = true}, item_key, false) then
+			for _, tag in ipairs(item.tags) do
+				if tag == shop_type or (shop_type == "forge" and tag == "weapon shop") then
+					for _, price_tag in ipairs(item.tags) do
+						if price_tag:match("^price=") then
+							shop_item_key = item.name
+							price = tonumber(price_tag:match("^price=(%S+)"))
+							break
+						end
+					end
+				end
+			end
+		end
+	end
 	if not shop_item_key or not price then
 		output.add("You cannot sell " .. item_key .. " in this shop.\n")
 		return player

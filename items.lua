@@ -21,24 +21,6 @@ function items.get_tile_items_string(map, x, y)
 	return ""
 end
 
-function items.find_item_key(item_table, name, is_show)
-	if not item_table or not name or name == "" then return nil end
-	local lower_name = string.lower(name)
-	local matches = {}
-	for key in pairs(item_table) do
-		if string.lower(key) == lower_name then
-			return key
-		elseif string.find(string.lower(key), lower_name, 1, true) then
-			table.insert(matches, key)
-		end
-	end
-	if #matches > 0 then
-		return matches[1]
-	end
-	if is_show then output.add("No " .. name .. " found!\n") end
-	return nil
-end
-
 function items.get_item_data(items_data, item_key)
 	if not items_data or not items_data.items or not item_key then return nil end
 	for _, item in ipairs(items_data.items) do
@@ -75,7 +57,7 @@ function items.pick_item(player, map, item_name, quantity)
 		output.add("No items found here.\n")
 		return
 	end
-	local item_key = items.find_item_key(tile_items, item_name)
+	local item_key = utils.find_item_key(tile_items, item_name, true)
 	if not item_key then
 		output.add("No " .. item_name .. " found here.\n")
 		return
@@ -119,7 +101,7 @@ function items.drop_item(player, map, item_name, quantity)
 		output.add("Please specify a valid item name.\n")
 		return
 	end
-	local item_key = items.find_item_key(player.inventory, item_name)
+	local item_key = utils.find_item_key(player.inventory, item_name, true)
 	if not item_key then
 		output.add("You don't have " .. item_name .. " in your inventory.\n")
 		return
@@ -154,7 +136,7 @@ function items.eat_item(player, items_data, item_name)
 	if not player_module.check_player_alive("eat", player) then
 		return
 	end
-	local item_key = items.find_item_key(player.inventory, item_name)
+	local item_key = utils.find_item_key(player.inventory, item_name, true)
 	if not item_key then
 		output.add("You don't have " .. item_name .. " in your inventory.\n")
 		return
@@ -194,7 +176,7 @@ function items.drink_item(player, items_data, item_name)
 	if not player_module.check_player_alive("drink", player) then
 		return
 	end
-	local item_key = items.find_item_key(player.inventory, item_name)
+	local item_key = utils.find_item_key(player.inventory, item_name, true)
 	if not item_key then
 		output.add("You don't have " .. item_name .. " in your inventory.\n")
 		return
@@ -247,7 +229,7 @@ function items.make_fire_item(player, map_data, world)
 	if not player_module.check_player_alive("make a fire", player) then
 		return
 	end
-	local item_key = items.find_item_key(player.inventory, "Firewood")
+	local item_key = utils.find_item_key(player.inventory, "Firewood", true)
 	if not item_key then
 		output.add("You don't have firewood in your inventory.\n")
 		return

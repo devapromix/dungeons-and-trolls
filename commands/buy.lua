@@ -1,16 +1,5 @@
 local buy = {}
 
-function buy.find_shop_item(shop_items, item_name)
-	if not shop_items or not item_name or item_name == "" then return nil, nil end
-	local lower_name = string.lower(item_name)
-	for _, item in ipairs(shop_items) do
-		if string.lower(item.name) == lower_name then
-			return item.name, item.price
-		end
-	end
-	return nil, nil
-end
-
 function buy.exec(command_parts, player, game_time, time, player_module)
 	if not player_module.check_player_alive("buy", player) then
 		return player
@@ -49,22 +38,18 @@ function buy.exec(command_parts, player, game_time, time, player_module)
 			output.add("No items available for purchase in this shop.\n")
 			return player
 		end
-		local quantity = 1
-		local item_name_start_index = 2
-		if tonumber(command_parts[2]) then
-			quantity = math.floor(tonumber(command_parts[2]))
-			item_name_start_index = 3
-			if #command_parts < 3 then
-				output.add("Please specify an item name after the quantity (e.g., 'buy 5 Healing Potion').\n")
-				return player
-			end
-		end
-		if quantity <= 0 then
-			output.add("Invalid item quantity specified.\n")
+		local quantity, item_name = utils.parse_item_command(command_parts, 2, output)
+		if not quantity or not item_name then
 			return player
 		end
-		local item_name = table.concat(command_parts, " ", item_name_start_index)
-		local item_key, price = buy.find_shop_item(game.shop_items_cache[shop_type], item_name)
+		local item_key, price
+		for _, item in ipairs(game.shop_items_cache[shop_type]) do
+			item_key = utils.find_item_key({[item.name] = true}, item_name, false)
+			if item_key then
+				price = item.price
+				break
+			end
+		end
 		if not item_key then
 			output.add("Item '" .. item_name .. "' is not available in this shop.\n")
 			return player

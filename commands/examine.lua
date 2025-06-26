@@ -21,7 +21,8 @@ function examine.exec(command_parts, player, map_data, items_data, enemies_data,
 		return player
 	end
 	local name = commands.get_item_name_from_parts(command_parts, 2)
-	if not commands.validate_parameter(name, "name", output) then
+	if #name < 3 then
+		output.add("Name '" .. name .. "' must be at least 3 characters long.\n")
 		return player
 	end
 	local enemies_at_location = map_data[player.world].enemies[player.y][player.x]
@@ -36,13 +37,13 @@ function examine.exec(command_parts, player, map_data, items_data, enemies_data,
 			end
 		end
 	end
-	local item_key = items.find_item_key(player.inventory, name, false)
+	local item_key = utils.find_item_key(player.inventory, name, false)
 	if item_key then
 		local item_data = items.get_item_data(items_data, item_key)
 		examine.display_item_info(item_key, item_data)
 		return player
 	end
-	item_key = items.find_item_key(map_data[player.world].items[player.y][player.x], name, false)
+	item_key = utils.find_item_key(map_data[player.world].items[player.y][player.x], name, false)
 	if item_key then
 		local item_data = items.get_item_data(items_data, item_key)
 		examine.display_item_info(item_key, item_data)
