@@ -1,7 +1,7 @@
 local map = {}
 
 local default_location = { name = "Unknown", description = "An unknown location.", passable = true }
-local default_effects = { thirst = 2, hunger = 0.5, fatigue = 1 }
+local default_effects = { thirst = 1, hunger = 0.5, fatigue = 1 }
 
 function map.load_locations()
 	return utils.load_json_file("assets/data/locations.json", "Locations file")
@@ -29,66 +29,6 @@ function map.get_biome_effects(symbol)
 	return location and location.effects or default_effects
 end
 
-function map.cellular_automaton(tiles, width, height, iterations)
-	local new_tiles = {}
-	for y = 1, height do
-		new_tiles[y] = {}
-		for x = 1, width do
-			new_tiles[y][x] = tiles[y][x]
-		end
-	end
-	for _ = 1, iterations do
-		for y = 1, height do
-			for x = 1, width do
-				local neighbors = 0
-				for dy = -1, 1 do
-					for dx = -1, 1 do
-						if dx == 0 and dy == 0 then
-							goto continue
-						end
-						local nx, ny = x + dx, y + dy
-						if nx >= 1 and nx <= width and ny >= 1 and ny <= height and tiles[ny][nx] ~= "o" then
-							neighbors = neighbors + 1
-						end
-						::continue::
-					end
-				end
-				if neighbors < 4 then
-					new_tiles[y][x] = "o"
-				elseif neighbors >= 5 then
-					new_tiles[y][x] = tiles[y][x]
-				end
-			end
-		end
-		for y = 1, height do
-			for x = 1, width do
-				tiles[y][x] = new_tiles[y][x]
-			end
-		end
-	end
-	return tiles
-end
-
-function map.biome(world, x, y, tile, size)
-	local biome_x, biome_y = x, y
-	for i = 1, size do
-		if not world.tiles[biome_y][biome_x]:match("[><]") then
-			world.tiles[biome_y][biome_x] = tile
-		end
-		local d = math.random(1, 4)
-		if d == 1 and biome_x - 1 >= 1 then
-			biome_x = biome_x - 1
-		elseif d == 2 and biome_x + 1 <= config.map.width then
-			biome_x = biome_x + 1
-		elseif d == 3 and biome_y - 1 >= 1 then
-			biome_y = biome_y - 1
-		elseif d == 4 and biome_y + 1 <= config.map.height then
-			biome_y = biome_y + 1
-		end
-	end
-	return biome_x, biome_y
-end
-
 function map.fill(world, symbol)
 	for y = 1, config.map.height do
 		for x = 1, config.map.width do
@@ -109,7 +49,7 @@ function map.gen_world(world, is_underworld, biome_amount, biome_size)
 	for i = 1, biome_amount do
 		local x = math.random(1, config.map.width - 1)
 		local y = math.random(1, config.map.height - 1)
-		map.biome(world, x, y, map.get_random_location_symbol(true, is_underworld), biome_size)
+		biome.add(world, x, y, map.get_random_location_symbol(true, is_underworld), biome_size)
 	end
 end
 
@@ -130,7 +70,7 @@ function map.add_passages(map_data)
 			x = center_x + math.random(-15, 15)
 			y = center_y + math.random(-10, 10)
 		until is_valid_position(x, y) and not map_data.overworld.tiles[y][x]:match("[><]")
-		map.biome(map_data.underworld, x, y, map.get_random_location_symbol(true, true), 75)
+		biome.add(map_data.underworld, x, y, map.get_random_location_symbol(true, true), 75)
 		map.add_passage(map_data, x, y)
 	end
 end
@@ -158,7 +98,7 @@ function map.add_troll_cave()
 		troll_y = center_y + math.random(-15, 15)
 		local distance = math.sqrt((troll_x - center_x)^2 + (troll_y - center_y)^2)
 	until distance >= 12 and distance <= 15 and is_valid_position(troll_x, troll_y) and not map_data.underworld.tiles[troll_y][troll_x]:match("[><]")
-	map.biome(map_data.underworld, troll_x, troll_y, map.get_random_location_symbol(true, true), 50)
+	biome.add(map_data.underworld, troll_x, troll_y, map.get_random_location_symbol(true, true), 50)
 	map.add_passage(map_data, troll_x, troll_y + 1)
 	map_data.underworld.tiles[troll_y][troll_x] = "t"
 	map_data.underworld.enemies[troll_y][troll_x]["Troll King"] = 1
