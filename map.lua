@@ -87,11 +87,11 @@ function map.add_village(player_x, player_y)
 		local distance_from_player = math.sqrt((village_x - player_x)^2 + (village_y - player_y)^2)
 	until is_valid_position(village_x, village_y) and not map_data.overworld.tiles[village_y][village_x]:match("[><]") and distance_from_player >= min_distance and distance_from_player <= max_distance
 	map_data.overworld.tiles[village_y][village_x] = "v"
+	map_data.overworld.enemies[village_y][village_x] = {}
 	return village_x, village_y
 end
 
 function map.add_troll_cave()
-	local village_x, village_y
 	local center_x, center_y = math.floor(config.map.width / 2), math.floor(config.map.height / 2)
 	repeat
 		troll_x = center_x + math.random(-15, 15)
