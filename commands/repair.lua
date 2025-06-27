@@ -17,11 +17,16 @@ function repair.exec(command_parts, player, player_module)
 
 	if #command_parts < 2 then
 		output.add("Usage: repair <slot | item_name | all>\n")
-		output.add("Example: repair weapon, repair Short Sword, repair all\n")
+		output.add("Example: repair weapon, repair Sword, repair all\n")
 		return player
 	end
 
-	local param = table.concat(command_parts, " ", 2):lower()
+	local _, param = utils.parse_item_command(command_parts, 2, output)
+	if not param then
+		return player
+	end
+	param = param:lower()
+
 	local slots_to_repair = {}
 	local cost = 0
 
@@ -36,10 +41,22 @@ function repair.exec(command_parts, player, player_module)
 		local slot = nil
 		if param == "weapon" or param == "armor" then
 			slot = param
-		elseif player.equipment and player.equipment.weapon and player.equipment.weapon:lower() == param then
-			slot = "weapon"
-		elseif player.equipment and player.equipment.armor and player.equipment.armor:lower() == param then
-			slot = "armor"
+		else
+			local equipment = {}
+			if player.equipment and player.equipment.weapon then
+				equipment[player.equipment.weapon] = true
+			end
+			if player.equipment and player.equipment.armor then
+				equipment[player.equipment.armor] = true
+			end
+			local item_key = utils.find_item_key(equipment, param, true)
+			if item_key then
+				if item_key == player.equipment.weapon then
+					slot = "weapon"
+				elseif item_key == player.equipment.armor then
+					slot = "armor"
+				end
+			end
 		end
 
 		if slot and player.equipment_status[slot] == "broken" then
