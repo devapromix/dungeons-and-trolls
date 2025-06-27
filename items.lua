@@ -225,28 +225,6 @@ function items.drink_item(player, items_data, item_name)
 	return player
 end
 
-function items.make_fire_item(player, map_data, world)
-	if not player_module.check_player_alive("make a fire", player) then
-		return
-	end
-	local item_key = utils.find_item_key(player.inventory, "Firewood", true)
-	if not item_key then
-		output.add("You don't have firewood in your inventory.\n")
-		return
-	end
-	if map_data[world].fire.active and map_data[world].fire.x == player.x and map_data[world].fire.y == player.y then
-		output.add(const.FIRE_IS_BURNING)
-		return
-	end
-	player.inventory[item_key] = player.inventory[item_key] - 1
-	if player.inventory[item_key] <= 0 then
-		player.inventory[item_key] = nil
-	end
-	map_data[world].fire = { x = player.x, y = player.y, active = true }
-	output.add("You make a fire.\n")
-	time.tick_time(15)
-end
-
 function items.is_artifact(item_data)
 	for _, tag in ipairs(item_data.tags) do
 		if tag == "artifact" then

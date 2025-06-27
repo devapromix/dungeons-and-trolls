@@ -4,7 +4,7 @@ function cook.exec(command_parts, player, map_data, items_data, output, items, t
 	if not player_module.check_player_alive("cook an item", player) then
 		return player
 	end
-	if not map_data[player.world].fire.active then
+	if not fire.check_fire(player.world, player.x, player.y) then
 		output.add("You need an active fire to cook.\n")
 		return player
 	end

@@ -112,7 +112,6 @@ function map.initialize_game(locations_data)
 			visited = {},
 			items = {},
 			enemies = {},
-			fire = { x = nil, y = nil, active = false },
 			village = { x = nil, y = nil }
 		},
 		underworld = {
@@ -120,7 +119,6 @@ function map.initialize_game(locations_data)
 			visited = {},
 			items = {},
 			enemies = {},
-			fire = { x = nil, y = nil, active = false },
 			troll_cave = { x = nil, y = nil }
 		}
 	}
@@ -205,6 +203,7 @@ end
 function map.move_up(player, map_data)
 	if config.debug or map_data[player.world].tiles[player.y][player.x] == "<" then
 		player.world = "overworld"
+		fire.extinguish_fire(player.world, player.x, player.y)
 		map.update_visibility(player, map_data)
 		return true
 	end
@@ -214,6 +213,7 @@ end
 function map.move_down(player, map_data)
 	if config.debug or map_data[player.world].tiles[player.y][player.x] == ">" then
 		player.world = "underworld"
+		fire.extinguish_fire(player.world, player.x, player.y)
 		map.update_visibility(player, map_data)
 		return true
 	end
@@ -283,7 +283,7 @@ function map.display_location(player, map_data)
 	output.add(items_string)
 	local enemies_string = enemies.get_tile_enemies_string(map_data[player.world], player.x, player.y)
 	output.add(enemies_string)
-	if map_data[player.world].fire.active and map_data[player.world].fire.x == player.x and map_data[player.world].fire.y == player.y then
+	if fire.check_fire(player.world, player.x, player.y) then
 		output.add(const.FIRE_IS_BURNING)
 	end
 end

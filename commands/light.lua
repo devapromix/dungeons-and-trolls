@@ -8,11 +8,11 @@ function light.exec(player, player_module, map_data)
 		output.add("You cannot light a fire in the village.\n")
 		return player
 	end
-	if player.state == "shop" or player.state == "tavern" then
+	if player.state ~= "overworld" then
 		output.add("You cannot light a fire inside a building.\n")
 		return player
 	end
-	items.make_fire_item(player, map_data, player.world)
+	fire.make_fire(player, player.world)
 	return player
 end
 

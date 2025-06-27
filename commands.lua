@@ -171,7 +171,7 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 	end
 end
 
-function commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config)
+function commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config, fire)
 	if cmd == "rest" then
 		return command_rest.exec(player, map_data, game_time, time)
 	elseif cmd == "examine" then
@@ -210,7 +210,7 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 	return player
 end
 
-function commands.handle_command(command_parts, player, map_data, items_data, enemies_data, skills_data, config, game_time, input, output, time, player_module, items, enemies, map, skills, json)
+function commands.handle_command(command_parts, player, map_data, items_data, enemies_data, skills_data, config, game_time, input, output, time, player_module, items, enemies, map, skills, json, fire)
 	if commands.awaiting_confirmation then
 		commands.handle_confirmation(command_parts, output)
 		return
@@ -226,7 +226,7 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 	commands.handle_game_commands(cmd, command_parts, player, output)
 	commands.handle_info_commands(cmd, command_parts, player, map_data, config, game_time, skills, output, player_module)
 	player = commands.handle_item_commands(cmd, command_parts, player, map_data, items_data, items, player_module)
-	player = commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config)
+	player = commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config, fire)
 
 	local direction = movement_map[cmd]
 	if direction then

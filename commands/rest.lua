@@ -19,7 +19,7 @@ function rest.exec(player, map_data, game_time, time)
 	)
 	local hours_to_morning = game_time.hour >= 18 and (24 - game_time.hour + 6) or game_time.hour < 6 and (6 - game_time.hour) or 0
 	local rest_hours = hours_to_morning > 0 and utils.clamp(hours_to_full, 0, hours_to_morning) or hours_to_full
-	local rest_multiplier = map_data[player.world].fire.active and map_data[player.world].fire.x == player.x and map_data[player.world].fire.y == player.y and 2 or 1
+	local rest_multiplier = fire.check_fire(player.world, player.x, player.y) and 2 or 1
 	output.add("You rest for " .. rest_hours .. " hour(s)...\n")
 	player.health = player.health + rest_hours * 10 * rest_multiplier
 	player.mana = player.mana + rest_hours * 10 * rest_multiplier
