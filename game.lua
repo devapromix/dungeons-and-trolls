@@ -100,6 +100,7 @@ function game.load_game()
 				end
 				map_data = save_data.map or { overworld = {}, underworld = {} }
 				player = save_data.player
+				player.equipment_status = player.equipment_status or { weapon = "", armor = "" }
 				game_time = save_data.time or { year = 1280, month = 4, day = 1, hour = 6, minute = 0, playtime = 0 }
 				input.history = save_data.history or {}
 				game.unique_items = save_data.unique_items or {}

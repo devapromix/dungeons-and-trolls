@@ -124,6 +124,7 @@ function player.equip_item(player_data, items_data, item_name)
 		return player_data
 	end
 	player_data.equipment = player_data.equipment or {}
+	player_data.equipment_status = player_data.equipment_status or { weapon = "", armor = "" }
 	if weapon_value then
 		if player_data.equipment.weapon then
 			local current_weapon_data = items.get_item_data(items_data, player_data.equipment.weapon)
@@ -135,6 +136,7 @@ function player.equip_item(player_data, items_data, item_name)
 			end
 		end
 		player_data.equipment.weapon = item_key
+		player_data.equipment_status.weapon = ""
 		player_data.attack = player_data.attack + weapon_value
 		output.add("You equipped " .. item_key .. ".\n")
 	elseif armor_value then
@@ -148,6 +150,7 @@ function player.equip_item(player_data, items_data, item_name)
 			end
 		end
 		player_data.equipment.armor = item_key
+		player_data.equipment_status.armor = ""
 		player_data.defense = player_data.defense + armor_value
 		output.add("You equipped " .. item_key .. ".\n")
 	end
@@ -188,6 +191,7 @@ function player.unequip_item(player_data, items_data, identifier)
 			player_data.defense = player_data.defense - tag_value
 		end
 		player_data.equipment[slot] = nil
+		player_data.equipment_status[slot] = ""
 		output.add("You unequipped " .. equipped_item .. ".\n")
 	end
 	return player_data
@@ -266,6 +270,7 @@ function player.initialize_player(config)
 		gold = 0,
 		inventory = { ["Short Sword"] = 1, ["Leather Armor"] = 1 },
 		equipment = { weapon = "Short Sword", armor = "Leather Armor" },
+		equipment_status = { weapon = "", armor = "" },
 		skills = {},
 		radius = 3,
 		level = 1,

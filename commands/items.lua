@@ -9,7 +9,7 @@ function module.exec(player, player_module, items)
 		output.add("(empty)\n")
 	else
 		for item, quantity in pairs(player.inventory) do
-			local equipped = items.is_item_equipped(player, item) and " (equipped)" or ""
+			local equipped = items.is_item_equipped(player, item) and " (equipped" .. (player.equipment_status[item == player.equipment.weapon and "weapon" or "armor"] ~= "" and ", " .. player.equipment_status[item == player.equipment.weapon and "weapon" or "armor"] or "") .. ")" or ""
 			if quantity > 1 then
 				output.add(item .. " (" .. quantity .. ")" .. equipped .. "\n")
 			else

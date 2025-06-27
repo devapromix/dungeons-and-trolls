@@ -7,7 +7,7 @@ load - Loads a saved game.                                      up (or u) - Clim
 map - Display the game map.                                     down (or d) - Descend into the underworld.
 intro - Show intro.                                             train <attribute> - Train an attribute.
 status - Display player's stats.                                examine <item or enemy> - Inspect an item or enemy.
-chop - Cut tree in forest.
+chop - Chop down a tree to gather wood.
 skills - Display player's skills.                               eat <item> - Eat an item.
 rest - Rest to restore health and mana.                         drink <item> - Drink an item.
 time - Displays the current time.                               pick [quantity] <item> - Pick up an item.
