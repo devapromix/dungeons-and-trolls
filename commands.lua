@@ -7,7 +7,7 @@ local command_map = {
 	game = {"help", "intro", "new", "load", "save", "about", "quit"},
 	info = {"status", "skills", "time", "items", "map", "gear"},
 	item = {"eat", "drink", "pick", "drop", "equip", "unequip"},
-	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "village", "train", "enter", "leave", "buy", "sell", "gold", "chop"},
+	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "village", "train", "enter", "leave", "buy", "sell", "gold", "chop", "repair"},
 	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
 }
 
@@ -208,7 +208,8 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 		return command_gold.exec(command_parts, player, player_module)
 	elseif cmd == "chop" then
 		return command_chop.exec(player, map_data, items_data, time, player_module, items)
-	end
+	elseif cmd == "repair" then
+		return command_repair.exec(command_parts, player, player_module)	end
 	return player
 end
 
