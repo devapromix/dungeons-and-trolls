@@ -215,19 +215,7 @@ function combat.calculate_miss_chance(fatigue, dexterity)
 	return math.max(base_miss_chance - dexterity_modifier, 0)
 end
 
-function combat.handle_victory(enemy_name, enemy_data, map_data, player_data, items_data, skills_data, map, output, player_module)
-	output.add("You defeated " .. enemy_name .. "!\n")
-	
-	if player_module and player_module.add_experience then
-		player_data = player_module.add_experience(player_data, enemy_data.experience or 0, output)
-	end
-	
-	combat.upgrade_weapon_skill(player_data, items_data, skills_data)
-	
-	combat.handle_enemy_drops(enemy_data, map_data, player_data, output)
-	
-	combat.remove_enemy_from_map(enemy_name, map_data, player_data)
-	
+function combat.apply_broken_equipment_status(player_data, output)
 	if math.random() < 0.1 then
 		if player_data.equipment and player_data.equipment_status then
 			local slots = {}
@@ -244,6 +232,22 @@ function combat.handle_victory(enemy_name, enemy_data, map_data, player_data, it
 			end
 		end
 	end
+end
+
+function combat.handle_victory(enemy_name, enemy_data, map_data, player_data, items_data, skills_data, map, output, player_module)
+	output.add("You defeated " .. enemy_name .. "!\n")
+	
+	if player_module and player_module.add_experience then
+		player_data = player_module.add_experience(player_data, enemy_data.experience or 0, output)
+	end
+	
+	combat.upgrade_weapon_skill(player_data, items_data, skills_data)
+	
+	combat.handle_enemy_drops(enemy_data, map_data, player_data, output)
+	
+	combat.remove_enemy_from_map(enemy_name, map_data, player_data)
+	
+	combat.apply_broken_equipment_status(player_data, output)
 	
 	if enemy_name == "Troll King" and game and game.victory then
 		game.victory()
