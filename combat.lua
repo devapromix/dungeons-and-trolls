@@ -18,6 +18,17 @@ function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, it
 		return false
 	end
 	
+	if player_data.equipment_status then
+		if player_data.equipment_status.weapon == "broken" then
+			output.add("You cannot fight because your weapon is broken.\n")
+			return false
+		end
+		if player_data.equipment_status.armor == "broken" then
+			output.add("You cannot fight because your armor is broken.\n")
+			return false
+		end
+	end
+	
 	if not enemy_name or enemy_name == "" then
 		output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
 		return false
@@ -216,6 +227,23 @@ function combat.handle_victory(enemy_name, enemy_data, map_data, player_data, it
 	combat.handle_enemy_drops(enemy_data, map_data, player_data, output)
 	
 	combat.remove_enemy_from_map(enemy_name, map_data, player_data)
+	
+	if math.random() < 0.1 then
+		if player_data.equipment and player_data.equipment_status then
+			local slots = {}
+			if player_data.equipment.weapon then
+				table.insert(slots, "weapon")
+			end
+			if player_data.equipment.armor then
+				table.insert(slots, "armor")
+			end
+			if #slots > 0 then
+				local slot = slots[math.random(1, #slots)]
+				player_data.equipment_status[slot] = "broken"
+				output.add("Your " .. slot .. " (" .. player_data.equipment[slot] .. ") is broken!\n")
+			end
+		end
+	end
 	
 	if enemy_name == "Troll King" and game and game.victory then
 		game.victory()
