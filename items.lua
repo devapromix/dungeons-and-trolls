@@ -141,7 +141,7 @@ function items.eat_item(player, items_data, item_name)
 		output.add("You don't have " .. item_name .. " in your inventory.\n")
 		return
 	end
-	if items.is_item_equipped(player, item_key) then
+	if items.is_item_equipped(player, item_name) then
 		output.add("You cannot eat " .. item_key .. " because it is equipped.\n")
 		return
 	end

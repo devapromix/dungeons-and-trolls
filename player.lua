@@ -177,6 +177,10 @@ function player.unequip_item(player_data, items_data, identifier)
 		output.add("No " .. slot .. " is currently equipped.\n")
 		return player_data
 	end
+	if player_data.equipment_status and player_data.equipment_status[slot] ~= "" then
+		output.add("You cannot unequip " .. player_data.equipment[slot] .. " because it has a '" .. player_data.equipment_status[slot] .. "'.\n")
+		return player_data
+	end
 	local equipped_item = player_data.equipment[slot]
 	local item_data = items.get_item_data(items_data, equipped_item)
 	if not item_data then
@@ -291,10 +295,10 @@ function player.initialize_player(config)
 end
 
 function player.has_chop_item(player, items_data)
-    if not player.equipment or not player.equipment.weapon then
-        return false
-    end
-    return items.has_tag(items_data, player.equipment.weapon, "chop")
+	if not player.equipment or not player.equipment.weapon then
+		return false
+	end
+	return items.has_tag(items_data, player.equipment.weapon, "chop")
 end
 
 function player.add_hunger(player_data, value)
