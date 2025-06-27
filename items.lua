@@ -234,4 +234,17 @@ function items.is_artifact(item_data)
 	return false
 end
 
+function items.has_tag(items_data, item_name, tag)
+	local item_data = items.get_item_data(items_data, item_name)
+	if not item_data then
+		return false
+	end
+	for _, item_tag in ipairs(item_data.tags) do
+		if item_tag == tag then
+			return true
+		end
+	end
+	return false
+end
+
 return items

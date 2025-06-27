@@ -7,7 +7,7 @@ function map.load_locations()
 	return utils.load_json_file("assets/data/locations.json", "Locations file")
 end
 
-local function get_location_by_symbol(symbol)
+function map.get_location_by_symbol(symbol)
 	for _, location in ipairs(locations_data.locations or {}) do
 		if location.symbol == symbol then
 			return location
@@ -17,7 +17,7 @@ local function get_location_by_symbol(symbol)
 end
 
 function map.get_location_description(symbol)
-	local location = get_location_by_symbol(symbol)
+	local location = map.get_location_by_symbol(symbol)
 	if location then
 		return { name = location.name, description = location.description, passable = location.passable }
 	end
@@ -25,7 +25,7 @@ function map.get_location_description(symbol)
 end
 
 function map.get_biome_effects(symbol)
-	local location = get_location_by_symbol(symbol)
+	local location = map.get_location_by_symbol(symbol)
 	return location and location.effects or default_effects
 end
 
@@ -186,7 +186,7 @@ function map.initialize_game(locations_data)
 	initialize_world(map_data.underworld, true)
 	map.fill(map_data.overworld, map.get_random_location_symbol(true, false))
 	map.gen_world(map_data.overworld, false, 45, 200)
-	map.fill(map_data.underworld, map.get_random_location_symbol(true, true))
+	map.fill(map_data.underworld, map.get_random_location_symbol(false, true))
 	if not config.debug then
 		map.gen_world(map_data.underworld, true, 20, 150)
 	end

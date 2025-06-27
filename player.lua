@@ -14,6 +14,7 @@ function player.starter_kit(player_data)
 	add_rand_items("Bread")
 	add_rand_items("Water Bottle")
 	if config.debug then
+		add_rand_items("Hand Axe")
 		add_rand_items("Raw Meat")
 		add_rand_items("Mushroom")
 		add_rand_item("Sacred Armor")
@@ -101,7 +102,7 @@ function player.equip_item(player_data, items_data, item_name)
 	if not player.check_player_alive("equip items", player_data) then
 		return player_data
 	end
-	local item_key = items.find_item_key(player_data.inventory, item_name)
+	local item_key = utils.find_item_key(player_data.inventory, item_name)
 	if not item_key then
 		output.add("You don't have " .. item_name .. " in your inventory.\n")
 		return player_data
@@ -282,6 +283,40 @@ function player.initialize_player(config)
 	player_data = player.starter_kit(player_data)
 	player_data = player.clamp_player_stats(player_data)
 	return player_data
+end
+
+function player.has_chop_item(player, items_data)
+    if not player.equipment or not player.equipment.weapon then
+        return false
+    end
+    return items.has_tag(items_data, player.equipment.weapon, "chop")
+end
+
+function player.add_hunger(player_data, value)
+	player_data.hunger = utils.clamp(player_data.hunger + value, 0, 100)
+	if player_data.hunger >= 100 then
+		player_data.alive = false
+		output.add("You are DEAD!.\n\n")
+		output.add(const.START_NEW_GAME_MSG)
+	end
+end
+
+function player.add_thirst(player_data, value)
+	player_data.thirst = utils.clamp(player_data.thirst + value, 0, 100)
+	if player_data.thirst >= 100 then
+		player_data.alive = false
+		output.add("You are DEAD!.\n\n")
+		output.add(const.START_NEW_GAME_MSG)
+	end
+end
+
+function player.add_fatigue(player_data, value)
+	player_data.fatigue = utils.clamp(player_data.fatigue + value, 0, 100)
+	if player_data.fatigue >= 100 then
+		player_data.alive = false
+		output.add("You are DEAD!.\n\n")
+		output.add(const.START_NEW_GAME_MSG)
+	end
 end
 
 return player

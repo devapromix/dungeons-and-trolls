@@ -1,6 +1,6 @@
 local move = {}
 
-function move.move_player(direction, player_data, map_data, config, time, output, map)
+function move.move_player(direction, player_data, map_data, config, time, output, map, music, fire)
     if not move.check_player_alive("move", player_data, output) then
         return false
     end
@@ -27,18 +27,19 @@ function move.move_player(direction, player_data, map_data, config, time, output
             return false
         end
         
-        if map_data[player_data.world].fire.active and (map_data[player_data.world].fire.x ~= new_x or map_data[player_data.world].fire.y ~= new_y) then
-            map_data[player_data.world].fire.active = false
-            map_data[player_data.world].fire.x = nil
-            map_data[player_data.world].fire.y = nil
+        -- Використовуємо fire_data замість map_data[player_data.world].fire
+        if fire_data[player_data.world].active and (fire_data[player_data.world].x ~= new_x or fire_data[player_data.world].y ~= new_y) then
+            fire_data[player_data.world].active = false
+            fire_data[player_data.world].x = nil
+            fire_data[player_data.world].y = nil
             output.add("The fire goes out as you leave the location.\n")
         end
 
-		if map_data[player_data.world].tiles[player_data.y][player_data.x] == "v" then
-			if player_data.x ~= new_x or player_data.y ~= new_y then
-				music.play_random()
-			end
-		end
+        if map_data[player_data.world].tiles[player_data.y][player_data.x] == "v" then
+            if player_data.x ~= new_x or player_data.y ~= new_y then
+                music.play_random()
+            end
+        end
 
         player_data.x = new_x
         player_data.y = new_y
@@ -62,7 +63,7 @@ function move.move_player(direction, player_data, map_data, config, time, output
         player_data.hunger = utils.clamp(player_data.hunger + effects.hunger, 0, 100)
         player_data.thirst = utils.clamp(player_data.thirst + effects.thirst, 0, 100)
         
-		return true
+        return true
     else
         output.add("You can't move further " .. move_data.dir .. ".\n")
         return false
@@ -78,7 +79,7 @@ function move.check_player_alive(action, player_data, output)
     return true
 end
 
-function move.exec(direction, player, map_data, config, time, output, player_module, map, music, utils)
+function move.exec(direction, player, map_data, config, time, output, player_module, map, music, utils, fire)
     if not move.check_player_alive("move " .. direction, player, output) then
         return player
     end
@@ -100,7 +101,7 @@ function move.exec(direction, player, map_data, config, time, output, player_mod
             output.add("There is no entrance here.\n")
         end
     else
-        if move.move_player(direction, player, map_data, config, time, output, map) then
+        if move.move_player(direction, player, map_data, config, time, output, map, music, fire) then
             local status_message = player_module.check_player_status(player)
             if status_message ~= "" then
                 output.add(status_message)

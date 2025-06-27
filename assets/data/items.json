@@ -125,9 +125,21 @@
 			"file": "assets/data/sword_of_dawn.txt"
 		},
 		{
+			"name": "Woodcutter's Axe",
+			"description": "A long-handled axe designed for felling trees. Too unwieldy for combat, but excellent for chopping wood.",
+			"tags": ["level=1", "weapon=2", "chop", "forge", "price=50"],
+			"skill": "Axes"
+		},
+		{
 			"name": "Hand Axe",
 			"description": "A one-handed axe. Good for chopping and combat.",
-			"tags": ["level=1", "weapon=4", "weapon shop", "price=80"],
+			"tags": ["level=1", "weapon=3", "chop", "forge", "weapon shop", "price=70"],
+			"skill": "Axes"
+		},
+		{
+			"name": "Broad Axe",
+			"description": "A heavy axe with a wide blade. Ideal for powerful woodcutting and deadly strikes.",
+			"tags": ["level=1", "weapon=5", "chop", "forge", "weapon shop", "price=80"],
 			"skill": "Axes"
 		},
 		{
