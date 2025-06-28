@@ -6,7 +6,7 @@ commands.confirmation_type = nil
 local command_map = {
 	game = {"help", "intro", "new", "load", "save", "about", "quit"},
 	info = {"status", "skills", "time", "items", "map", "gear"},
-	item = {"eat", "drink", "pick", "drop", "equip", "unequip"},
+	item = {"eat", "drink", "pick", "drop", "equip", "unequip", "read"},
 	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "village", "train", "enter", "leave", "buy", "sell", "gold", "chop", "repair"},
 	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
 }
@@ -111,6 +111,8 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 				player = player_module.unequip_item(player, items_data, identifier)
 			end
 		end
+	elseif cmd == "read" then
+		player = command_read.exec(command_parts, player, items_data, player_module, spells)
 	end
 	return player
 end

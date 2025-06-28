@@ -1,0 +1,16 @@
+{
+	"spells": [
+		{
+			"name": "Fireball",
+			"max_level": 5,
+			"mana_cost": 10,
+			"initial_level": 1
+		},
+		{
+			"name": "Heal",
+			"max_level": 5,
+			"mana_cost": 8,
+			"initial_level": 1
+		}
+	]
+}

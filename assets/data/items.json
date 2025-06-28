@@ -246,6 +246,16 @@
 			"name": "Zander",
 			"description": "A predatory fish with a rich taste, caught from the river.",
 			"tags": ["fish", "edible=5"]
+		},
+		{
+			"name": "Fireball Spellbook",
+			"description": "An ancient tome containing the secrets of the Fireball spell.",
+			"tags": ["level=1", "spellbook=Fireball", "magic shop", "price=50"]
+		},
+		{
+			"name": "Heal Spellbook",
+			"description": "A sacred book inscribed with the knowledge of the Heal spell.",
+			"tags": ["level=1", "spellbook=Heal", "magic shop", "price=40"]
 		}
 	]
 }

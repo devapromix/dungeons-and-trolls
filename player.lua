@@ -44,6 +44,13 @@ function player.draw_status(player_data)
 		"Defense: " .. player_data.defense .. "\n\n",
 		"Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n",
 	}
+	if next(player_data.spellbook) then
+		table.insert(lines, "Spellbook:\n")
+		for spell_name, level in pairs(player_data.spellbook) do
+			table.insert(lines, spell_name .. ": Level " .. level .. "\n")
+		end
+		table.insert(lines, "\n")
+	end
 	if not player_data.alive then
 		table.insert(lines, "\nYou are DEAD.\n\n")
 		table.insert(lines, const.aliveSTART_NEW)
@@ -83,6 +90,7 @@ function player.clamp_player_skills(player_data, skills_data)
 			output.add("Warning: Invalid skill entry in skills data.\n")
 		end
 	end
+	player_data = spells.clamp_spellbook(player_data)
 	return player_data
 end
 
@@ -113,6 +121,7 @@ function player.equip_item(player_data, items_data, item_name)
 		return player_data
 	elseif #matches > 1 then
 		output.add("Multiple items match '" .. item_name .. "'. Please specify: " .. table.concat(matches, ", ") .. ".\n")
+	end
 	local item_key = utils.find_item_key(player_data.inventory, item_name)
 	if not item_key then
 		output.add("You don't have " .. item_name .. " in your inventory.\n")
@@ -302,6 +311,7 @@ function player.initialize_player(config)
 		equipment = { weapon = "Short Sword", armor = "Leather Armor" },
 		equipment_status = { weapon = "", armor = "" },
 		skills = {},
+		spellbook = {},
 		radius = 3,
 		level = 1,
 		experience = 0,

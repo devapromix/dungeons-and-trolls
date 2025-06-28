@@ -101,6 +101,7 @@ function game.load_game()
 				map_data = save_data.map or { overworld = {}, underworld = {} }
 				player = save_data.player
 				player.equipment_status = player.equipment_status or { weapon = "", armor = "" }
+				player.spellbook = player.spellbook or {}
 				game_time = save_data.time or { year = 1280, month = 4, day = 1, hour = 6, minute = 0, playtime = 0 }
 				input.history = save_data.history or {}
 				game.unique_items = save_data.unique_items or {}
@@ -118,6 +119,7 @@ function game.load_game()
 				player.inventory = player.inventory or {}
 				player.equipment = player.equipment or { weapon = nil, armor = nil }
 				player.skills = player.skills or {}
+				player.spellbook = player.spellbook or {}
 				for _, skill in ipairs(skills_data.skills) do
 					player.skills[skill.name] = player.skills[skill.name] or skill.initial_level
 				end
