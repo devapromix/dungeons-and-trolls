@@ -22,12 +22,12 @@ function skills.apply_skill_effects(player, skills_data, damage)
 			local swords_skill = player.skills and player.skills[item_data.skill] or 0
 			local skill_data = skills.get_skill_data(skills_data, item_data.skill)
 			if skill_data and math.random() < (swords_skill / 100) then
-				critical_multiplier = 2
-				output.add("Critical hit! Damage doubled.\n")
+				output.add("Critical hit!\n")
+				return damage + player.strength
 			end
 		end
 	end
-	return damage * critical_multiplier
+	return damage
 end
 
 function skills.upgrade_skill(player, skills_data, item_data)

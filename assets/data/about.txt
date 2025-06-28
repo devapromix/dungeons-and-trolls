@@ -3,11 +3,10 @@ Enter the mysterious Troll Dungeon, a dark and dangerous maze hidden deep underg
 Author:
 Serhii Tkach
 https://apromix.itch.io
-https://github.com/devapromix
 
 Music:
 Tsorthan Grove
 https://opengameart.org/content/background-drones-vol-2
+16Pixel
+https://16pixel.itch.io/
 
-Sources:
-https://github.com/devapromix/dungeons-and-trolls

@@ -4,13 +4,12 @@
       "name": "Goblin",
 	  "level": 2,
       "health": 30,
-      "attack": 3,
+      "attack": 4,
       "defense": 1,
       "experience": 20,
       "description": "A small, sneaky creature with a crude weapon.",
       "tags": ["hostile", "melee"],
       "drops": [
-        {"name": "Sword of Dawn", "chance": 1.0, "type": "item"},
         {"name": "Dirk", "chance": 0.1, "type": "item"},
         {"name": "Falchion", "chance": 0.1, "type": "item"},
         {"name": "Double Axe", "chance": 0.1, "type": "item"},
@@ -79,7 +78,7 @@
     {
       "name": "Rat",
       "health": 20,
-      "attack": 2,
+      "attack": 4,
       "defense": 0,
       "experience": 10,
       "description": "A filthy rodent that spreads disease and bites.",

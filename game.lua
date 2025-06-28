@@ -1,6 +1,7 @@
 local game = {
 	initialized = false,
-	unique_items = {}
+	unique_items = {},
+	shop_items_cache = {}
 }
 
 function game.initialize_unique_items(items_data)
@@ -52,8 +53,13 @@ end
 function game.new_game()
 	music.play_random()
 	map.initialize_game(locations_data)
+	fire_data = {
+		overworld = { x = nil, y = nil, active = false },
+		underworld = { x = nil, y = nil, active = false }
+	}
 	game_time = { year = 1280, month = 4, day = 1, hour = 6, minute = 0, playtime = 0 }
 	input.history = {}
+	game.shop_items_cache = {}
 	game.initialized = true
 	output.add("Created new game.\n\n")
 	map.display_location(player, map_data)
@@ -70,11 +76,9 @@ function game.save_game()
 		history = input.history,
 		time = game_time,
 		version = config.game.version,
-		fire = {
-			overworld = map_data.overworld.fire,
-			underworld = map_data.underworld.fire
-		},
-		unique_items = game.unique_items
+		fire = fire_data,
+		unique_items = game.unique_items,
+		shop_items_cache = game.shop_items_cache
 	}
 	local save_string = json.encode(save_data)
 	love.filesystem.write("game.json", save_string)
@@ -96,15 +100,19 @@ function game.load_game()
 				end
 				map_data = save_data.map or { overworld = {}, underworld = {} }
 				player = save_data.player
+				player.equipment_status = player.equipment_status or { weapon = "", armor = "" }
 				game_time = save_data.time or { year = 1280, month = 4, day = 1, hour = 6, minute = 0, playtime = 0 }
 				input.history = save_data.history or {}
 				game.unique_items = save_data.unique_items or {}
+				game.shop_items_cache = save_data.shop_items_cache or {}
+				fire_data = save_data.fire or {
+					overworld = { x = nil, y = nil, active = false },
+					underworld = { x = nil, y = nil, active = false }
+				}
 				game.initialize_unique_items(items_data)
 				for item_name, exists in pairs(save_data.unique_items or {}) do
 					game.unique_items[item_name] = exists
 				end
-				map_data.overworld.fire = save_data.fire and save_data.fire.overworld or { x = nil, y = nil, active = false }
-				map_data.underworld.fire = save_data.fire and save_data.fire.underworld or { x = nil, y = nil, active = false }
 				player = player_module.clamp_player_stats(player)
 				player = player_module.clamp_player_skills(player, skills_data)
 				player.inventory = player.inventory or {}

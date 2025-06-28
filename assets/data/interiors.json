@@ -1,0 +1,46 @@
+{
+	"interiors": [
+		{
+			"id": "weapon shop",
+			"name": "Weapon Shop",
+			"description": "Racks of sharpened swords and polished axes line the workshop walls, while hammers and tongs hang near the roaring forge. The rhythmic clang of metal on metal echoes through the room as sparks fly from red-hot steel being shaped into deadly instruments.",
+			"hint": "Buy various weapons here.",
+			"greeting": "The weaponsmith shows you their finest blades and maces:"
+		},
+		{
+			"id": "armor shop",
+			"name": "Armor Shop",
+			"description": "Heavy suits of plate mail stand like silent sentinels around the dimly lit shop, their polished surfaces reflecting the flickering candlelight. Chainmail shirts drape over wooden mannequins while leather bracers and studded vests hang from iron hooks along the stone walls.",
+			"hint": "Purchase different types of armor for protection.",
+			"greeting": "The armorer presents their wares:"
+		},
+		{
+			"id": "magic shop",
+			"name": "Magic Shop",
+			"description": "Shelves overflow with dusty grimoires and glowing crystal orbs, while bubbling cauldrons release wisps of colorful smoke into the air. Ancient scrolls covered in arcane symbols rest beside bottles filled with swirling, luminescent potions that seem to pulse with their own inner light.",
+			"hint": "Buy magical items, potions, and scrolls.",
+			"greeting": "The mage gestures toward shelves of arcane goods:"
+		},
+		{
+			"id": "tavern",
+			"name": "Tavern",
+			"description": "Wooden tables are crowded with weary travelers and local folk sharing ale and stories. The crackling fireplace casts dancing shadows on the stone walls, while the aroma of roasted meat and fresh bread fills the cozy interior.",
+			"hint": "Buy food and drinks, or rent a room for the night.",
+			"greeting": "The innkeeper welcomes you warmly and lists what’s available:"
+		},
+		{
+			"id": "forge",
+			"name": "Forge",
+			"description": "A blazing hearth dominates the forge, surrounded by anvils and heavy tools. The air vibrates with the steady rhythm of hammer strikes on glowing metal, and sparks dance like fireflies in the dim light, shaping raw ore into weapons and armor.",
+			"hint": "Repair your equipment or buy crafted gear.",
+			"greeting": "The blacksmith wipes their hands and offers their craftsmanship:"
+		},
+		{
+			"id": "healer",
+			"name": "Healer's Cottage",
+			"description": "The small, herb-scented cottage is filled with the soothing aroma of mint, chamomile, and dried roots hanging from the beams. Wooden shelves are stacked with clay jars, each labeled in a faded script, and a cot rests in the corner beneath a woven blanket. A soft light filters through the shuttered windows, casting a calm, warm glow over the tidy interior.",
+			"hint": "Buy healing herbs and potions.",
+			"greeting": "The healer greets you gently and offers their remedies:"
+		}
+	]
+}

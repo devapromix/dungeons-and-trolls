@@ -18,6 +18,17 @@ function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, it
 		return false
 	end
 	
+	if player_data.equipment_status then
+		if player_data.equipment_status.weapon == "broken" then
+			output.add("You cannot fight because your weapon is broken.\n")
+			return false
+		end
+		if player_data.equipment_status.armor == "broken" then
+			output.add("You cannot fight because your armor is broken.\n")
+			return false
+		end
+	end
+	
 	if not enemy_name or enemy_name == "" then
 		output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
 		return false
@@ -136,6 +147,7 @@ function combat.player_attack(player_data, enemy_data, skills_data, output, enem
 	
 	local fatigue = player_data.fatigue or 0
 	local dexterity = player_data.dexterity or 1
+	local strength = player_data.strength or 0
 	local attack = player_data.attack or 1
 	local enemy_defense = enemy_data.defense or 0
 	
@@ -151,6 +163,11 @@ function combat.player_attack(player_data, enemy_data, skills_data, output, enem
 		
 		if final_damage > 0 then
 			result.hit = true
+			local crit_chance = math.min(math.floor(dexterity / 10) * 0.05, 0.5)
+			if math.random() < crit_chance then
+				final_damage = final_damage + strength
+				output.add("Critical hit!\n")
+			end
 			result.damage = final_damage
 			output.add(combat.format_combat_message("You", enemy_name, "hit", final_damage))
 		else
@@ -198,6 +215,25 @@ function combat.calculate_miss_chance(fatigue, dexterity)
 	return math.max(base_miss_chance - dexterity_modifier, 0)
 end
 
+function combat.apply_broken_equipment_status(player_data, output)
+	if math.random() < 0.1 then
+		if player_data.equipment and player_data.equipment_status then
+			local slots = {}
+			if player_data.equipment.weapon then
+				table.insert(slots, "weapon")
+			end
+			if player_data.equipment.armor then
+				table.insert(slots, "armor")
+			end
+			if #slots > 0 then
+				local slot = slots[math.random(1, #slots)]
+				player_data.equipment_status[slot] = "broken"
+				output.add("Your " .. slot .. " (" .. player_data.equipment[slot] .. ") is broken!\n")
+			end
+		end
+	end
+end
+
 function combat.handle_victory(enemy_name, enemy_data, map_data, player_data, items_data, skills_data, map, output, player_module)
 	output.add("You defeated " .. enemy_name .. "!\n")
 	
@@ -210,6 +246,8 @@ function combat.handle_victory(enemy_name, enemy_data, map_data, player_data, it
 	combat.handle_enemy_drops(enemy_data, map_data, player_data, output)
 	
 	combat.remove_enemy_from_map(enemy_name, map_data, player_data)
+	
+	combat.apply_broken_equipment_status(player_data, output)
 	
 	if enemy_name == "Troll King" and game and game.victory then
 		game.victory()

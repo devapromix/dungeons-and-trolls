@@ -1,13 +1,13 @@
 local map = {}
 
 local default_location = { name = "Unknown", description = "An unknown location.", passable = true }
-local default_effects = { thirst = 2, hunger = 0.5, fatigue = 1 }
+local default_effects = { thirst = 1, hunger = 0.5, fatigue = 1 }
 
 function map.load_locations()
 	return utils.load_json_file("assets/data/locations.json", "Locations file")
 end
 
-local function get_location_by_symbol(symbol)
+function map.get_location_by_symbol(symbol)
 	for _, location in ipairs(locations_data.locations or {}) do
 		if location.symbol == symbol then
 			return location
@@ -17,7 +17,7 @@ local function get_location_by_symbol(symbol)
 end
 
 function map.get_location_description(symbol)
-	local location = get_location_by_symbol(symbol)
+	local location = map.get_location_by_symbol(symbol)
 	if location then
 		return { name = location.name, description = location.description, passable = location.passable }
 	end
@@ -25,68 +25,8 @@ function map.get_location_description(symbol)
 end
 
 function map.get_biome_effects(symbol)
-	local location = get_location_by_symbol(symbol)
+	local location = map.get_location_by_symbol(symbol)
 	return location and location.effects or default_effects
-end
-
-function map.cellular_automaton(tiles, width, height, iterations)
-	local new_tiles = {}
-	for y = 1, height do
-		new_tiles[y] = {}
-		for x = 1, width do
-			new_tiles[y][x] = tiles[y][x]
-		end
-	end
-	for _ = 1, iterations do
-		for y = 1, height do
-			for x = 1, width do
-				local neighbors = 0
-				for dy = -1, 1 do
-					for dx = -1, 1 do
-						if dx == 0 and dy == 0 then
-							goto continue
-						end
-						local nx, ny = x + dx, y + dy
-						if nx >= 1 and nx <= width and ny >= 1 and ny <= height and tiles[ny][nx] ~= "o" then
-							neighbors = neighbors + 1
-						end
-						::continue::
-					end
-				end
-				if neighbors < 4 then
-					new_tiles[y][x] = "o"
-				elseif neighbors >= 5 then
-					new_tiles[y][x] = tiles[y][x]
-				end
-			end
-		end
-		for y = 1, height do
-			for x = 1, width do
-				tiles[y][x] = new_tiles[y][x]
-			end
-		end
-	end
-	return tiles
-end
-
-function map.biome(world, x, y, tile, size)
-	local biome_x, biome_y = x, y
-	for i = 1, size do
-		if not world.tiles[y][x]:match("[><]") then
-			world.tiles[biome_y][biome_x] = tile
-		end
-		d = math.random(1, 4)
-		if d == 1 and biome_x - 1 >= 1 then
-			biome_x = biome_x - 1
-		elseif d == 2 and biome_x + 1 <= config.map.width then
-			biome_x = biome_x + 1
-		elseif d == 3 and biome_y - 1 >= 1 then
-			biome_y = biome_y - 1
-		elseif d == 4 and biome_y + 1 <= config.map.height then
-			biome_y = biome_y + 1
-		end
-	end
-	return biome_x, biome_y
 end
 
 function map.fill(world, symbol)
@@ -107,9 +47,9 @@ end
 
 function map.gen_world(world, is_underworld, biome_amount, biome_size)
 	for i = 1, biome_amount do
-		x = math.random(1, config.map.width - 1)
-		y = math.random(1, config.map.height - 1)
-		map.biome(world, x, y, map.get_random_location_symbol(true, is_underworld), biome_size)
+		local x = math.random(1, config.map.width - 1)
+		local y = math.random(1, config.map.height - 1)
+		biome.add(world, x, y, map.get_random_location_symbol(true, is_underworld), biome_size)
 	end
 end
 
@@ -130,20 +70,35 @@ function map.add_passages(map_data)
 			x = center_x + math.random(-15, 15)
 			y = center_y + math.random(-10, 10)
 		until is_valid_position(x, y) and not map_data.overworld.tiles[y][x]:match("[><]")
-		map.biome(map_data.underworld, x, y, map.get_random_location_symbol(true, true), 75)
+		biome.add(map_data.underworld, x, y, map.get_random_location_symbol(true, true), 75)
 		map.add_passage(map_data, x, y)
 	end
 end
 
+function map.add_village(player_x, player_y)
+	local min_distance = 3
+	local max_distance = 10
+	local village_x, village_y
+	repeat
+		local angle = math.random() * 2 * math.pi
+		local distance = math.random(min_distance, max_distance)
+		village_x = math.floor(player_x + distance * math.cos(angle) + 0.5)
+		village_y = math.floor(player_y + distance * math.sin(angle) + 0.5)
+		local distance_from_player = math.sqrt((village_x - player_x)^2 + (village_y - player_y)^2)
+	until is_valid_position(village_x, village_y) and not map_data.overworld.tiles[village_y][village_x]:match("[><]") and distance_from_player >= min_distance and distance_from_player <= max_distance
+	map_data.overworld.tiles[village_y][village_x] = "v"
+	map_data.overworld.enemies[village_y][village_x] = {}
+	return village_x, village_y
+end
+
 function map.add_troll_cave()
-	local troll_x, troll_y
 	local center_x, center_y = math.floor(config.map.width / 2), math.floor(config.map.height / 2)
 	repeat
 		troll_x = center_x + math.random(-15, 15)
 		troll_y = center_y + math.random(-15, 15)
 		local distance = math.sqrt((troll_x - center_x)^2 + (troll_y - center_y)^2)
 	until distance >= 12 and distance <= 15 and is_valid_position(troll_x, troll_y) and not map_data.underworld.tiles[troll_y][troll_x]:match("[><]")
-	map.biome(map_data.underworld, troll_x, troll_y, map.get_random_location_symbol(true, true), 50)
+	biome.add(map_data.underworld, troll_x, troll_y, map.get_random_location_symbol(true, true), 50)
 	map.add_passage(map_data, troll_x, troll_y + 1)
 	map_data.underworld.tiles[troll_y][troll_x] = "t"
 	map_data.underworld.enemies[troll_y][troll_x]["Troll King"] = 1
@@ -157,14 +112,13 @@ function map.initialize_game(locations_data)
 			visited = {},
 			items = {},
 			enemies = {},
-			fire = { x = nil, y = nil, active = false }
+			village = { x = nil, y = nil }
 		},
 		underworld = {
 			tiles = {},
 			visited = {},
 			items = {},
 			enemies = {},
-			fire = { x = nil, y = nil, active = false },
 			troll_cave = { x = nil, y = nil }
 		}
 	}
@@ -237,6 +191,9 @@ function map.initialize_game(locations_data)
 		map.gen_world(map_data.underworld, true, 20, 150)
 	end
 	map.add_passages(map_data)
+	local village_x, village_y = map.add_village(player.x, player.y)
+	map_data.overworld.village.x = village_x
+	map_data.overworld.village.y = village_y
 	local troll_x, troll_y = map.add_troll_cave()
 	map_data.underworld.troll_cave.x = troll_x
 	map_data.underworld.troll_cave.y = troll_y
@@ -246,6 +203,7 @@ end
 function map.move_up(player, map_data)
 	if config.debug or map_data[player.world].tiles[player.y][player.x] == "<" then
 		player.world = "overworld"
+		fire.extinguish_fire(player.world, player.x, player.y)
 		map.update_visibility(player, map_data)
 		return true
 	end
@@ -255,6 +213,7 @@ end
 function map.move_down(player, map_data)
 	if config.debug or map_data[player.world].tiles[player.y][player.x] == ">" then
 		player.world = "underworld"
+		fire.extinguish_fire(player.world, player.x, player.y)
 		map.update_visibility(player, map_data)
 		return true
 	end
@@ -262,8 +221,12 @@ function map.move_down(player, map_data)
 end
 
 function map.update_visibility(player, map_data)
-	for y = utils.clamp(player.y - player.radius, 1, config.map.height), utils.clamp(player.y + player.radius, 1, config.map.height) do
-		for x = utils.clamp(player.x - player.radius, 1, config.map.width), utils.clamp(player.x + player.radius, 1, config.map.width) do
+	local y_start = utils.clamp(player.y - player.radius, 1, config.map.height)
+	local y_end = utils.clamp(player.y + player.radius, 1, config.map.height)
+	local x_start = utils.clamp(player.x - player.radius, 1, config.map.width)
+	local x_end = utils.clamp(player.x + player.radius, 1, config.map.width)
+	for y = y_start, y_end do
+		for x = x_start, x_end do
 			if math.sqrt((x - player.x)^2 + (y - player.y)^2) <= player.radius then
 				map_data[player.world].visited[y][x] = true
 			end
@@ -272,6 +235,14 @@ function map.update_visibility(player, map_data)
 end
 
 function map.display_location(player, map_data)
+	if map_data[player.world].tiles[player.y][player.x] == "v" then
+		music.play("village_ambient")
+		if player.state ~= "overworld" then
+			shop.display_interior(player.state, player)
+			return
+		end
+	end
+	
 	local location = map.get_location_description(map_data[player.world].tiles[player.y][player.x])
 	output.add("You are in " .. location.name .. ". " .. location.description .. "\n")
 	
@@ -312,7 +283,7 @@ function map.display_location(player, map_data)
 	output.add(items_string)
 	local enemies_string = enemies.get_tile_enemies_string(map_data[player.world], player.x, player.y)
 	output.add(enemies_string)
-	if map_data[player.world].fire.active and map_data[player.world].fire.x == player.x and map_data[player.world].fire.y == player.y then
+	if fire.check_fire(player.world, player.x, player.y) then
 		output.add(const.FIRE_IS_BURNING)
 	end
 end
