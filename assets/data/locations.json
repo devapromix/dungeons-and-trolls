@@ -1,6 +1,24 @@
 {
   "locations": [
     {
+      "symbol": "v",
+      "name": "Village Dork",
+      "description": "You find yourself in the picturesque village of Dork. Narrow cobblestone paths wind between low buildings, and the air is filled with the warm scent of chimney smoke and the fresh, slightly bitter aroma of cut grass. Straight ahead stands a welcoming 'tavern': bright light spills from its open doors, accompanied by boisterous voices and the spicy smell of roasted meat. To the right, a bit further in, lies the 'weapon shop', and behind it — the 'forge', where the rhythmic ringing of a hammer echoes through the air. Nearby is the 'armor shop', its facade adorned with a round shield bearing an embossed crest. To the left — the 'healer', modest yet cozy, wrapped in the scent of mint, chamomile, and dozens of other unknown herbs growing in clay pots. And at the end of the lane — the 'magic shop': above its door floats a translucent crystal, as if inviting the brave to step inside. The village moves to its own unhurried rhythm, yet you feel it — every stone, every rustle of grass hides a story.",
+      "enemies": [],
+      "items": [
+        {"name": "Water Bottle", "chance": 0.5, "quantity": [1, 3]}
+      ],
+      "effects": { "thirst": 0.5, "hunger": 0.5, "fatigue": 0.5 },
+      "passable": true,
+      "special": true,
+      "underworld": false,
+      "chop_allowed": false,
+      "color": {
+        "foreground": [100, 191, 255],
+        "background": [130, 144, 255]
+      }
+    },
+    {
       "symbol": "f",
       "name": "Forest",
       "description": "A dense forest with tall trees and abundant wildlife.",
@@ -22,6 +40,7 @@
       "passable": true,
       "special": false,
       "underworld": false,
+      "chop_allowed": true,
       "color": {
         "foreground": [34, 139, 34],
         "background": [0, 100, 0]
@@ -46,6 +65,7 @@
       "passable": true,
       "special": false,
       "underworld": false,
+      "chop_allowed": false,
       "color": {
         "foreground": [124, 252, 0],
         "background": [50, 205, 50]
@@ -69,6 +89,7 @@
       "passable": true,
       "special": false,
       "underworld": false,
+      "chop_allowed": false,
       "color": {
         "foreground": [154, 205, 50],
         "background": [107, 142, 35]
@@ -91,6 +112,7 @@
       "passable": true,
       "special": false,
       "underworld": false,
+      "chop_allowed": false,
       "color": {
         "foreground": [139, 117, 0],
         "background": [85, 71, 0]
@@ -114,6 +136,7 @@
       "passable": true,
       "special": false,
       "underworld": false,
+      "chop_allowed": false,
       "color": {
         "foreground": [188, 143, 143],
         "background": [160, 82, 45]
@@ -133,6 +156,7 @@
       "passable": true,
       "special": false,
       "underworld": false,
+      "chop_allowed": false,
       "color": {
         "foreground": [210, 180, 140],
         "background": [255, 228, 181]
@@ -156,6 +180,7 @@
       "passable": true,
       "special": false,
       "underworld": false,
+      "chop_allowed": false,
       "color": {
         "foreground": [139, 137, 137],
         "background": [105, 105, 105]
@@ -180,6 +205,7 @@
       "passable": true,
       "special": true,
       "underworld": false,
+      "chop_allowed": false,
       "color": {
         "foreground": [0, 191, 255],
         "background": [30, 144, 255]
@@ -199,6 +225,7 @@
       "passable": true,
       "special": false,
       "underworld": false,
+      "chop_allowed": false,
       "color": {
         "foreground": [135, 206, 250],
         "background": [70, 130, 180]
@@ -222,6 +249,7 @@
       "passable": true,
       "special": false,
       "underworld": true,
+      "chop_allowed": false,
       "color": {
         "foreground": [147, 112, 219],
         "background": [75, 0, 130]
@@ -242,6 +270,7 @@
       "passable": true,
       "special": false,
       "underworld": true,
+      "chop_allowed": false,
       "color": {
         "foreground": [255, 69, 0],
         "background": [178, 34, 34]
@@ -264,6 +293,7 @@
       "passable": true,
       "special": false,
       "underworld": true,
+      "chop_allowed": false,
       "color": {
         "foreground": [112, 128, 144],
         "background": [47, 79, 79]
@@ -278,7 +308,7 @@
         {"name": "Kobold", "chance": 0.1, "quantity": [1, 1]},
         {"name": "Spider", "chance": 0.1, "quantity": [1, 1]},
         {"name": "Troll", "chance": 0.4, "quantity": [1, 1]},
-        {"name": "Ogre", "chance": 0.6, "quantity": [1, 1]}
+        {"name": "Ogre", "chance": 0.9, "quantity": [1, 1]}
       ],
       "items": [
         {"name": "Mushroom", "chance": 0.15, "quantity": [1, 1]}
@@ -287,6 +317,7 @@
       "passable": true,
       "special": true,
       "underworld": true,
+      "chop_allowed": false,
       "color": {
         "foreground": [192, 192, 192],
         "background": [128, 128, 128]
@@ -308,6 +339,7 @@
       "passable": true,
       "special": true,
       "underworld": true,
+      "chop_allowed": false,
       "color": {
         "foreground": [85, 107, 47],
         "background": [47, 79, 47]
@@ -323,6 +355,7 @@
       "passable": true,
       "special": true,
       "underworld": false,
+      "chop_allowed": false,
       "color": {
         "foreground": [255, 255, 255],
         "background": [0, 0, 0]
@@ -338,6 +371,7 @@
       "passable": true,
       "special": true,
       "underworld": true,
+      "chop_allowed": false,
       "color": {
         "foreground": [255, 255, 255],
         "background": [0, 0, 0]
@@ -353,6 +387,7 @@
       "passable": false,
       "special": false,
       "underworld": true,
+      "chop_allowed": false,
       "color": {
         "foreground": [169, 169, 169],
         "background": [105, 105, 105]
@@ -368,6 +403,7 @@
       "passable": false,
       "special": false,
       "underworld": true,
+      "chop_allowed": false,
       "color": {
         "foreground": [54, 54, 54],
         "background": [25, 25, 25]
@@ -383,6 +419,7 @@
       "passable": false,
       "special": false,
       "underworld": true,
+      "chop_allowed": false,
       "color": {
         "foreground": [15, 15, 15],
         "background": [4, 4, 4]
@@ -398,6 +435,7 @@
       "passable": false,
       "special": false,
       "underworld": true,
+      "chop_allowed": false,
       "color": {
         "foreground": [245, 245, 220],
         "background": [220, 220, 220]
@@ -413,6 +451,7 @@
       "passable": false,
       "special": false,
       "underworld": true,
+      "chop_allowed": false,
       "color": {
         "foreground": [245, 245, 220],
         "background": [211, 211, 211]
