@@ -5,7 +5,7 @@ commands.confirmation_type = nil
 
 local command_map = {
 	game = {"help", "intro", "new", "load", "save", "about", "quit"},
-	info = {"status", "skills", "time", "items", "map", "gear"},
+	info = {"status", "skills", "time", "items", "map", "gear", "spells"},
 	item = {"eat", "drink", "pick", "drop", "equip", "unequip", "read", "additem"},
 	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "village", "train", "enter", "leave", "buy", "sell", "gold", "chop", "repair"},
 	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
@@ -172,6 +172,8 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 		map.draw()
 	elseif cmd == "gear" then
 		return command_gear.exec(command_parts, player, player_module)
+	elseif cmd == "spells" then
+		return command_spells.exec(command_parts, player, player_module)
 	end
 end
 
