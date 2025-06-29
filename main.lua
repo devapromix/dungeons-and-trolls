@@ -40,6 +40,7 @@ command_leave = require("commands.leave")
 command_trollcave = require("commands.trollcave")
 command_village = require("commands.village")
 command_read = require("commands.read")
+command_additem = require("commands.additem")
 
 function love.load()
 	input = {
