@@ -112,7 +112,7 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 			end
 		end
 	elseif cmd == "read" then
-		player = command_read.exec(command_parts, player, items_data, player_module, spells)
+		player = command_read.exec(command_parts, player, items_data, player_module, magic)
 	end
 	return player
 end

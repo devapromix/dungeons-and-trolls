@@ -8,7 +8,7 @@ map - Display the game map.                                     down (or d) - De
 intro - Show intro.                                             train <attribute> - Train an attribute.
 status - Display player's stats.                                examine <item | enemy> - Inspect an item or enemy.
 chop - Chop down a tree to gather wood.                         repair <slot | item | all> - Repair an item.
-skills - Display player's skills.                               eat <item> - Eat an item.
+skills - Display player's skills.                               eat <item> - Eat something.
 rest - Rest to restore health and mana.                         drink <item> - Drink an item.
 time - Displays the current time.                               pick [quantity] <item> - Pick up an item.
 light - Light a fire.                                           drop [quantity] <item> - Drop an item.

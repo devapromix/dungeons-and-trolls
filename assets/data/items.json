@@ -248,14 +248,14 @@
 			"tags": ["fish", "edible=5"]
 		},
 		{
-			"name": "Fireball Spellbook",
+			"name": "Book of Fireball",
 			"description": "An ancient tome containing the secrets of the Fireball spell.",
-			"tags": ["level=1", "spellbook=Fireball", "magic shop", "price=50"]
+			"tags": ["level=1", "spell=Fireball", "magic shop", "price=150"]
 		},
 		{
-			"name": "Heal Spellbook",
+			"name": "Book of Heal",
 			"description": "A sacred book inscribed with the knowledge of the Heal spell.",
-			"tags": ["level=1", "spellbook=Heal", "magic shop", "price=40"]
+			"tags": ["level=1", "spell=Heal", "magic shop", "price=200"]
 		}
 	]
 }

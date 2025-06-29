@@ -90,7 +90,6 @@ function player.clamp_player_skills(player_data, skills_data)
 			output.add("Warning: Invalid skill entry in skills data.\n")
 		end
 	end
-	player_data = spells.clamp_spellbook(player_data)
 	return player_data
 end
 
