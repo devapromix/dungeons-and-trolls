@@ -44,13 +44,7 @@ function player.draw_status(player_data)
 		"Defense: " .. player_data.defense .. "\n\n",
 		"Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n",
 	}
-	if next(player_data.spellbook) then
-		table.insert(lines, "Spellbook:\n")
-		for spell_name, level in pairs(player_data.spellbook) do
-			table.insert(lines, spell_name .. ": Level " .. level .. "\n")
-		end
-		table.insert(lines, "\n")
-	end
+
 	if not player_data.alive then
 		table.insert(lines, "\nYou are DEAD.\n\n")
 		table.insert(lines, const.aliveSTART_NEW)

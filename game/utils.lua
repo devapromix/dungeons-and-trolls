@@ -35,7 +35,7 @@ end
 function utils.get_item_tag_value(item_data, tag_prefix)
 	for _, tag in ipairs(item_data.tags) do
 		if tag:match("^" .. tag_prefix .. "=") then
-			return tonumber(tag:match("^" .. tag_prefix .. "=(%S+)"))
+			return tag:match("^" .. tag_prefix .. "=(%S+)")
 		end
 	end
 	return nil
