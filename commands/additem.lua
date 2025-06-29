@@ -16,16 +16,12 @@ function command_additem.exec(command_parts, player, items_data, player_module)
 	if not quantity or not item_name then
 		return player
 	end
-	local item_key = utils.find_item_key(items_data.items, item_name, true)
-	if not item_key then
+	local item_data = items.get_item_data(items_data, item_name)
+	if not item_data then
 		output.add("No item found matching '" .. item_name .. "'.\n")
 		return player
 	end
-	local item_data = items.get_item_data(items_data, item_key)
-	if not item_data then
-		output.add("No data found for " .. item_key .. ".\n")
-		return player
-	end
+	local item_key = item_data.name
 	local add_qty = math.floor(quantity)
 	player.inventory[item_key] = (player.inventory[item_key] or 0) + add_qty
 	output.add("Added " .. add_qty .. " " .. item_key .. " to inventory.\n")
