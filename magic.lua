@@ -27,7 +27,7 @@ function magic.get_spell_data(spell_name)
 	return nil
 end
 
-function magic.use_scroll(player_data, map_data, items_data, enemies_data, skills_data, time, map, item_name, spell_name, player_module)
+function magic.use_scroll(player_data, map_data, items_data, enemies_data, skills_data, time, map, item_name, spell_name, player_module, enemy_name)
 	if not player_module.check_player_alive("use scroll", player_data) then
 		return player_data
 	end
@@ -61,9 +61,26 @@ function magic.use_scroll(player_data, map_data, items_data, enemies_data, skill
 		player_data.health = utils.clamp(player_data.health + spell_data.value, 0, player_data.max_health)
 		output.add("You used '" .. item_name .. "' and restored " .. spell_data.value .. " health.\n")
 	elseif spell_data.type == "damage" then
-		output.add("You cannot use a damage scroll without specifying an enemy. Use 'cast " .. spell_name .. " <enemy_name>' instead.\n")
-		player_data.mana = player_data.mana + mana_cost
-		return player_data
+		if not enemy_name then
+			output.add("Please specify an enemy to target with '" .. item_name .. "' (e.g., 'read " .. item_name .. " Goblin').\n")
+			player_data.mana = player_data.mana + mana_cost
+			return player_data
+		end
+		local enemy = enemies.get_enemy_at_position(enemies_data, map_data[player_data.world], player_data.x, player_data.y, enemy_name)
+		if not enemy then
+			output.add("No " .. enemy_name .. " found at this location.\n")
+			player_data.mana = player_data.mana + mana_cost
+			return player_data
+		end
+		enemies.apply_damage(enemy, spell_data.value)
+		output.add("You used '" .. item_name .. "' and dealt " .. spell_data.value .. " damage to " .. enemy.name .. ".\n")
+		if enemy.health <= 0 then
+			output.add(enemy.name .. " has been defeated!\n")
+			enemies.remove_enemy(map_data[player_data.world], player_data.x, player_data.y, enemy.name)
+			player_data = player_module.add_experience(player_data, enemy.experience, output)
+		else
+			combat.attack_enemy(enemy.name, map_data, player_data, enemies_data, items_data, skills_data, time, map, output, player_module, enemy)
+		end
 	else
 		output.add("Spell '" .. spell_name .. "' has an unknown type.\n")
 		player_data.mana = player_data.mana + mana_cost
@@ -76,7 +93,7 @@ function magic.use_scroll(player_data, map_data, items_data, enemies_data, skill
 	return player_data
 end
 
-function magic.learn_spell(player_data, items_data, item_name, player_module)
+function magic.learn_spell(player_data, items_data, item_name, player_module, enemy_name)
 	if not player_module.check_player_alive("learn spell", player_data) then
 		return player_data
 	end
@@ -108,7 +125,7 @@ function magic.learn_spell(player_data, items_data, item_name, player_module)
 		return player_data
 	end
 	if items.has_tag(items_data, item_name, "scroll") then
-		return magic.use_scroll(player_data, map_data, items_data, enemies_data, skills_data, time, map, item_name, spell_name, player_module)
+		return magic.use_scroll(player_data, map_data, items_data, enemies_data, skills_data, time, map, item_name, spell_name, player_module, enemy_name)
 	end
 	local spell_data = magic.get_spell_data(spell_name)
 	if not spell_data then

@@ -19,5 +19,5 @@ fish - Try to catch a fish.                                     gear - Show curr
 equip <item> - Equip an item.                                   unequip <slot | item> - Remove an equipped item.
 spells - Display player's spells.                               cast <spell> [enemy] - Cast a known spell.
 buy [quantity] <item | room> - Buy an item.                     sell <item> - Sell an item.
-read <item> - Read a scroll or book.                            enter [interior] - Enter a tavern, forge or shop, etc.
+read <item> [enemy] - Read a scroll or book.                    enter [interior] - Enter a tavern, forge or shop, etc.
 leave - Leave the current place.                                quit - Exit the game.
