@@ -13,7 +13,7 @@ function combat.format_combat_message(attacker, target, action, damage)
 	return ""
 end
 
-function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, items_data, skills_data, time, map, output, player_module)
+function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, items_data, skills_data, time, map, output, player_module, pre_damaged_enemy)
 	if not player_module.check_player_alive("attack", player_data) then
 		return false
 	end
@@ -62,15 +62,17 @@ function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, it
 		return false
 	end
 	
-	local enemy_data = enemies.get_enemy_data(enemies_data, enemy_key)
-	if not enemy_data then
-		output.add("Enemy data not found for " .. enemy_key .. ".\n")
-		return false
-	end
-	
-	local combat_enemy_data = {}
-	for k, v in pairs(enemy_data) do
-		combat_enemy_data[k] = v
+	local combat_enemy_data = pre_damaged_enemy
+	if not combat_enemy_data then
+		local enemy_data = enemies.get_enemy_data(enemies_data, enemy_key)
+		if not enemy_data then
+			output.add("Enemy data not found for " .. enemy_key .. ".\n")
+			return false
+		end
+		combat_enemy_data = {}
+		for k, v in pairs(enemy_data) do
+			combat_enemy_data[k] = v
+		end
 	end
 	
 	output.add("You engage " .. enemy_key .. " in combat!\n")

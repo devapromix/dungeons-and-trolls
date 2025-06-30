@@ -217,7 +217,7 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 	elseif cmd == "repair" then
 		return command_repair.exec(command_parts, player, player_module)
 	elseif cmd == "cast" then
-		return command_cast.exec(command_parts, player, map_data, enemies_data, player_module, magic, enemies)
+		return command_cast.exec(command_parts, player, map_data, items_data, enemies_data, skills_data, time, map, player_module, magic)
 	end
 	return player
 end
