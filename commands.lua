@@ -7,7 +7,7 @@ local command_map = {
 	game = {"help", "intro", "new", "load", "save", "about", "quit"},
 	info = {"status", "skills", "time", "items", "map", "gear", "spells"},
 	item = {"eat", "drink", "pick", "drop", "equip", "unequip", "read", "additem"},
-	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "village", "train", "enter", "leave", "buy", "sell", "gold", "chop", "repair"},
+	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "village", "train", "enter", "leave", "buy", "sell", "gold", "chop", "repair", "cast"},
 	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
 }
 
@@ -215,7 +215,10 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 	elseif cmd == "chop" then
 		return command_chop.exec(player, map_data, items_data, time, player_module, items)
 	elseif cmd == "repair" then
-		return command_repair.exec(command_parts, player, player_module)	end
+		return command_repair.exec(command_parts, player, player_module)
+	elseif cmd == "cast" then
+		return command_cast.exec(command_parts, player, map_data, enemies_data, player_module, magic, enemies)
+	end
 	return player
 end
 

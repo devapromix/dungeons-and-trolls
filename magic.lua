@@ -82,4 +82,57 @@ function magic.learn_spell(player_data, items_data, item_name, player_module)
 	return player_data
 end
 
+function magic.cast_spell(player_data, map_data, enemies_data, spell_name, player_module, enemies)
+	if not player_module.check_player_alive("cast spell", player_data) then
+		return player_data
+	end
+	if not player_data.spellbook[spell_name] then
+		local found = false
+		for known_spell, _ in pairs(player_data.spellbook) do
+			if known_spell:lower() == spell_name:lower() then
+				spell_name = known_spell
+				found = true
+				break
+			end
+		end
+		if not found then
+			output.add("You don't know the spell " .. spell_name .. ".\n")
+			return player_data
+		end
+	end
+	local spell_data = magic.get_spell_data(spell_name)
+	if not spell_data then
+		output.add("No data found for spell " .. spell_name .. ".\n")
+		return player_data
+	end
+	if player_data.mana < spell_data.mana_cost then
+		output.add("You need " .. spell_data.mana_cost .. " mana to cast " .. spell_name .. ". You have " .. player_data.mana .. ".\n")
+		return player_data
+	end
+	player_data.mana = player_data.mana - spell_data.mana_cost
+	if spell_data.type == "heal" then
+		player_data.health = utils.clamp(player_data.health + spell_data.value, 0, player_data.max_health)
+		output.add("You cast " .. spell_name .. " and restored " .. spell_data.value .. " health.\n")
+	elseif spell_data.type == "damage" then
+		local enemy = enemies.get_enemy_at_position(enemies_data, map_data[player_data.world], player_data.x, player_data.y)
+		if not enemy then
+			output.add("No enemy to target with " .. spell_name .. ".\n")
+			player_data.mana = player_data.mana + spell_data.mana_cost
+			return player_data
+		end
+		enemies.apply_damage(enemy, spell_data.value)
+		output.add("You cast " .. spell_name .. " and dealt " .. spell_data.value .. " damage to " .. enemy.name .. ".\n")
+		if enemy.health <= 0 then
+			output.add(enemy.name .. " has been defeated!\n")
+			enemies.remove_enemy(map_data[player_data.world], player_data.x, player_data.y)
+			player_data = player_module.add_experience(player_data, enemy.experience, output)
+		end
+	else
+		output.add("Spell " .. spell_name .. " has an unknown type.\n")
+		player_data.mana = player_data.mana + spell_data.mana_cost
+		return player_data
+	end
+	return player_data
+end
+
 return magic

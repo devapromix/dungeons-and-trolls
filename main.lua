@@ -42,6 +42,7 @@ command_village = require("commands.village")
 command_read = require("commands.read")
 command_additem = require("commands.additem")
 command_spells = require("commands.spells")
+command_cast = require("commands.cast")
 
 function love.load()
 	input = {
