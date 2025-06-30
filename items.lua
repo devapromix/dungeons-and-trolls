@@ -24,7 +24,7 @@ end
 function items.get_item_data(items_data, item_key)
 	if not items_data or not items_data.items or not item_key then return nil end
 	for _, item in ipairs(items_data.items) do
-		if item.name == item_key then
+		if string.lower(item.name) == string.lower(item_key) then
 			return item
 		end
 	end

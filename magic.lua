@@ -27,6 +27,55 @@ function magic.get_spell_data(spell_name)
 	return nil
 end
 
+function magic.use_scroll(player_data, map_data, items_data, enemies_data, skills_data, time, map, item_name, spell_name, player_module)
+	if not player_module.check_player_alive("use scroll", player_data) then
+		return player_data
+	end
+	if player_data.state ~= "overworld" then
+		output.add("You cannot use scrolls while inside a building.\n")
+		return player_data
+	end
+	local spell_data = magic.get_spell_data(spell_name)
+	if not spell_data then
+		output.add("No data found for spell '" .. spell_name .. "'.\n")
+		return player_data
+	end
+	local mana_cost = spell_data.mana_cost / 2
+	if player_data.mana < mana_cost then
+		output.add("You need " .. mana_cost .. " mana to use '" .. item_name .. "'. You have " .. player_data.mana .. ".\n")
+		return player_data
+	end
+	local inventory_key
+	for key, _ in pairs(player_data.inventory) do
+		if key:lower() == item_name:lower() then
+			inventory_key = key
+			break
+		end
+	end
+	if not inventory_key or player_data.inventory[inventory_key] <= 0 then
+		output.add("You don't have " .. item_name .. " in your inventory.\n")
+		return player_data
+	end
+	player_data.mana = player_data.mana - mana_cost
+	if spell_data.type == "heal" then
+		player_data.health = utils.clamp(player_data.health + spell_data.value, 0, player_data.max_health)
+		output.add("You used '" .. item_name .. "' and restored " .. spell_data.value .. " health.\n")
+	elseif spell_data.type == "damage" then
+		output.add("You cannot use a damage scroll without specifying an enemy. Use 'cast " .. spell_name .. " <enemy_name>' instead.\n")
+		player_data.mana = player_data.mana + mana_cost
+		return player_data
+	else
+		output.add("Spell '" .. spell_name .. "' has an unknown type.\n")
+		player_data.mana = player_data.mana + mana_cost
+		return player_data
+	end
+	player_data.inventory[inventory_key] = player_data.inventory[inventory_key] - 1
+	if player_data.inventory[inventory_key] <= 0 then
+		player_data.inventory[inventory_key] = nil
+	end
+	return player_data
+end
+
 function magic.learn_spell(player_data, items_data, item_name, player_module)
 	if not player_module.check_player_alive("learn spell", player_data) then
 		return player_data
@@ -55,8 +104,11 @@ function magic.learn_spell(player_data, items_data, item_name, player_module)
 	end
 	local spell_name = utils.get_item_tag_value(item_data, "spell")
 	if not spell_name then
-		output.add(item_name .. " is not a book.\n")
+		output.add(item_name .. " is not a book or scroll.\n")
 		return player_data
+	end
+	if items.has_tag(items_data, item_name, "scroll") then
+		return magic.use_scroll(player_data, map_data, items_data, enemies_data, skills_data, time, map, item_name, spell_name, player_module)
 	end
 	local spell_data = magic.get_spell_data(spell_name)
 	if not spell_data then
