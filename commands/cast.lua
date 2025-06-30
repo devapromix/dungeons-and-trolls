@@ -10,7 +10,8 @@ function command_cast.exec(command_parts, player, map_data, items_data, enemies_
 	end
 	local spell_name = command_parts[2]
 	local enemy_name = #command_parts > 2 and table.concat(command_parts, " ", 3) or nil
-	return magic.cast_spell(player, map_data, items_data, enemies_data, skills_data, time, map, spell_name, enemy_name, player_module)
+	player = magic.cast_spell(player, map_data, items_data, enemies_data, skills_data, time, map, spell_name, enemy_name, player_module)
+	return player
 end
 
 return command_cast

@@ -5,7 +5,7 @@ function command_read.exec(command_parts, player, items_data, player_module, mag
 		return player
 	end
 	if #command_parts < 2 then
-		output.add("Please specify a book to read (e.g., 'read Book of Fireball').\n")
+		output.add("Please specify a book or spell to read (e.g., 'read Book of Fireball' or 'read Scroll of Heal').\n")
 		return player
 	end
 	local _, item_name = utils.parse_item_command(command_parts, 2, output)

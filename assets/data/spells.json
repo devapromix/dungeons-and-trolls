@@ -2,15 +2,17 @@
 	"spells": [
 		{
 			"name": "Fireball",
-			"mana_cost": 10,
+			"mana_cost": 15,
 			"type": "damage",
-			"value": 20
+			"value": 20,
+			"amount": 10
 		},
 		{
 			"name": "Heal",
-			"mana_cost": 35,
+			"mana_cost": 45,
 			"type": "heal",
-			"value": 30
+			"value": 30,
+			"amount": 15
 		}
 	]
 }
