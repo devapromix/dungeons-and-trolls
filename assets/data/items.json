@@ -256,6 +256,11 @@
 			"name": "Book of Heal",
 			"description": "A sacred book inscribed with the knowledge of the Heal spell.",
 			"tags": ["level=1", "spell=Heal", "magic shop", "price=200"]
+		},
+		{
+			"name": "Scroll of Heal",
+			"description": "",
+			"tags": ["level=1", "spell=Heal", "magic shop", "price=75"]
 		}
 	]
 }
