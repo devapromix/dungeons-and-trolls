@@ -248,11 +248,6 @@
 			"tags": ["fish", "edible=5"]
 		},
 		{
-			"name": "Book of Fireball",
-			"description": "An ancient tome containing the secrets of the Fireball spell.",
-			"tags": ["level=1", "spell=Fireball", "book", "magic shop", "price=150"]
-		},
-		{
 			"name": "Book of Heal",
 			"description": "A sacred book inscribed with the knowledge of the Heal spell.",
 			"tags": ["level=1", "spell=Heal", "book", "magic shop", "price=200"]
@@ -263,9 +258,24 @@
 			"tags": ["level=1", "spell=Heal", "scroll", "magic shop", "price=75"]
 		},
 		{
+			"name": "Book of Fireball",
+			"description": "An ancient tome containing the secrets of the Fireball spell.",
+			"tags": ["level=1", "spell=Fireball", "book", "magic shop", "price=150"]
+		},
+		{
 			"name": "Scroll of Fireball",
 			"description": "A magical scroll that casts the Fireball spell when read.",
 			"tags": ["level=1", "spell=Fireball", "scroll", "magic shop", "price=35"]
+		},
+		{
+			"name": "Book of Portal",
+			"description": "An ancient tome containing the secrets of the Portal spell.",
+			"tags": ["level=1", "spell=Portal", "book", "magic shop", "price=180"]
+		},
+		{
+			"name": "Scroll of Portal",
+			"description": "A magical scroll that casts the Portal spell when read.",
+			"tags": ["level=1", "spell=Portal", "scroll", "magic shop", "price=50"]
 		}
 	]
 }

@@ -66,7 +66,7 @@ function magic.use_scroll(player_data, map_data, items_data, enemies_data, skill
 			player_data.mana = player_data.mana + mana_cost
 			return player_data
 		end
-		local enemy = enemies.get_enemy_at_position(enemies_data, map_data[player_data.world], player_data.x, player_data.y, enemy_name)
+		local enemy = enemies.get_enemy_at_position(enemies_data, map_data[player_data.world], player_data.x,  player_data.y, enemy_name)
 		if not enemy then
 			output.add("No " .. enemy_name .. " found at this location.\n")
 			player_data.mana = player_data.mana + mana_cost
@@ -81,6 +81,9 @@ function magic.use_scroll(player_data, map_data, items_data, enemies_data, skill
 		else
 			combat.attack_enemy(enemy.name, map_data, player_data, enemies_data, items_data, skills_data, time, map, output, player_module, enemy)
 		end
+	elseif spell_data.type == "teleport" then
+		player_data = map.teleport_to_village(player_data, map_data)
+		output.add("You used '" .. item_name .. "' and teleported to the village.\n")
 	else
 		output.add("Spell '" .. spell_name .. "' has an unknown type.\n")
 		player_data.mana = player_data.mana + mana_cost
@@ -210,6 +213,9 @@ function magic.cast_spell(player_data, map_data, items_data, enemies_data, skill
 		else
 			combat.attack_enemy(enemy.name, map_data, player_data, enemies_data, items_data, skills_data, time, map, output, player_module, enemy)
 		end
+	elseif spell_data.type == "teleport" then
+		player_data = map.teleport_to_village(player_data, map_data)
+		output.add("You cast '" .. spell_name .. "' and teleported to the village.\n")
 	else
 		output.add("Spell '" .. spell_name .. "' has an unknown type.\n")
 		player_data.mana = player_data.mana + spell_data.mana_cost

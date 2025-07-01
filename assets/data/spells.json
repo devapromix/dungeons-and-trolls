@@ -13,6 +13,13 @@
 			"type": "heal",
 			"value": 30,
 			"amount": 15
+		},
+		{
+			"name": "Portal",
+			"mana_cost": 50,
+			"type": "teleport",
+			"value": 0,
+			"amount": 5
 		}
 	]
 }

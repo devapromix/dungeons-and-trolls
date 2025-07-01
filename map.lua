@@ -220,6 +220,16 @@ function map.move_down(player, map_data)
 	return false
 end
 
+function map.teleport_to_village(player, map_data)
+	player.world = "overworld"
+	player.x = map_data.overworld.village.x
+	player.y = map_data.overworld.village.y
+	fire.extinguish_fire(player.world, player.x, player.y)
+	map.update_visibility(player, map_data)
+	map.display_location(player, map_data)
+	return player
+end
+
 function map.update_visibility(player, map_data)
 	local y_start = utils.clamp(player.y - player.radius, 1, config.map.height)
 	local y_end = utils.clamp(player.y + player.radius, 1, config.map.height)
