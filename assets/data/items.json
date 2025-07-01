@@ -276,6 +276,16 @@
 			"name": "Scroll of Portal",
 			"description": "A magical scroll that casts the Portal spell when read.",
 			"tags": ["level=1", "spell=Portal", "scroll", "magic shop", "price=50"]
+		},
+		{
+			"name": "Book of Confuse",
+			"description": "An ancient tome containing the secrets of the Confuse spell, weaving chaos in the minds of foes.",
+			"tags": ["level=1", "spell=Confuse", "book", "magic shop", "price=220"]
+		},
+		{
+			"name": "Scroll of Confuse",
+			"description": "A magical scroll that casts the Confuse spell, bewildering enemies when read.",
+			"tags": ["level=1", "spell=Confuse", "scroll", "magic shop", "price=75"]
 		}
 	]
 }

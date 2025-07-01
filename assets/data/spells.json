@@ -20,6 +20,13 @@
 			"type": "teleport",
 			"value": 0,
 			"amount": 5
+		},
+		{
+			"name": "Confuse",
+			"mana_cost": 30,
+			"type": "confuse",
+			"value": 2,
+			"amount": 3
 		}
 	]
 }

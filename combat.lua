@@ -9,29 +9,33 @@ function combat.format_combat_message(attacker, target, action, damage)
 		return attacker .. " missed their attack on " .. target .. "!\n"
 	elseif action == "dodge" then
 		return target .. " dodged " .. attacker .. "'s attack!\n"
+	elseif action == "confuse_miss" then
+		return attacker .. ", ensnared by magical chaos, stumbles and misses their attack!\n"
+	elseif action == "confuse_self" then
+		return attacker .. ", lost in a fog of confusion, strikes themselves for " .. damage .. " damage!\n"
 	end
 	return ""
 end
 
 function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, items_data, skills_data, time, map, output, player_module, pre_damaged_enemy)
 	if not player_module.check_player_alive("attack", player_data) then
-		return false
+		return player_data, false
 	end
 	
 	if player_data.equipment_status then
 		if player_data.equipment_status.weapon == "broken" then
 			output.add("You cannot fight because your weapon is broken.\n")
-			return false
+			return player_data, false
 		end
 		if player_data.equipment_status.armor == "broken" then
 			output.add("You cannot fight because your armor is broken.\n")
-			return false
+			return player_data, false
 		end
 	end
 	
 	if not enemy_name or enemy_name == "" then
 		output.add("Please specify an enemy to attack (e.g., 'attack Goblin').\n")
-		return false
+		return player_data, false
 	end
 	
 	if not map_data[player_data.world] or 
@@ -39,14 +43,14 @@ function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, it
 	   not map_data[player_data.world].enemies[player_data.y] or
 	   not map_data[player_data.world].enemies[player_data.y][player_data.x] then
 		output.add("No enemies found at this location.\n")
-		return false
+		return player_data, false
 	end
 	
 	local enemy_list = map_data[player_data.world].enemies[player_data.y][player_data.x]
 	
 	if not enemy_list or next(enemy_list) == nil then
 		output.add("No enemies found here.\n")
-		return false
+		return player_data, false
 	end
 	
 	local enemy_key = nil
@@ -59,7 +63,12 @@ function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, it
 	
 	if not enemy_key then
 		output.add("No " .. enemy_name .. " found here.\n")
-		return false
+		return player_data, false
+	end
+	
+	if not enemies_data then
+		output.add("Enemy data is unavailable.\n")
+		return player_data, false
 	end
 	
 	local combat_enemy_data = pre_damaged_enemy
@@ -67,12 +76,15 @@ function combat.attack_enemy(enemy_name, map_data, player_data, enemies_data, it
 		local enemy_data = enemies.get_enemy_data(enemies_data, enemy_key)
 		if not enemy_data then
 			output.add("Enemy data not found for " .. enemy_key .. ".\n")
-			return false
+			return player_data, false
 		end
 		combat_enemy_data = {}
 		for k, v in pairs(enemy_data) do
 			combat_enemy_data[k] = v
 		end
+	else
+		-- Preserve existing status from pre_damaged_enemy
+		combat_enemy_data.status = combat_enemy_data.status or {}
 	end
 	
 	output.add("You engage " .. enemy_key .. " in combat!\n")
@@ -85,12 +97,12 @@ function combat.combat_round(enemy_name, enemy_data, map_data, player_data, item
 	
 	if not enemy_data or not enemy_data.health or enemy_data.health <= 0 then
 		output.add("Enemy data is invalid or enemy is already dead.\n")
-		return false
+		return player_data, false
 	end
 	
 	if not player_data or not player_data.health or player_data.health <= 0 then
 		output.add("Player data is invalid or player is already dead.\n")
-		return false
+		return player_data, false
 	end
 	
 	while player_data.health > 0 and enemy_data.health > 0 and round_count < max_rounds do
@@ -126,17 +138,26 @@ function combat.combat_round(enemy_name, enemy_data, map_data, player_data, item
 		if time and time.tick_time then
 			time.tick_time(10)
 		end
+		
+		-- Decrease confuse status duration after each round
+		if enemy_data.status and enemy_data.status.confused and enemy_data.status.confused > 0 then
+			enemy_data.status.confused = enemy_data.status.confused - 1
+			if enemy_data.status.confused <= 0 then
+				enemy_data.status.confused = nil
+				output.add(enemy_name .. " shakes off the fog of confusion and regains clarity!\n")
+			end
+		end
 	end
 	
 	if round_count >= max_rounds then
-		output.add("The battle goes on too long. You retreat to avoid exhaustion.\n")
+		output.add("The battle rages too fiercely, and you slip away to avoid collapse.\n")
 	end
 	
 	if map and map.display_location then
 		map.display_location(player_data, map_data)
 	end
 	
-	return false
+	return player_data, false
 end
 
 function combat.calculate_damage(attacker_stat, defender_stat)
@@ -168,7 +189,7 @@ function combat.player_attack(player_data, enemy_data, skills_data, output, enem
 			local crit_chance = math.min(math.floor(dexterity / 10) * 0.05, 0.5)
 			if math.random() < crit_chance then
 				final_damage = final_damage + strength
-				output.add("Critical hit!\n")
+				output.add("Your strike lands with devastating precision!\n")
 			end
 			result.damage = final_damage
 			output.add(combat.format_combat_message("You", enemy_name, "hit", final_damage))
@@ -184,6 +205,29 @@ end
 
 function combat.enemy_attack(enemy_data, player_data, output, enemy_name)
 	local result = { hit = false, damage = 0 }
+	
+	if enemy_data.status and enemy_data.status.confused and enemy_data.status.confused > 0 then
+		if math.random() < 0.5 then
+			-- Confused enemy misses
+			output.add(combat.format_combat_message(enemy_name, "you", "confuse_miss"))
+			return result
+		else
+			-- Confused enemy attacks itself
+			local damage = combat.calculate_damage(enemy_data.attack or 1, enemy_data.defense or 0)
+			if damage > 0 then
+				result.hit = true
+				result.damage = damage
+				enemy_data.health = enemy_data.health - damage
+				output.add(combat.format_combat_message(enemy_name, enemy_name, "confuse_self", damage))
+				if enemy_data.health <= 0 then
+					output.add(enemy_name .. " collapses under the weight of their own bewilderment!\n")
+				end
+			else
+				output.add(enemy_name .. ", in a daze, swings wildly but fails to harm themselves.\n")
+			end
+			return result
+		end
+	end
 	
 	local player_dexterity = player_data.dexterity or 1
 	local enemy_attack = enemy_data.attack or 1
@@ -230,7 +274,7 @@ function combat.apply_broken_equipment_status(player_data, output)
 			if #slots > 0 then
 				local slot = slots[math.random(1, #slots)]
 				player_data.equipment_status[slot] = "broken"
-				output.add("Your " .. slot .. " (" .. player_data.equipment[slot] .. ") is broken!\n")
+				output.add("Your " .. slot .. " (" .. player_data.equipment[slot] .. ") shatters in the heat of battle!\n")
 			end
 		end
 	end
@@ -255,7 +299,7 @@ function combat.handle_victory(enemy_name, enemy_data, map_data, player_data, it
 		game.victory()
 	end
 	
-	return true
+	return player_data, true
 end
 
 function combat.upgrade_weapon_skill(player_data, items_data, skills_data)
@@ -282,7 +326,7 @@ function combat.handle_enemy_drops(enemy_data, map_data, player_data, output)
 			
 			if drop.type == "gold" then
 				player_data.gold = (player_data.gold or 0) + quantity
-				output.add("Gained " .. quantity .. " gold.\n")
+				output.add("You scavenge " .. quantity .. " gold from the fallen foe.\n")
 			elseif drop.type == "item" and drop.name then
 				if items and items.get_item_data and items.is_artifact then
 					local item_data = items.get_item_data(items_data, drop.name)
@@ -298,7 +342,7 @@ function combat.handle_enemy_drops(enemy_data, map_data, player_data, output)
 				   map_data[player_data.world].items[player_data.y][player_data.x] then
 					local current_items = map_data[player_data.world].items[player_data.y][player_data.x]
 					current_items[drop.name] = (current_items[drop.name] or 0) + quantity
-					output.add(drop.name .. " (" .. quantity .. ") dropped on the ground.\n")
+					output.add(drop.name .. " (" .. quantity .. ") lies amidst the battlefield.\n")
 					
 					if items and items.get_item_data and items.is_artifact then
 						local item_data = items.get_item_data(items_data, drop.name)
@@ -306,7 +350,7 @@ function combat.handle_enemy_drops(enemy_data, map_data, player_data, output)
 							if game and game.unique_items then
 								game.unique_items[drop.name] = true
 							end
-							output.add("The legendary " .. drop.name .. " has appeared!\n")
+							output.add("The legendary " .. drop.name .. " gleams in the aftermath!\n")
 						end
 					end
 				end
@@ -335,13 +379,13 @@ end
 
 function combat.handle_defeat(enemy_name, map_data, player_data, time, output)
 	player_data.alive = false
-	output.add("You were defeated by " .. enemy_name .. ".\n")
+	output.add("You were vanquished by " .. enemy_name .. "'s relentless assault.\n")
 	
 	if enemy_name == "Troll King" and game and game.defeat then
 		game.defeat()
 	end
 
-	output.add("Game over!\n\n")
+	output.add("The world fades to darkness... Game over!\n\n")
 	
 	if const and const.START_NEW_GAME_MSG then
 		output.add(const.START_NEW_GAME_MSG)
@@ -349,7 +393,7 @@ function combat.handle_defeat(enemy_name, map_data, player_data, time, output)
 	
 	combat.save_game_on_death(map_data, player_data, time)
 	
-	return false
+	return player_data, false
 end
 
 function combat.save_game_on_death(map_data, player_data, time)
