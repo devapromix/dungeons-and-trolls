@@ -45,6 +45,7 @@ function enemies.get_enemy_at_position(enemies_data, map_data, x, y, enemy_name)
 				for k, v in pairs(enemy_data) do
 					combat_enemy_data[k] = v
 				end
+				combat_enemy_data.status = { confused = 0 }
 				return combat_enemy_data
 			end
 		end
