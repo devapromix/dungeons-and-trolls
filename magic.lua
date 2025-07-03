@@ -35,10 +35,8 @@ end
 
 function magic.get_spell_data(spell_name)
 	local spells_data = magic.load_spells_data()
-	local spell_name_lower = spell_name:lower()
-	
 	for _, spell in ipairs(spells_data.spells) do
-		if spell.name:lower() == spell_name_lower then
+		if string.lower(spell.name) == string.lower(spell_name) then
 			return spell
 		end
 	end

@@ -114,7 +114,7 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 	elseif cmd == "read" then
 		player = command_read.exec(command_parts, player, map_data, items_data, enemies_data, skills_data, time, map, player_module, magic)
 	elseif cmd == "add" then
-		player = command_add.exec(command_parts, player, items_data, enemies_data, map_data, skills_data, player_module)
+		player = command_add.exec(command_parts, player, items_data, enemies_data, map_data, skills_data, spells_data, player_module)
 	end
 	return player
 end
@@ -238,7 +238,8 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 	commands.handle_game_commands(cmd, command_parts, player, output)
 	commands.handle_info_commands(cmd, command_parts, player, map_data, config, game_time, skills, output, player_module)
 	player = commands.handle_item_commands(cmd, command_parts, player, map_data, items_data, items, player_module)
-	player = commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config, fire)
+	player = commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, 
+	  enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config, fire)
 
 	local direction = movement_map[cmd]
 	if direction then

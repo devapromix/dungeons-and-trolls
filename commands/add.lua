@@ -1,6 +1,6 @@
 local command_add = {}
 
-function command_add.exec(command_parts, player, items_data, enemies_data, map_data, skills_data, player_module)
+function command_add.exec(command_parts, player, items_data, enemies_data, map_data, skills_data, spells_data, player_module)
 	if not config.debug then
 		output.add("Command only available in debug mode.\n")
 		return player
@@ -19,6 +19,7 @@ function command_add.exec(command_parts, player, items_data, enemies_data, map_d
 	local item_data = items.get_item_data(items_data, name)
 	local enemy_data = enemies.get_enemy_data(enemies_data, name)
 	local skill_data = skills.get_skill_data(skills_data, name)
+	local spell_data = magic.get_spell_data(name)
 	if item_data then
 		local item_key = item_data.name
 		local add_qty = math.floor(quantity)
@@ -40,8 +41,19 @@ function command_add.exec(command_parts, player, items_data, enemies_data, map_d
 		local add_qty = math.floor(quantity)
 		player.skills[skill_key] = utils.clamp((player.skills[skill_key] or 0) + add_qty, 0, 40)
 		output.add("Added " .. add_qty .. " to " .. skill_key .. " skill. Current level: " .. player.skills[skill_key] .. ".\n")
+	elseif spell_data then
+		local spell_key = spell_data.name
+		local add_qty = math.floor(quantity)
+		player.spellbook = player.spellbook or {}
+		local current_uses = player.spellbook[spell_key] or 0
+		if current_uses >= 99 then
+			output.add(spell_key .. " is already at maximum uses (99).\n")
+		else
+			player.spellbook[spell_key] = utils.clamp(current_uses + add_qty, 0, 99)
+			output.add("Added " .. add_qty .. " uses to " .. spell_key .. " spell. Current uses: " .. player.spellbook[spell_key] .. ".\n")
+		end
 	else
-		output.add("No item, enemy or skill found matching '" .. name .. "'.\n")
+		output.add("No item, enemy, spell or skill found matching '" .. name .. "'.\n")
 	end
 	return player
 end
