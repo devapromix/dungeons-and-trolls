@@ -6,7 +6,7 @@ commands.confirmation_type = nil
 local command_map = {
 	game = {"help", "intro", "new", "load", "save", "about", "quit"},
 	info = {"status", "skills", "time", "items", "map", "gear", "spells"},
-	item = {"eat", "drink", "pick", "drop", "equip", "unequip", "read", "additem"},
+	item = {"eat", "drink", "pick", "drop", "equip", "unequip", "read", "add"},
 	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "village", "train", "enter", "leave", "buy", "sell", "gold", "chop", "repair", "cast"},
 	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
 }
@@ -113,8 +113,8 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 		end
 	elseif cmd == "read" then
 		player = command_read.exec(command_parts, player, map_data, items_data, enemies_data, skills_data, time, map, player_module, magic)
-	elseif cmd == "additem" then
-		player = command_additem.exec(command_parts, player, items_data, player_module)
+	elseif cmd == "add" then
+		player = command_add.exec(command_parts, player, items_data, enemies_data, map_data, player_module)
 	end
 	return player
 end
