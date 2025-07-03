@@ -44,7 +44,6 @@ function player.draw_status(player_data)
 		"Defense: " .. player_data.defense .. "\n\n",
 		"Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n",
 	}
-
 	if not player_data.alive then
 		table.insert(lines, "\nYou are DEAD.\n\n")
 		table.insert(lines, const.aliveSTART_NEW)
@@ -85,6 +84,16 @@ function player.clamp_player_skills(player_data, skills_data)
 		end
 	end
 	return player_data
+end
+
+function player.get_skill_data(skills_data, skill_name)
+	if not skills_data or not skills_data.skills or not skill_name then return nil end
+	for _, skill in ipairs(skills_data.skills) do
+		if skill.name == skill_name then
+			return skill
+		end
+	end
+	return nil
 end
 
 function player.update_max_health(player_data)
@@ -306,6 +315,7 @@ function player.initialize_player(config)
 		skills = {},
 		spellbook = {},
 		radius = 3,
+	 Kyrie = "@",
 		level = 1,
 		experience = 0,
 		levelpoints = 0,
