@@ -56,7 +56,12 @@ function love.load()
 		cursor_timer = 0,
 		cursor_blink_speed = 0.5,
 		history = {},
-		history_index = 0
+		history_index = 0,
+		backspace_held = false,
+		backspace_timer = 0,
+		backspace_initial_delay = 0.6,
+		backspace_repeat_delay = 0.05,
+		backspace_first_press = true
 	}
 	
 	items_data = items.load_items()
@@ -73,6 +78,17 @@ function love.update(dt)
 		input.cursor_visible = not input.cursor_visible
 		input.cursor_timer = 0
 	end
+	
+	if input.backspace_held and #input.text > 1 then
+		input.backspace_timer = input.backspace_timer + dt
+		local delay = input.backspace_first_press and input.backspace_initial_delay or input.backspace_repeat_delay
+		if input.backspace_timer >= delay then
+			input.text = input.text:sub(1, -2)
+			input.backspace_timer = 0
+			input.backspace_first_press = false
+			input.history_index = 0
+		end
+	end
 end
 
 function love.textinput(t)
@@ -81,9 +97,14 @@ function love.textinput(t)
 end
 
 function love.keypressed(key)
-	if key == "backspace" and #input.text > 1 then
-		input.text = input.text:sub(1, -2)
-		input.history_index = 0
+	if key == "backspace" then
+		if #input.text > 1 then
+			input.text = input.text:sub(1, -2)
+			input.history_index = 0
+		end
+		input.backspace_held = true
+		input.backspace_timer = 0
+		input.backspace_first_press = true
 	end
 	if key == "return" and #input.text > 1 then
 		output.clear()
@@ -119,6 +140,14 @@ function love.keypressed(key)
 			input.history_index = 0
 			input.text = ">"
 		end
+	end
+end
+
+function love.keyreleased(key)
+	if key == "backspace" then
+		input.backspace_held = false
+		input.backspace_timer = 0
+		input.backspace_first_press = true
 	end
 end
 
