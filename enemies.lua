@@ -25,7 +25,7 @@ end
 function enemies.get_enemy_data(enemies_data, enemy_name)
 	if not enemies_data or not enemies_data.enemies or not enemy_name then return nil end
 	for _, enemy in ipairs(enemies_data.enemies) do
-		if enemy.name == enemy_name then
+		if string.lower(enemy.name) == string.lower(enemy_name) then
 			return enemy
 		end
 	end
