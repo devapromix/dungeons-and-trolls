@@ -1,48 +1,4 @@
-json = require("libraries.json")
-items = require("items")
-enemies = require("enemies")
-player_module = require("player")
-combat = require("combat")
-magic = require("magic")
-map = require("map")
-game = require("game")
-music = require("game.music")
-fire = require("game.fire")
-biome = require("game.biome")
-skills = require("game.skills")
-output = require("game.output")
-utils = require("game.utils")
-time = require("game.time")
-shop = require("game.shop")
-const = require("game.const")
-commands = require("commands")
-command_buy = require("commands.buy")
-command_chop = require("commands.chop")
-command_recipes = require("commands.recipes")
-command_move = require("commands.move")
-command_items = require("commands.items")
-command_cook = require("commands.cook")
-command_rest = require("commands.rest")
-command_look = require("commands.look")
-command_fishing = require("commands.fishing")
-command_repair = require("commands.repair")
-command_volume = require("commands.volume")
-command_examine = require("commands.examine")
-command_light = require("commands.light")
-command_skills = require("commands.skills")
-command_kill = require("commands.kill")
-command_sell = require("commands.sell")
-command_gear = require("commands.gear")
-command_enter = require("commands.enter")
-command_leave = require("commands.leave")
-command_train = require("commands.train")
-command_read = require("commands.read")
-command_spells = require("commands.spells")
-command_cast = require("commands.cast")
-command_trollcave = require("commands.trollcave")
-command_village = require("commands.village")
-command_gold = require("commands.gold")
-command_add = require("commands.add")
+require "import"
 
 function love.load()
 	input = {
@@ -96,6 +52,11 @@ function love.textinput(t)
 	input.history_index = 0
 end
 
+function reset_input()
+	input.text = ">"
+	input.history_index = 0
+end
+
 function love.keypressed(key)
 	if key == "backspace" then
 		if #input.text > 1 then
@@ -105,6 +66,9 @@ function love.keypressed(key)
 		input.backspace_held = true
 		input.backspace_timer = 0
 		input.backspace_first_press = true
+	end
+	if key == "escape" then
+		reset_input()
 	end
 	if key == "return" and #input.text > 1 then
 		output.clear()
@@ -126,8 +90,7 @@ function love.keypressed(key)
 		if not skip[string.lower(command)] then
 			table.insert(input.history, 1, command)
 		end
-		input.text = ">"
-		input.history_index = 0
+		reset_input()
 	end
 	if key == "up" and input.history_index < #input.history then
 		input.history_index = input.history_index + 1
@@ -137,8 +100,7 @@ function love.keypressed(key)
 			input.history_index = input.history_index - 1
 			input.text = ">" .. input.history[input.history_index]
 		elseif input.history_index == 1 then
-			input.history_index = 0
-			input.text = ">"
+			reset_input()
 		end
 	end
 end
