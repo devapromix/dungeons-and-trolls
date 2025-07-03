@@ -67,35 +67,6 @@ function player.clamp_player_stats(player_data)
 	return player_data
 end
 
-function player.clamp_player_skills(player_data, skills_data)
-	if not player_data.skills then
-		player_data.skills = {}
-	end
-	if not skills_data or not skills_data.skills then
-		output.add("Error: No valid skills data provided.\n")
-		return player_data
-	end
-	for _, skill in ipairs(skills_data.skills) do
-		if skill and skill.name and skill.max_level then
-			local initial_level = skill.initial_level or 0
-			player_data.skills[skill.name] = utils.clamp(player_data.skills[skill.name] or initial_level, 0, skill.max_level)
-		else
-			output.add("Warning: Invalid skill entry in skills data.\n")
-		end
-	end
-	return player_data
-end
-
-function player.get_skill_data(skills_data, skill_name)
-	if not skills_data or not skills_data.skills or not skill_name then return nil end
-	for _, skill in ipairs(skills_data.skills) do
-		if skill.name == skill_name then
-			return skill
-		end
-	end
-	return nil
-end
-
 function player.update_max_health(player_data)
 	player_data.max_health = player_data.vitality * 10
 	player_data.health = utils.clamp(player_data.health, 0, player_data.max_health)

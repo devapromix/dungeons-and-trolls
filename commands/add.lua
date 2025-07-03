@@ -38,7 +38,7 @@ function command_add.exec(command_parts, player, items_data, enemies_data, map_d
 	elseif skill_data then
 		local skill_key = skill_data.name
 		local add_qty = math.floor(quantity)
-		player.skills[skill_key] = utils.clamp((player.skills[skill_key] or 0) + add_qty, 0, skill_data.max_level)
+		player.skills[skill_key] = utils.clamp((player.skills[skill_key] or 0) + add_qty, 0, 40)
 		output.add("Added " .. add_qty .. " to " .. skill_key .. " skill. Current level: " .. player.skills[skill_key] .. ".\n")
 	else
 		output.add("No item, enemy or skill found matching '" .. name .. "'.\n")

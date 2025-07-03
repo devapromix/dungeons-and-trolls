@@ -115,7 +115,6 @@ function game.load_game()
 					game.unique_items[item_name] = exists
 				end
 				player = player_module.clamp_player_stats(player)
-				player = player_module.clamp_player_skills(player, skills_data)
 				player.inventory = player.inventory or {}
 				player.equipment = player.equipment or { weapon = nil, armor = nil }
 				player.skills = player.skills or {}
