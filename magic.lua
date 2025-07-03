@@ -2,7 +2,7 @@ local magic = {}
 
 local spells_cache = nil
 
-function magic.load_spells_data()
+function magic.load_spells()
 	if spells_cache then
 		return spells_cache
 	end
@@ -34,7 +34,7 @@ function magic.clear_cache()
 end
 
 function magic.get_spell_data(spell_name)
-	local spells_data = magic.load_spells_data()
+	local spells_data = magic.load_spells()
 	for _, spell in ipairs(spells_data.spells) do
 		if string.lower(spell.name) == string.lower(spell_name) then
 			return spell

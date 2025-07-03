@@ -5,7 +5,7 @@ function love.load()
 	locations_data = map.load_locations()
 	enemies_data = enemies.load_enemies()
 	skills_data = skills.load_skills()
-	
+	spells_data = magic.load_spells()
 	game.welcome()
 end
 
@@ -51,7 +51,6 @@ function love.draw()
 	love.graphics.setFont(output.font)
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.printf(output.text, output.x, output.y, output.width, "left")
-	
 	input.draw()
 end
 
