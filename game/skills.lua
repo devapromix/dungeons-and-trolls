@@ -51,7 +51,7 @@ function skills.upgrade_skill(player, skills_data, item_data)
 		player.skills[skill_name] = player.skills[skill_name] + 1
 		output.add(skill_name .. " skill increased to " .. player.skills[skill_name] .. ".\n")
 	else
-		output.add(skill_name .. " .\n")
+		output.add(skill_name .. " is already at maximum level (40).\n")
 	end
 end
 

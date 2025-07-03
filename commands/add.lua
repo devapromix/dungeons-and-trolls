@@ -18,7 +18,7 @@ function command_add.exec(command_parts, player, items_data, enemies_data, map_d
 	end
 	local item_data = items.get_item_data(items_data, name)
 	local enemy_data = enemies.get_enemy_data(enemies_data, name)
-	local skill_data = player_module.get_skill_data(skills_data, name)
+	local skill_data = skills.get_skill_data(skills_data, name)
 	if item_data then
 		local item_key = item_data.name
 		local add_qty = math.floor(quantity)
