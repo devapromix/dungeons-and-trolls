@@ -6,9 +6,9 @@ save - Saves a game.                                            west (or w) - Mo
 load - Loads a saved game.                                      up (or u) - Climb up to the surface.
 map - Display the game map.                                     down (or d) - Descend into the underworld.
 intro - Show intro.                                             train <attribute> - Train an attribute.
-status - Display player's stats.                                examine <item | enemy> - Inspect an item or enemy.
+status - Display player's stats.                                examine <slot | item | enemy> - Inspect an item or enemy.
 chop - Chop down a tree to gather wood.                         repair <slot | item | all> - Repair an item.
-skills - Display player's skills.                               eat <item> - Eat an item.
+skills - Display player's skills.                               eat <item> - Eat something.
 rest - Rest to restore health and mana.                         drink <item> - Drink an item.
 time - Displays the current time.                               pick [quantity] <item> - Pick up an item.
 light - Light a fire.                                           drop [quantity] <item> - Drop an item.
@@ -17,7 +17,7 @@ items - Display player's inventory and gold.                    volume <level> -
 recipes - Display player's known recipes.                       cook <recipe> - Cook a recipe if conditions are met.
 fish - Try to catch a fish.                                     gear - Show currently worn equipment.
 equip <item> - Equip an item.                                   unequip <slot | item> - Remove an equipped item.
-spells - Display player's spells.                               cast <spell> - Cast a known spell.
+spells - Display player's spells.                               cast <spell> [enemy] - Cast a known spell.
 buy [quantity] <item | room> - Buy an item.                     sell <item> - Sell an item.
-read <item> - Read a scroll or book.                            enter [interior] - Enter a tavern, forge or shop, etc.
+read <item> [enemy] - Read a scroll or book.                    enter [interior] - Enter a tavern, forge or shop, etc.
 leave - Leave the current place.                                quit - Exit the game.

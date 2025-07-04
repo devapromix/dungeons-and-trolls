@@ -22,13 +22,13 @@ function cook.exec(command_parts, player, map_data, items_data, output, items, t
 		return player
 	end
 	for _, recipe in ipairs(recipes) do
-		if string.lower(recipe.name) == string.lower(recipe_name) and recipe.requires_fire then
+		if utils.equals(recipe.name, recipe_name) and recipe.requires_fire then
 			local input_items = type(recipe.input) == "table" and recipe.input or {recipe.input}
 			local has_all_items = true
 			for _, input in ipairs(input_items) do
 				local found = false
 				for inv_item, _ in pairs(player.inventory) do
-					if string.lower(inv_item) == string.lower(input) then
+					if utils.equals(inv_item, input) then
 						found = true
 						break
 					end

@@ -7,7 +7,7 @@ end
 function skills.get_skill_data(skills_data, skill_name)
 	if not skills_data or not skills_data.skills or not skill_name then return nil end
 	for _, skill in ipairs(skills_data.skills) do
-		if skill.name == skill_name then
+		if utils.equals(skill.name, skill_name) then
 			return skill
 		end
 	end
@@ -47,9 +47,12 @@ function skills.upgrade_skill(player, skills_data, item_data)
 	if not player.skills[skill_name] then
 		player.skills[skill_name] = 0
 	end
-	player.skills[skill_name] = player.skills[skill_name] + 1
-	player = player_module.clamp_player_skills(player, skills_data)
-	output.add(skill_name .. " skill increased to " .. player.skills[skill_name] .. ".\n")
+	if player.skills[skill_name] < 40 then 
+		player.skills[skill_name] = player.skills[skill_name] + 1
+		output.add(skill_name .. " skill increased to " .. player.skills[skill_name] .. ".\n")
+	else
+		output.add(skill_name .. " is already at maximum level (40).\n")
+	end
 end
 
 function skills.draw()

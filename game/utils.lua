@@ -1,5 +1,13 @@
 local utils = {}
 
+function utils.equals(a, b)
+	local result = false
+	if a and b and a:lower() == b:lower() then
+		result = true
+	end
+	return result
+end
+
 function utils.load_json_file(file_path, error_message)
 	if love.filesystem.getInfo(file_path) then
 		local content = love.filesystem.read(file_path)
@@ -35,7 +43,7 @@ end
 function utils.get_item_tag_value(item_data, tag_prefix)
 	for _, tag in ipairs(item_data.tags) do
 		if tag:match("^" .. tag_prefix .. "=") then
-			return tonumber(tag:match("^" .. tag_prefix .. "=(%S+)"))
+			return tag:match("^" .. tag_prefix .. "=(%S+)")
 		end
 	end
 	return nil

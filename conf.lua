@@ -1,6 +1,6 @@
 config = {
 	inventory = {
-		max_slots = 8,
+		max_slots = 18,
 	},
 	
 	debug = false,

@@ -10,14 +10,14 @@ function repair.exec(command_parts, player, player_module)
 		return player
 	end
 
-	if not player.equipment_status or (not player.equipment_status.weapon and not player.equipment_status.armor) then
+	if not player.equipment or not player.equipment_status or (not player.equipment.weapon and not player.equipment.armor) then
 		output.add("You have no equipment to repair.\n")
 		return player
 	end
 
 	if #command_parts < 2 then
 		output.add("Usage: repair <slot | item_name | all>\n")
-		output.add("Example: repair weapon, repair Sword, repair all\n")
+		output.add("Example: 'repair weapon', 'repair Short Sword', 'repair all'\n")
 		return player
 	end
 
@@ -31,16 +31,21 @@ function repair.exec(command_parts, player, player_module)
 	local cost = 0
 
 	if param == "all" then
-		if player.equipment_status.weapon == "broken" then
+		if player.equipment.weapon and player.equipment_status.weapon == "broken" then
 			table.insert(slots_to_repair, "weapon")
 		end
-		if player.equipment_status.armor == "broken" then
+		if player.equipment.armor and player.equipment_status.armor == "broken" then
 			table.insert(slots_to_repair, "armor")
 		end
 	else
 		local slot = nil
 		if param == "weapon" or param == "armor" then
-			slot = param
+			if player.equipment[param] and player.equipment_status[param] == "broken" then
+				slot = param
+			else
+				output.add("No broken equipment found in " .. param .. " slot.\n")
+				return player
+			end
 		else
 			local equipment = {}
 			if player.equipment and player.equipment.weapon then

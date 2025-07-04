@@ -5,9 +5,9 @@ commands.confirmation_type = nil
 
 local command_map = {
 	game = {"help", "intro", "new", "load", "save", "about", "quit"},
-	info = {"status", "skills", "time", "items", "map", "gear"},
-	item = {"eat", "drink", "pick", "drop", "equip", "unequip"},
-	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "village", "train", "enter", "leave", "buy", "sell", "gold", "chop", "repair"},
+	info = {"status", "skills", "time", "items", "map", "gear", "spells"},
+	item = {"eat", "drink", "pick", "drop", "equip", "unequip", "read", "add"},
+	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "village", "train", "enter", "leave", "buy", "sell", "gold", "chop", "repair", "cast"},
 	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
 }
 
@@ -111,6 +111,10 @@ function commands.handle_item_commands(cmd, command_parts, player, map_data, ite
 				player = player_module.unequip_item(player, items_data, identifier)
 			end
 		end
+	elseif cmd == "read" then
+		player = command_read.exec(command_parts, player, map_data, items_data, enemies_data, skills_data, time, map, player_module, magic)
+	elseif cmd == "add" then
+		player = command_add.exec(command_parts, player, items_data, enemies_data, map_data, skills_data, spells_data, player_module)
 	end
 	return player
 end
@@ -168,6 +172,8 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 		map.draw()
 	elseif cmd == "gear" then
 		return command_gear.exec(command_parts, player, player_module)
+	elseif cmd == "spells" then
+		return command_spells.exec(command_parts, player, player_module)
 	end
 end
 
@@ -209,7 +215,10 @@ function commands.handle_action_commands(cmd, command_parts, player, map_data, i
 	elseif cmd == "chop" then
 		return command_chop.exec(player, map_data, items_data, time, player_module, items)
 	elseif cmd == "repair" then
-		return command_repair.exec(command_parts, player, player_module)	end
+		return command_repair.exec(command_parts, player, player_module)
+	elseif cmd == "cast" then
+		return command_cast.exec(command_parts, player, map_data, items_data, enemies_data, skills_data, time, map, player_module, magic)
+	end
 	return player
 end
 
@@ -229,7 +238,8 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 	commands.handle_game_commands(cmd, command_parts, player, output)
 	commands.handle_info_commands(cmd, command_parts, player, map_data, config, game_time, skills, output, player_module)
 	player = commands.handle_item_commands(cmd, command_parts, player, map_data, items_data, items, player_module)
-	player = commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config, fire)
+	player = commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, 
+	  enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config, fire)
 
 	local direction = movement_map[cmd]
 	if direction then

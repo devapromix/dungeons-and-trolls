@@ -24,4 +24,10 @@ function output.add(str, new_line)
     end
 end
 
+function output.debug(str)
+	if config.debug then
+		output.add("DEBUG: " .. str, true)
+	end
+end
+
 return output

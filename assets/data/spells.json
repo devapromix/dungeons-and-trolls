@@ -1,0 +1,32 @@
+{
+	"spells": [
+		{
+			"name": "Fireball",
+			"mana_cost": 15,
+			"type": "damage",
+			"value": 20,
+			"amount": 10
+		},
+		{
+			"name": "Heal",
+			"mana_cost": 45,
+			"type": "heal",
+			"value": 30,
+			"amount": 15
+		},
+		{
+			"name": "Portal",
+			"mana_cost": 50,
+			"type": "teleport",
+			"value": 0,
+			"amount": 5
+		},
+		{
+			"name": "Confuse",
+			"mana_cost": 30,
+			"type": "confuse",
+			"value": 2,
+			"amount": 3
+		}
+	]
+}

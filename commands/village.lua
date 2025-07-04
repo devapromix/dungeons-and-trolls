@@ -5,12 +5,8 @@ function village.exec(player, map_data, map)
 		return player
 	end
 	if config.debug then
-		player.world = "overworld"
-		player.x = map_data.overworld.village.x
-		player.y = map_data.overworld.village.y
+		player = map.teleport_to_village(player, map_data)
 		output.add("Teleported to village Dork!\n")
-		map.update_visibility(player, map_data)
-		map.display_location(player, map_data)
 		return player
 	else
 		output.add("Command only available in debug mode.\n")
