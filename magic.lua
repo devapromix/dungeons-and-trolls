@@ -36,7 +36,7 @@ end
 function magic.get_spell_data(spell_name)
 	local spells_data = magic.load_spells()
 	for _, spell in ipairs(spells_data.spells) do
-		if string.lower(spell.name) == string.lower(spell_name) then
+		if utils.equals(spell.name, spell_name) then
 			return spell
 		end
 	end
@@ -44,9 +44,8 @@ function magic.get_spell_data(spell_name)
 end
 
 local function find_inventory_item(inventory, item_name)
-	local item_name_lower = item_name:lower()
 	for key, quantity in pairs(inventory) do
-		if key:lower() == item_name_lower and quantity > 0 then
+		if utils.equals(key, item_name) and quantity > 0 then
 			return key
 		end
 	end
@@ -241,7 +240,7 @@ function magic.learn_spell(player_data, items_data, item_name, player_module, en
 	
 	local existing_spell_key = nil
 	for known_spell, _ in pairs(player_data.spellbook) do
-		if known_spell:lower() == spell_name:lower() then
+		if utils.equals(known_spell, spell_name) then
 			existing_spell_key = known_spell
 			break
 		end
@@ -274,9 +273,8 @@ function magic.cast_spell(player_data, map_data, items_data, enemies_data, skill
 	end
 	
 	local spellbook_key = nil
-	local spell_name_lower = spell_name:lower()
 	for known_spell, uses in pairs(player_data.spellbook) do
-		if known_spell:lower() == spell_name_lower and uses > 0 then
+		if utils.equals(known_spell, spell_name) and uses > 0 then
 			spellbook_key = known_spell
 			break
 		end

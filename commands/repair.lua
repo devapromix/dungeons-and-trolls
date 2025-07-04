@@ -17,7 +17,7 @@ function repair.exec(command_parts, player, player_module)
 
 	if #command_parts < 2 then
 		output.add("Usage: repair <slot | item_name | all>\n")
-		output.add("Example: repair weapon, repair Sword, repair all\n")
+		output.add("Example: 'repair weapon', 'repair Short Sword', 'repair all'\n")
 		return player
 	end
 

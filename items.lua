@@ -24,7 +24,7 @@ end
 function items.get_item_data(items_data, item_key)
 	if not items_data or not items_data.items or not item_key then return nil end
 	for _, item in ipairs(items_data.items) do
-		if string.lower(item.name) == string.lower(item_key) then
+		if utils.equals(item.name, item_key) then
 			return item
 		end
 	end
@@ -235,7 +235,7 @@ function items.has_tag(items_data, item_name, tag)
 		return false
 	end
 	for _, item_tag in ipairs(item_data.tags) do
-		if string.lower(item_tag) == string.lower(tag) then
+		if utils.equals(item_tag, tag) then
 			return true
 		end
 	end

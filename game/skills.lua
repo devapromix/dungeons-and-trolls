@@ -7,7 +7,7 @@ end
 function skills.get_skill_data(skills_data, skill_name)
 	if not skills_data or not skills_data.skills or not skill_name then return nil end
 	for _, skill in ipairs(skills_data.skills) do
-		if string.lower(skill.name) == string.lower(skill_name) then
+		if utils.equals(skill.name, skill_name) then
 			return skill
 		end
 	end
