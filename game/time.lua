@@ -5,6 +5,14 @@ function time.get_three_day_cycle()
     return math.floor(total_days / 3)
 end
 
+function time.time_of_day()
+	if game_time.hour >= 6 and game_time.hour < 20 then
+		return "Day"
+	else
+		return "Night"
+	end
+end
+
 function time.tick_time(minutes)
     local prev_cycle = time.get_three_day_cycle()
     game_time.playtime = (game_time.playtime or 0) + minutes

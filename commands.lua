@@ -164,7 +164,7 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 	elseif cmd == "skills" then
 		command_skills.exec(skills)
 	elseif cmd == "time" then
-		output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. (game_time.hour >= 6 and game_time.hour < 18 and "Day" or "Night") .. ")\n")
+		output.add("Time: " .. game_time.year .. "/" .. game_time.month .. "/" .. game_time.day .. " " .. string.format("%02d:%02d", game_time.hour, game_time.minute) .. " (" .. time.time_of_day() .. ")\n")
 		output.add("Played: " .. time.format_playtime(game_time.playtime or 0) .. "\n")
 	elseif cmd == "items" then
 		command_items.exec(player, player_module, items)

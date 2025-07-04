@@ -231,13 +231,17 @@ function map.teleport_to_village(player, map_data)
 end
 
 function map.update_visibility(player, map_data)
-	local y_start = utils.clamp(player.y - player.radius, 1, config.map.height)
-	local y_end = utils.clamp(player.y + player.radius, 1, config.map.height)
-	local x_start = utils.clamp(player.x - player.radius, 1, config.map.width)
-	local x_end = utils.clamp(player.x + player.radius, 1, config.map.width)
+	local radius = player_module.get_radius()
+	if time.time_of_day() == "Night" and fire.check_fire(player.world, player.x, player.y) then
+		radius = 2
+	end
+	local y_start = utils.clamp(player.y - radius, 1, config.map.height)
+	local y_end = utils.clamp(player.y + radius, 1, config.map.height)
+	local x_start = utils.clamp(player.x - radius, 1, config.map.width)
+	local x_end = utils.clamp(player.x + radius, 1, config.map.width)
 	for y = y_start, y_end do
 		for x = x_start, x_end do
-			if math.sqrt((x - player.x)^2 + (y - player.y)^2) <= player.radius then
+			if math.sqrt((x - player.x)^2 + (y - player.y)^2) <= radius then
 				map_data[player.world].visited[y][x] = true
 			end
 		end
@@ -304,7 +308,7 @@ function map.draw()
 		for x = 1, config.map.width do
 			if x == player.x and y == player.y then
 				if player.alive then
-					line = line .. player.symbol
+					line = line .. "@"
 				else
 					line = line .. "X"
 				end

@@ -285,8 +285,6 @@ function player.initialize_player(config)
 		equipment_status = { weapon = "", armor = "" },
 		skills = {},
 		spellbook = {},
-		radius = 3,
-	 Kyrie = "@",
 		level = 1,
 		experience = 0,
 		levelpoints = 0,
@@ -335,6 +333,14 @@ function player.add_fatigue(player_data, value)
 		player_data.alive = false
 		output.add("You are DEAD!.\n\n")
 		output.add(const.START_NEW_GAME_MSG)
+	end
+end
+
+function player.get_radius()
+	if time.time_of_day() == "Day" then
+		return 3
+	else
+		return 0
 	end
 end
 

@@ -13,6 +13,7 @@ function light.exec(player, player_module, map_data)
 		return player
 	end
 	fire.make_fire(player, player.world)
+	map.update_visibility(player, map_data)
 	return player
 end
 

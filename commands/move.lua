@@ -27,7 +27,6 @@ function move.move_player(direction, player_data, map_data, config, time, output
             return false
         end
         
-        -- Використовуємо fire_data замість map_data[player_data.world].fire
         if fire_data[player_data.world].active and (fire_data[player_data.world].x ~= new_x or fire_data[player_data.world].y ~= new_y) then
             fire_data[player_data.world].active = false
             fire_data[player_data.world].x = nil
@@ -44,13 +43,7 @@ function move.move_player(direction, player_data, map_data, config, time, output
         player_data.x = new_x
         player_data.y = new_y
         
-        for y = utils.clamp(player_data.y - player_data.radius, 1, config.map.height), utils.clamp(player_data.y + player_data.radius, 1, config.map.height) do
-            for x = utils.clamp(player_data.x - player_data.radius, 1, config.map.width), utils.clamp(player_data.x + player_data.radius, 1, config.map.width) do
-                if math.sqrt((x - player_data.x)^2 + (y - player_data.y)^2) <= player_data.radius then
-                    map_data[player_data.world].visited[y][x] = true
-                end
-            end
-        end
+		map.update_visibility(player_data, map_data)
         
         output.add("You moved " .. move_data.dir .. ".\n")
         map.display_location(player_data, map_data)
@@ -58,7 +51,7 @@ function move.move_player(direction, player_data, map_data, config, time, output
         local current_biome = map_data[player_data.world].tiles[player_data.y][player_data.x]
         local effects = map.get_biome_effects(current_biome)
         
-        time.tick_time(120)
+        time.tick_time(60)
         player_data.fatigue = utils.clamp(player_data.fatigue + (player_data.mana <= 0 and effects.fatigue * 2 or effects.fatigue), 0, 100)
         player_data.hunger = utils.clamp(player_data.hunger + effects.hunger, 0, 100)
         player_data.thirst = utils.clamp(player_data.thirst + effects.thirst, 0, 100)
