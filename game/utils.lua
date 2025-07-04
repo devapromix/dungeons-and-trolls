@@ -1,5 +1,13 @@
 local utils = {}
 
+function utils.equals(a, b)
+	local result = false
+	if a and b and a:lower() == b:lower() then
+		result = true
+	end
+	return result
+end
+
 function utils.load_json_file(file_path, error_message)
 	if love.filesystem.getInfo(file_path) then
 		local content = love.filesystem.read(file_path)

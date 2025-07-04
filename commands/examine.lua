@@ -1,6 +1,6 @@
 local examine = {}
 
-function examine.display_item_info(item_key, item_data)
+function examine.display_item_info(item_key, item_data, status)
 	output.add(item_key .. ":\n\n")
 	output.add(item_data.description .. "\n\n")
 	
@@ -20,6 +20,10 @@ function examine.display_item_info(item_key, item_data)
 	
 	if item_data.skill then
 		table.insert(attributes, "Skill: " .. item_data.skill)
+	end
+	
+	if status and status ~= "" then
+		table.insert(attributes, "Status: " .. status:sub(1, 1):upper() .. status:sub(2))
 	end
 	
 	if #attributes > 0 then
@@ -52,7 +56,7 @@ function examine.exec(command_parts, player, map_data, items_data, enemies_data,
 	end
 	local enemies_at_location = map_data[player.world].enemies[player.y][player.x]
 	for enemy_name, _ in pairs(enemies_at_location) do
-		if enemy_name:lower() == name:lower() then
+		if utils.equals(enemy_name, name) then
 			local enemy_data = enemies.get_enemy_data(enemies_data, enemy_name)
 			if enemy_data then
 				output.add(enemy_data.name .. ":\n\n")
@@ -65,7 +69,15 @@ function examine.exec(command_parts, player, map_data, items_data, enemies_data,
 	local item_key = utils.find_item_key(player.inventory, name, false)
 	if item_key then
 		local item_data = items.get_item_data(items_data, item_key)
-		examine.display_item_info(item_key, item_data)
+		local status = nil
+		if player.equipment and player.equipment_status then
+			if item_key == player.equipment.weapon then
+				status = player.equipment_status.weapon
+			elseif item_key == player.equipment.armor then
+				status = player.equipment_status.armor
+			end
+		end
+		examine.display_item_info(item_key, item_data, status)
 		return player
 	end
 	item_key = utils.find_item_key(map_data[player.world].items[player.y][player.x], name, false)

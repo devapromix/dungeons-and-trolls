@@ -6,7 +6,7 @@ save - Saves a game.                                            west (or w) - Mo
 load - Loads a saved game.                                      up (or u) - Climb up to the surface.
 map - Display the game map.                                     down (or d) - Descend into the underworld.
 intro - Show intro.                                             train <attribute> - Train an attribute.
-status - Display player's stats.                                examine <item | enemy> - Inspect an item or enemy.
+status - Display player's stats.                                examine <slot | item | enemy> - Inspect an item or enemy.
 chop - Chop down a tree to gather wood.                         repair <slot | item | all> - Repair an item.
 skills - Display player's skills.                               eat <item> - Eat something.
 rest - Rest to restore health and mana.                         drink <item> - Drink an item.
