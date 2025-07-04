@@ -226,12 +226,7 @@ function items.drink_item(player, items_data, item_name)
 end
 
 function items.is_artifact(item_data)
-	for _, tag in ipairs(item_data.tags) do
-		if tag == "artifact" then
-			return true
-		end
-	end
-	return false
+	return items.has_tag(item_data, "artifact")
 end
 
 function items.has_tag(items_data, item_name, tag)
@@ -240,7 +235,7 @@ function items.has_tag(items_data, item_name, tag)
 		return false
 	end
 	for _, item_tag in ipairs(item_data.tags) do
-		if item_tag == tag then
+		if string.lower(item_tag) == string.lower(tag) then
 			return true
 		end
 	end

@@ -3,12 +3,37 @@ local examine = {}
 function examine.display_item_info(item_key, item_data)
 	output.add(item_key .. ":\n\n")
 	output.add(item_data.description .. "\n\n")
+	
+	local attributes = {}
+	local locations = {}
 	for _, tag in ipairs(item_data.tags) do
 		local key, value = tag:match("(%w+)=(%d+)")
 		if key and value then
 			local capitalized_key = key:sub(1, 1):upper() .. key:sub(2)
-			output.add(capitalized_key .. ": " .. value .. "\n")
+			table.insert(attributes, capitalized_key .. ": " .. value)
+		else
+			if tag ~= "artifact" then
+				table.insert(locations, tag)
+			end
 		end
+	end
+	
+	if item_data.skill then
+		table.insert(attributes, "Skill: " .. item_data.skill)
+	end
+	
+	if #attributes > 0 then
+		for _, attr in ipairs(attributes) do
+			output.add(attr .. "\n")
+		end
+	end
+	
+	if #locations > 0 then
+		output.add("Available at: " .. table.concat(locations, ", ") .. "\n")
+	end
+	
+	if items.is_artifact(item_data) then
+		output.add("Type: Artifact\n")
 	end
 end
 
