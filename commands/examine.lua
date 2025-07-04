@@ -66,6 +66,21 @@ function examine.exec(command_parts, player, map_data, items_data, enemies_data,
 			end
 		end
 	end
+	
+	if name:lower() == "weapon" or name:lower() == "armor" then
+		local slot = name:lower()
+		if player.equipment and player.equipment[slot] then
+			local item_key = player.equipment[slot]
+			local item_data = items.get_item_data(items_data, item_key)
+			local status = player.equipment_status and player.equipment_status[slot] or nil
+			examine.display_item_info(item_key, item_data, status)
+			return player
+		else
+			output.add("No item equipped in " .. slot .. " slot.\n")
+			return player
+		end
+	end
+
 	local item_key = utils.find_item_key(player.inventory, name, false)
 	if item_key then
 		local item_data = items.get_item_data(items_data, item_key)
