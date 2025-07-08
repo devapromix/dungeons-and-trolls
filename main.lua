@@ -21,7 +21,7 @@ function love.keypressed(key)
 	input.keypressed(key)
 	if key == "return" and #input.text > 1 then
 		output.clear()
-		local command = input.text:sub(2)
+		local command = input.text:sub(2):lower()
 		local command_parts = {}
 		for part in command:gmatch("%S+") do
 			table.insert(command_parts, part)
