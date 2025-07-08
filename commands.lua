@@ -3,25 +3,67 @@ local commands = {}
 commands.awaiting_confirmation = false
 commands.confirmation_type = nil
 
-local command_map = {
-	game = {"help", "intro", "new", "load", "save", "about", "quit"},
-	info = {"status", "skills", "time", "items", "map", "gear", "spells"},
-	item = {"eat", "drink", "pick", "drop", "equip", "unequip", "read", "add"},
-	action = {"rest", "examine", "look", "kill", "light", "volume", "recipes", "cook", "fish", "trollcave", "village", "train", "enter", "leave", "buy", "sell", "gold", "chop", "repair", "cast"},
-	movement = {"north", "south", "east", "west", "n", "s", "e", "w", "up", "down", "u", "d"}
-}
-
-local movement_map = {north = "north", south = "south", east = "east", west = "west", up = "up", down = "down",
-	n = "north", s = "south", e = "east", w = "west", u = "up", d = "down"
+local command_aliases = {
+	help = "help",
+	h = "help",
+	commands = "help",
+	intro = "intro",
+	new = "new",
+	load = "load",
+	save = "save",
+	about = "about",
+	quit = "quit",
+	status = "status",
+	skills = "skills",
+	time = "time",
+	items = "items",
+	map = "map",
+	gear = "gear",
+	spells = "spells",
+	eat = "eat",
+	drink = "drink",
+	pick = "pick",
+	drop = "drop",
+	equip = "equip",
+	unequip = "unequip",
+	read = "read",
+	add = "add",
+	rest = "rest",
+	examine = "examine",
+	look = "look",
+	kill = "kill",
+	light = "light",
+	volume = "volume",
+	recipes = "recipes",
+	cook = "cook",
+	fish = "fish",
+	trollcave = "trollcave",
+	village = "village",
+	train = "train",
+	enter = "enter",
+	leave = "leave",
+	buy = "buy",
+	sell = "sell",
+	gold = "gold",
+	chop = "chop",
+	repair = "repair",
+	cast = "cast",
+	north = "north",
+	south = "south",
+	east = "east",
+	west = "west",
+	n = "north",
+	s = "south",
+	e = "east",
+	w = "west",
+	up = "up",
+	down = "down",
+	u = "up",
+	d = "down"
 }
 
 function commands.is_valid_command(cmd)
-	for _, category in pairs(command_map) do
-		if utils.table_contains(category, cmd) then
-			return true
-		end
-	end
-	return false
+	return command_aliases[cmd] ~= nil
 end
 
 function commands.get_item_name_from_parts(command_parts, start_index)
@@ -234,20 +276,20 @@ function commands.handle_command(command_parts, player, map_data, items_data, en
 	end
 
 	local cmd = command_parts[1]
+	local resolved_cmd = command_aliases[cmd] or cmd
 
-	commands.handle_game_commands(cmd, command_parts, player, output)
-	commands.handle_info_commands(cmd, command_parts, player, map_data, config, game_time, skills, output, player_module)
-	player = commands.handle_item_commands(cmd, command_parts, player, map_data, items_data, items, player_module)
-	player = commands.handle_action_commands(cmd, command_parts, player, map_data, items_data, 
-	  enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config, fire)
+	commands.handle_game_commands(resolved_cmd, command_parts, player, output)
+	commands.handle_info_commands(resolved_cmd, command_parts, player, map_data, config, game_time, skills, output, player_module)
+	player = commands.handle_item_commands(resolved_cmd, command_parts, player, map_data, items_data, items, player_module)
+	player = commands.handle_action_commands(resolved_cmd, command_parts, player, map_data, items_data, 
+		enemies_data, skills_data, game_time, time, output, player_module, items, enemies, map, music, config, fire)
 
-	local direction = movement_map[cmd]
-	if direction then
+	if command_aliases[cmd] and utils.table_contains({"north", "south", "east", "west", "up", "down"}, resolved_cmd) then
 		if player.state ~= "overworld" then
 			output.add("You cannot move while inside a building.\n")
 			return
 		end
-		player = command_move.exec(direction, player, map_data, config, time, output, player_module, map, music)
+		player = command_move.exec(resolved_cmd, player, map_data, config, time, output, player_module, map, music)
 	elseif not commands.is_valid_command(cmd) then
 		output.add("Unknown command: '" .. cmd .. "'.\n")
 		output.add(const.TYPE_HELP_MSG)
