@@ -14,9 +14,11 @@ local command_aliases = {
 	about = "about",
 	quit = "quit",
 	status = "status",
+	c = "status",
 	skills = "skills",
 	time = "time",
 	items = "items",
+	i = "items",
 	map = "map",
 	gear = "gear",
 	spells = "spells",
@@ -59,7 +61,7 @@ local command_aliases = {
 	up = "up",
 	down = "down",
 	u = "up",
-	d = "down"
+	d = "down",
 }
 
 function commands.is_valid_command(cmd)
