@@ -19,9 +19,9 @@ function skills.apply_skill_effects(player, skills_data, damage)
 	if player.equipment and player.equipment.weapon then
 		local item_data = items.get_item_data(items.load_items(), player.equipment.weapon)
 		if item_data and item_data.skill then
-			local swords_skill = player.skills and player.skills[item_data.skill] or 0
+			local weapon_skill = player.skills and player.skills[item_data.skill] and player.skills[item_data.skill].level or 0
 			local skill_data = skills.get_skill_data(skills_data, item_data.skill)
-			if skill_data and math.random() < (swords_skill / 100) then
+			if skill_data and math.random() < (weapon_skill / 100) then
 				output.add("Critical hit!\n")
 				return damage + player.strength
 			end
@@ -45,11 +45,15 @@ function skills.upgrade_skill(player, skills_data, item_data)
 		player.skills = {}
 	end
 	if not player.skills[skill_name] then
-		player.skills[skill_name] = 0
+		player.skills[skill_name] = { level = 0, progress = 0 }
 	end
-	if player.skills[skill_name] < 40 then 
-		player.skills[skill_name] = player.skills[skill_name] + 1
-		output.add(skill_name .. " skill increased to " .. player.skills[skill_name] .. ".\n")
+	if player.skills[skill_name].level < 40 then
+		player.skills[skill_name].progress = player.skills[skill_name].progress + 1
+		if player.skills[skill_name].progress >= 10 then
+			player.skills[skill_name].level = player.skills[skill_name].level + 1
+			player.skills[skill_name].progress = 0
+			output.add(skill_name .. " skill increased to " .. player.skills[skill_name].level .. ".\n")
+		end
 	else
 		output.add(skill_name .. " is already at maximum level (40).\n")
 	end
@@ -57,7 +61,7 @@ end
 
 function skills.draw()
 	for _, skill in ipairs(skills_data.skills) do
-		local level = player.skills and player.skills[skill.name] or 0
+		local level = player.skills and player.skills[skill.name] and player.skills[skill.name].level or 0
 		output.add(skill.name .. ": " .. level .. "\n")
 	end
 end
