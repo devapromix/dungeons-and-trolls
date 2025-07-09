@@ -11,12 +11,13 @@
 				{ "name": "Swords", "price": 100 },
 				{ "name": "Axes", "price": 100 },
 				{ "name": "Maces", "price": 100 }
-			]
+			],
+			"skills_greeting": "The grizzled weaponsmith offers to sharpen your combat prowess with these skills:"
 		},
 		{
 			"id": "armor shop",
 			"name": "Armor Shop",
-			"description": "Heavy suits of plate mail stand like silent sentinels around the dimly lit shop, their polished surfaces reflecting the flickering candlelight. Chainmail shirts drape over wooden mannequins while leather bracers and studded vests hang from iron hooks along the stone wals.",
+			"description": "Heavy suits of plate mail stand like silent sentinels around the dimly lit shop, their polished surfaces reflecting the flickering candlelight. Chainmail shirts drape over wooden mannequins while leather bracers and studded vests hang from iron hooks along the stone walls.",
 			"hint": "Purchase different types of armor for protection.",
 			"greeting": "The armorer presents their wares:",
 			"trainable_skills": []
@@ -36,8 +37,9 @@
 			"hint": "Buy food and drinks, or rent a room for the night.",
 			"greeting": "The innkeeper welcomes you warmly and lists what’s available:",
 			"trainable_skills": [
-				{ "name": "Fishing", "price": 100 }
-			]
+				{ "name": "Fishing", "price": 50 }
+			],
+			"skills_greeting": "An old fisherman by the hearth shares tales of the river and offers to teach you his craft:"
 		},
 		{
 			"id": "forge",
@@ -50,7 +52,8 @@
 				{ "name": "Axes", "price": 100 },
 				{ "name": "Spears", "price": 100 },
 				{ "name": "Maces", "price": 100 }
-			]
+			],
+			"skills_greeting": "The burly blacksmith, sweat glistening on their brow, offers to forge your skills in combat:"
 		},
 		{
 			"id": "healer",

@@ -148,7 +148,13 @@ function shop.get_trainable_skills_string(interior)
 	end
 	
 	local skills_string = table.concat(skill_list, ", ")
-	return "\nTrainable skills: " .. skills_string .. ".\n"
+	local greeting = "Trainable skills:"
+	
+	if interior.skills_greeting and interior.skills_greeting ~= "" then
+		greeting = interior.skills_greeting
+	end
+	
+	return "\n" .. greeting .. " " .. skills_string .. ".\n"
 end
 
 function shop.reset_items()
