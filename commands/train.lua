@@ -1,9 +1,10 @@
 local train = {}
 
+local attributes = {"Strength", "Dexterity", "Vitality", "Intelligence"}
+
 function train.find_attribute_key(attribute_name)
 	if not attribute_name or attribute_name == "" then return nil end
 	local lower_name = string.lower(attribute_name)
-	local attributes = {"strength", "dexterity", "vitality", "intelligence"}
 	for _, attr in ipairs(attributes) do
 		local lower_attr = string.lower(attr)
 		if lower_attr == lower_name or (#lower_name >= 3 and string.find(lower_attr, lower_name, 1, true) == 1) then
@@ -85,6 +86,15 @@ function train.exec(command_parts, player)
 	end
 	if #command_parts < 2 then
 		output.add("Please specify an attribute or skill to train (e.g., 'train strength' or 'train Swords').\n")
+		output.add("\nAttributes:\n")
+		for _, attr in ipairs(attributes) do
+			output.add(" * " .. attr .. "\n")
+		end
+		output.add("\nSkills:\n")
+		local skills_data = skills.load_skills()
+		for _, skill in ipairs(skills_data.skills) do
+			output.add(" * " .. skill.name .. "\n")
+		end
 		return player
 	end
 	local name = commands.get_item_name_from_parts(command_parts, 2)
