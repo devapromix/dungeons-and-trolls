@@ -8,7 +8,7 @@ function trollcave.exec(player, map_data, map)
 		player.world = "underworld"
 		player.x = map_data.underworld.troll_cave.x
 		player.y = map_data.underworld.troll_cave.y
-		output.add("Teleported to Troll Cave!\n")
+		output.add("\nTeleported to Troll Cave!\n")
 		map.update_visibility(player, map_data)
 		map.display_location(player, map_data)
 		return player

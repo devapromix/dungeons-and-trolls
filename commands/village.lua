@@ -6,7 +6,7 @@ function village.exec(player, map_data, map)
 	end
 	if config.debug then
 		player = map.teleport_to_village(player, map_data)
-		output.add("Teleported to village Dork!\n")
+		output.add("\nTeleported to village Dork!\n")
 		return player
 	else
 		output.add("Command only available in debug mode.\n")

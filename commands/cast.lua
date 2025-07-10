@@ -5,7 +5,7 @@ function command_cast.exec(command_parts, player, map_data, items_data, enemies_
 		return player
 	end
 	if #command_parts < 2 then
-		output.add("Usage: cast <spell_name> [enemy_name] (e.g., 'cast Fireball Goblin' or 'cast Heal')\n")
+		output.add("Please specify spell to cast (e.g., 'cast Fireball Goblin' or 'cast Heal').\n")
 		return player
 	end
 	local spell_name = command_parts[2]
