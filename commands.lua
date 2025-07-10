@@ -20,6 +20,7 @@ local command_aliases = {
 	items = "items",
 	i = "items",
 	map = "map",
+	name = "name",
 	gear = "gear",
 	spells = "spells",
 	eat = "eat",
@@ -214,6 +215,8 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 		command_items.exec(player, player_module, items)
 	elseif cmd == "map" then
 		map.draw()
+	elseif cmd == "name" then
+		return command_name.exec(command_parts, player)
 	elseif cmd == "gear" then
 		return command_gear.exec(command_parts, player, player_module)
 	elseif cmd == "spells" then

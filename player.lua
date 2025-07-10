@@ -27,7 +27,7 @@ end
 
 function player.draw_status(player_data)
 	local lines = {
-		"Player:\n",
+		player_data.name .. ":\n",
 		"Level: " .. player_data.level .. "\n",
 		"Experience: " .. player_data.experience .. "/" .. player.experience_to_next_level(player_data.level) .. "\n",
 		"Level points: " .. player_data.levelpoints .. "\n\n",
@@ -48,7 +48,6 @@ function player.draw_status(player_data)
 		table.insert(lines, "\nYou are DEAD.\n\n")
 		table.insert(lines, const.aliveSTART_NEW)
 	end
-	output.add(table.concat(lines))
 	return player_data
 end
 
@@ -264,6 +263,7 @@ end
 
 function player.initialize_player(config)
 	local player_data = {
+		name = "Player",
 		x = math.floor(config.map.width / 2),
 		y = math.floor(config.map.height / 2),
 		world = "overworld",
