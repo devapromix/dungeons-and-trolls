@@ -229,7 +229,7 @@
 		{
 			"name": "Fishing Rod",
 			"description": "A sturdy rod used for fishing.",
-			"tags": ["level=1", "weapon=1", "fishing_rod", "healer", "price=10"],
+			"tags": ["level=1", "weapon=1", "fishing_rod", "tavern", "price=10"],
 			"skill": "Fishing"
 		},
 		{
