@@ -5,6 +5,7 @@ new - Starts a new game.                                        east (or e) - Mo
 save - Saves a game.                                            west (or w) - Move player west.
 load - Loads a saved game.                                      up (or u) - Climb up to the surface.
 map - Display the game map.                                     down (or d) - Descend into the underworld.
+name <name> - Hero's name.
 intro - Show intro.                                             train <attribute> - Train an attribute.
 status (or c) - Display player's stats.                         examine <slot | item | enemy> - Inspect an item or enemy.
 chop - Chop down a tree to gather wood.                         repair <slot | item | all> - Repair an item.
