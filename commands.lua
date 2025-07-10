@@ -205,7 +205,7 @@ end
 
 function commands.handle_info_commands(cmd, command_parts, player, map_data, config, game_time, skills, output, player_module)
 	if cmd == "status" then
-		player_module.draw_status(player)
+		command_status.exec(command_parts, player, player_module)
 	elseif cmd == "skills" then
 		command_skills.exec(skills)
 	elseif cmd == "time" then

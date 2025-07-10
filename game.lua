@@ -100,7 +100,7 @@ function game.load_game()
 				end
 				map_data = save_data.map or { overworld = {}, underworld = {} }
 				player = save_data.player
-				player.name = player.name or "Player"  -- Додано для сумісності зі старими збереженнями
+				player.name = player.name or "Player"
 				player.equipment_status = player.equipment_status or { weapon = "", armor = "" }
 				player.spellbook = player.spellbook or {}
 				game_time = save_data.time or { year = 1280, month = 4, day = 1, hour = 6, minute = 0, playtime = 0 }
@@ -156,8 +156,10 @@ function game.load_game()
 				game.initialized = true
 				return true
 			end
+			output.add("Failed to read saved game.\n")
+		else
+			output.add("Failed to read saved game.\n")
 		end
-		output.add("Failed to read saved game.\n")
 	else
 		output.add("No saved game found.\n")
 	end

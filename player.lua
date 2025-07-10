@@ -25,32 +25,6 @@ function player.starter_kit(player_data)
 	return player_data
 end
 
-function player.draw_status(player_data)
-	local lines = {
-		player_data.name .. ":\n",
-		"Level: " .. player_data.level .. "\n",
-		"Experience: " .. player_data.experience .. "/" .. player.experience_to_next_level(player_data.level) .. "\n",
-		"Level points: " .. player_data.levelpoints .. "\n\n",
-		"Strength: " .. player_data.strength .. "\n",
-		"Dexterity: " .. player_data.dexterity .. "\n",
-		"Vitality: " .. player_data.vitality .. "\n",
-		"Intelligence: " .. player_data.intelligence .. "\n\n",
-		"Health: " .. player_data.health .. "/" .. player_data.max_health .. "\n",
-		"Mana: " .. player_data.mana .. "/" .. player_data.max_mana .. "\n",
-		"Hunger: " .. player_data.hunger .. "\n",
-		"Thirst: " .. player_data.thirst .. "\n",
-		"Fatigue: " .. player_data.fatigue .. "\n",
-		"Attack: " .. player_data.attack .. "\n",
-		"Defense: " .. player_data.defense .. "\n\n",
-		"Position: " .. player_data.x .. ", " .. player_data.y .. " (" .. player_data.world .. ")\n\n",
-	}
-	if not player_data.alive then
-		table.insert(lines, "\nYou are DEAD.\n\n")
-		table.insert(lines, const.aliveSTART_NEW)
-	end
-	return player_data
-end
-
 function player.clamp_player_stats(player_data)
 	player_data.health = utils.clamp(player_data.health, 0, player_data.max_health)
 	player_data.mana = utils.clamp(player_data.mana, 0, player_data.max_mana)
