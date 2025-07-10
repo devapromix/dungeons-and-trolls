@@ -10,10 +10,11 @@ function name.exec(command_parts, player)
 	end
 	local new_name = table.concat(command_parts, " ", 2)
 	if new_name:match("^[a-zA-Z]+$") then
+		new_name = new_name:sub(1, 1):upper() .. new_name:sub(2)
 		player.name = new_name
 		output.add("Your name has been changed to: " .. new_name .. "\n")
 	else
-		output.add("Name must contain only English letters (a-z, A-Z).\n")
+		output.add("Name must contain only letters a-z and A-Z.\n")
 	end
 	return player
 end
