@@ -62,8 +62,8 @@ function train.train_skill(player, skill_key, shop_type)
 		output.add("You need " .. skill_price .. " gold to train " .. trainable_skill .. ".\n")
 		return player
 	end
-	if player.skills[trainable_skill] and player.skills[trainable_skill].level >= 40 then
-		output.add(trainable_skill .. " is already at maximum level (40).\n")
+	if player.skills[trainable_skill] and player.skills[trainable_skill].level >= config.skill.max then
+		output.add(trainable_skill .. " is already at maximum level (" .. config.skill.max .. ").\n")
 		return player
 	end
 

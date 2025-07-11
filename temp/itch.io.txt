@@ -1,0 +1,38 @@
+About the Game:
+
+Enter the mysterious Troll Dungeon, a dark and dangerous maze hidden deep underground. Legends speak of the Sword of Dawn, a powerful artifact guarded by ancient magic and deadly creatures. As the brave hero, you must navigate traps, solve puzzles, and face the troll guardians to claim the sword. Only by wielding the Sword of Dawn can you defeat the final evil and win the game.
+
+Tutorial and First Steps:
+
+
+
+Each new monster is unique, and knowing their abilities is essential for survival. You can examine monsters you encounter.
+
+Status of the game
+Dungeons and Trolls is currently in active development. You will receive regular updates that include bug fixes, new content, mechanics, and various improvements. My goal is to release an update every 3-4 months.
+
+Features:
+- Fully procedurally-generated world
+- Permadeath
+- Turn-based gameplay
+- 10 monsters
+- 53+ items
+- Artifacts
+- Cooking
+- Fishing
+- Repairing weapons and armor
+- Descriptions for every item and monster
+- Examine items and monsters
+- Music and sound FX
+
+
+
+
+
+
+
+
+
+
+
+Best wishes!

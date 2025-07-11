@@ -76,6 +76,12 @@
 			"tags": ["drinkable=30", "tavern", "price=2"]
 		},
 		{
+			"name": "Shiv",
+			"description": "A small, primitive dagger often crafted from bone, scrap metal, or wood.",
+			"tags": ["level=1", "weapon=2"],
+			"skill": "Daggers"
+		},
+		{
 			"name": "Dagger",
 			"description": "A short blade, quick and deadly in close combat.",
 			"tags": ["level=1", "weapon=4", "weapon shop", "price=60"],

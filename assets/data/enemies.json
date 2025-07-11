@@ -63,6 +63,7 @@
       "description": "A rogue human preying on travelers.",
       "tags": ["hostile", "human"],
       "drops": [
+        {"name": "Shiv", "chance": 0.3, "type": "item"},
         {"name": "Kris", "chance": 0.1, "type": "item"},
         {"name": "Fishing Rod", "chance": 0.01, "type": "item"},
         {"name": "Falchion", "chance": 0.1, "type": "item"},
@@ -121,7 +122,8 @@
       "description": "A small, cunning creature lurking in the caves.",
       "tags": ["hostile", "melee"],
       "drops": [
-        {"name": "Dagger", "chance": 0.1, "type": "item"},
+        {"name": "Shiv", "chance": 0.2, "type": "item"},
+        {"name": "Dagger", "chance": 0.2, "type": "item"},
         {"name": "Dirk", "chance": 0.1, "type": "item"},
         {"name": "Fishing Rod", "chance": 0.01, "type": "item"},
         {"name": "Falchion", "chance": 0.2, "type": "item"},

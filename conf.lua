@@ -11,7 +11,7 @@ config = {
 	
 	game = {
 		name = 'Dungeons and Trolls',
-		version = '0.5.0',
+		version = '0.6.0',
 	},
 	
 	map = {
@@ -20,7 +20,7 @@ config = {
 	},
 	
 	skill = {
-		max = 50,
+		max = 40,
 	}
 }
 

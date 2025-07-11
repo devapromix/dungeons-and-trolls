@@ -47,7 +47,7 @@ function skills.upgrade_skill(player, skills_data, item_data)
 	if not player.skills[skill_name] then
 		player.skills[skill_name] = { level = 0, progress = 0 }
 	end
-	if player.skills[skill_name].level < 40 then
+	if player.skills[skill_name].level < config.skill.max then
 		player.skills[skill_name].progress = player.skills[skill_name].progress + 1
 		if player.skills[skill_name].progress >= 10 then
 			player.skills[skill_name].level = player.skills[skill_name].level + 1
@@ -55,7 +55,7 @@ function skills.upgrade_skill(player, skills_data, item_data)
 			output.add(skill_name .. " skill increased to " .. player.skills[skill_name].level .. ".\n")
 		end
 	else
-		output.add(skill_name .. " is already at maximum level (40).\n")
+		output.add(skill_name .. " is already at maximum level (" .. config.skill.max .. ").\n")
 	end
 end
 
