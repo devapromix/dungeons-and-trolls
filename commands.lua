@@ -7,6 +7,7 @@ local command_aliases = {
 	help = "help",
 	h = "help",
 	commands = "help",
+	gender = "gender",
 	intro = "intro",
 	new = "new",
 	load = "load",
@@ -14,6 +15,7 @@ local command_aliases = {
 	about = "about",
 	quit = "quit",
 	status = "status",
+	char = "status",
 	c = "status",
 	skills = "skills",
 	time = "time",
@@ -215,6 +217,8 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 		command_items.exec(player, player_module, items)
 	elseif cmd == "map" then
 		map.draw()
+	elseif cmd == "gender" then
+		return command_gender.exec(command_parts, player, player_module)
 	elseif cmd == "name" then
 		return command_name.exec(command_parts, player)
 	elseif cmd == "gear" then

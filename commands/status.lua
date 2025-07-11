@@ -5,7 +5,7 @@ function status.exec(command_parts, player, player_module)
 		return player
 	end
 	local lines = {
-		player.name .. ":\n",
+		player.name .. " (" .. player.gender .. "):\n",
 		"Level: " .. player.level .. "\n",
 		"Experience: " .. player.experience .. "/" .. player_module.experience_to_next_level(player.level) .. "\n",
 		"Level points: " .. player.levelpoints .. "\n\n",

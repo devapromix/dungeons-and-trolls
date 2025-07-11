@@ -238,6 +238,7 @@ end
 function player.initialize_player(config)
 	local player_data = {
 		name = "Player",
+		gender = "male",
 		x = math.floor(config.map.width / 2),
 		y = math.floor(config.map.height / 2),
 		world = "overworld",
