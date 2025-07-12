@@ -27,7 +27,7 @@ function utils.output_text_file(file_path)
 	if love.filesystem.getInfo(file_path) then
 		local content = love.filesystem.read(file_path)
 		if content then
-			output.add(content)
+			output.add(content .. "\n")
 		else
 			output.add("Failed to read file: ('" .. file_path .. "').\n")
 		end

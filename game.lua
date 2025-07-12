@@ -93,7 +93,7 @@ function game.load_game()
 			local save_data = json.decode(save_string)
 			if save_data then
 				if save_data.version ~= config.game.version then
-					output.add("Saved game version (" .. (save_data.version or "unknown") .. ") is incompatible with current game version (" .. config.game.version .. ").\n")
+					output.add("\nSaved game version (" .. (save_data.version or "unknown") .. ") is incompatible with current game version (" .. config.game.version .. ").\n")
 					output.add(const.START_NEW_GAME_MSG)
 					game.initialized = false
 					return false
@@ -151,7 +151,7 @@ function game.load_game()
 					game.initialized = false
 					return false
 				end
-				output.add("Loaded saved game.\n\n")
+				output.add("\nLoaded saved game.\n\n")
 				map.display_location(player, map_data)
 				game.initialized = true
 				return true
