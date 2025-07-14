@@ -7,7 +7,7 @@ load - Loads a saved game.                                      up (or u) - Clim
 map - Display the game map.                                     down (or d) - Descend into the underworld.
 name <name> - Hero's name.                                      gender <female|male> – Set the hero’s gender.
 intro - Show intro.                                             train <attribute> - Train an attribute.
-status (or c) - Display player's stats.                         examine <slot|item|enemy> - Inspect an item or enemy.
+status (or char, c) - Display player's stats.                   examine <slot|item|enemy> - Inspect an item or enemy.
 chop - Chop down a tree to gather wood.                         repair <slot|item|all> - Repair an item.
 skills - Display player's skills.                               eat <item> - Eat something.
 rest - Rest to restore health and mana.                         drink <item> - Drink an item.

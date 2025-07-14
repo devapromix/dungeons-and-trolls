@@ -11,4 +11,6 @@ copy dat.zip ..\
 del dat.*
 del *.ico
 del *.txt
+cd ..
+rename dat.zip dungeons-and-trolls-windows.zip
 pause
