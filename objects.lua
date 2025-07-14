@@ -5,7 +5,7 @@ function objects.load_objects()
 end
 
 function objects.get_tile_objects_string(world, x, y)
-	local objects_string = "+++++++++"
+	local objects_string = "" 
 	local tile_objects = world.objects[y][x]
 	if tile_objects then
 		local object_list = {}
@@ -15,7 +15,7 @@ function objects.get_tile_objects_string(world, x, y)
 			end
 		end
 		if #object_list > 0 then
-			objects_string = "You see here: " .. table.concat(object_list, ", ") .. ".\n"
+			objects_string = "\nYou see objects: " .. table.concat(object_list, ", ") .. ".\n"
 		end
 	end
 	return objects_string

@@ -166,7 +166,7 @@ function map.initialize_game(locations_data)
 						if item_data and items.is_artifact(item_data) and game.unique_items[item.name] then
 							goto continue
 						end
-						if math.random() < item.chance then
+						if math.random() <= item.chance then
 							local quantity = math.random(item.quantity[1], item.quantity[2])
 							world.items[y][x][item.name] = quantity
 							if item_data and items.is_artifact(item_data) then
@@ -178,7 +178,7 @@ function map.initialize_game(locations_data)
 				end
 				if location_data and location_data.enemies then
 					for _, enemy in ipairs(location_data.enemies) do
-						if math.random() < enemy.chance then
+						if math.random() <= enemy.chance then
 							local quantity = math.random(enemy.quantity[1], enemy.quantity[2])
 							world.enemies[y][x][enemy.name] = quantity
 						end
