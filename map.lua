@@ -112,6 +112,7 @@ function map.initialize_game(locations_data)
 			visited = {},
 			items = {},
 			enemies = {},
+			objects = {},
 			village = { x = nil, y = nil }
 		},
 		underworld = {
@@ -119,6 +120,7 @@ function map.initialize_game(locations_data)
 			visited = {},
 			items = {},
 			enemies = {},
+			objects = {},
 			troll_cave = { x = nil, y = nil }
 		}
 	}
@@ -135,18 +137,22 @@ function map.initialize_game(locations_data)
 	
 	game.initialize_unique_items(items_data)
 	
+	local objects_data = objects.load_objects()
+	
 	local function initialize_world(world, is_underworld)
 		for y = 1, config.map.height do
 			world.tiles[y] = {}
 			world.visited[y] = {}
 			world.items[y] = {}
 			world.enemies[y] = {}
+			world.objects[y] = {}
 			for x = 1, config.map.width do
 				local symbol = map.get_random_location_symbol(true, is_underworld)
 				world.tiles[y][x] = symbol
 				world.visited[y][x] = false
 				world.items[y][x] = {}
 				world.enemies[y][x] = {}
+				world.objects[y][x] = {}
 				local location_data
 				for _, loc in ipairs(locations_data.locations) do
 					if loc.symbol == symbol then
@@ -175,6 +181,15 @@ function map.initialize_game(locations_data)
 						if math.random() < enemy.chance then
 							local quantity = math.random(enemy.quantity[1], enemy.quantity[2])
 							world.enemies[y][x][enemy.name] = quantity
+						end
+					end
+				end
+				if location_data and objects_data and objects_data.objects then
+					for _, obj in ipairs(objects_data.objects) do
+						if obj.locations and table.contains(obj.locations, symbol) then
+							if math.random() < obj.chance then
+								world.objects[y][x][obj.name] = 1
+							end
 						end
 					end
 				end
@@ -295,6 +310,8 @@ function map.display_location(player, map_data)
 	
 	local items_string = items.get_tile_items_string(map_data[player.world], player.x, player.y)
 	output.add(items_string)
+	local objects_string = objects.get_tile_objects_string(map_data[player.world], player.x, player.y)
+	output.add(objects_string)
 	local enemies_string = enemies.get_tile_enemies_string(map_data[player.world], player.x, player.y)
 	output.add(enemies_string)
 	if fire.check_fire(player.world, player.x, player.y) then

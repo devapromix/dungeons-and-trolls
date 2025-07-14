@@ -1,6 +1,7 @@
 json = require("libraries.json")
 items = require("items")
 enemies = require("enemies")
+objects = require("objects")
 player_module = require("player")
 combat = require("combat")
 magic = require("magic")

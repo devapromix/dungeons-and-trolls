@@ -129,7 +129,7 @@ function game.load_game()
 					player.alive = (player.hunger < 100 and player.fatigue < 100 and player.health > 0 and player.thirst < 100)
 				end
 				for world in pairs({ overworld = true, underworld = true }) do
-					if not map_data[world].tiles or not map_data[world].visited or not map_data[world].items or not map_data[world].enemies then
+					if not map_data[world].tiles or not map_data[world].visited or not map_data[world].items or not map_data[world].enemies or not map_data[world].objects then
 						output.add("Invalid map data for " .. world .. ". Starting a new game.\n")
 						game.new_game()
 						return false
@@ -138,10 +138,12 @@ function game.load_game()
 						map_data[world].items[y] = map_data[world].items[y] or {}
 						map_data[world].enemies[y] = map_data[world].enemies[y] or {}
 						map_data[world].visited[y] = map_data[world].visited[y] or {}
+						map_data[world].objects[y] = map_data[world].objects[y] or {}
 						for x = 1, config.map.width do
 							map_data[world].items[y][x] = map_data[world].items[y][x] or {}
 							map_data[world].enemies[y][x] = map_data[world].enemies[y][x] or {}
 							map_data[world].visited[y][x] = map_data[world].visited[y][x] or false
+							map_data[world].objects[y][x] = map_data[world].objects[y][x] or {}
 						end
 					end
 				end
