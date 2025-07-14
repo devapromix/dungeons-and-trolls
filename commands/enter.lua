@@ -1,7 +1,7 @@
 local enter = {}
 
 local function print_available_buildings()
-    output.add("Available buildings:\n")
+    output.add("\nBuildings:\n")
 	local interiors_data = shop.load_interiors()
     for _, interior in ipairs(interiors_data.interiors or {}) do
 		output.add(" * '" .. interior.id .. "' - " .. interior.hint .. "\n")
@@ -21,7 +21,7 @@ function enter.exec(command_parts, player, map_data)
         return player
     end
     if #command_parts < 2 then
-        output.add("Please specify a building to enter:\n")
+        output.add("Please specify a building to enter (e.g., 'enter tavern' or 'enter weapon').\n")
 		print_available_buildings()
         return player
     end

@@ -93,13 +93,14 @@ function game.load_game()
 			local save_data = json.decode(save_string)
 			if save_data then
 				if save_data.version ~= config.game.version then
-					output.add("Saved game version (" .. (save_data.version or "unknown") .. ") is incompatible with current game version (" .. config.game.version .. ").\n")
+					output.add("\nSaved game version (" .. (save_data.version or "unknown") .. ") is incompatible with current game version (" .. config.game.version .. ").\n")
 					output.add(const.START_NEW_GAME_MSG)
 					game.initialized = false
 					return false
 				end
 				map_data = save_data.map or { overworld = {}, underworld = {} }
 				player = save_data.player
+				player.name = player.name or "Player"
 				player.equipment_status = player.equipment_status or { weapon = "", armor = "" }
 				player.spellbook = player.spellbook or {}
 				game_time = save_data.time or { year = 1280, month = 4, day = 1, hour = 6, minute = 0, playtime = 0 }
@@ -150,13 +151,15 @@ function game.load_game()
 					game.initialized = false
 					return false
 				end
-				output.add("Loaded saved game.\n\n")
+				output.add("\nLoaded saved game.\n\n")
 				map.display_location(player, map_data)
 				game.initialized = true
 				return true
 			end
+			output.add("Failed to read saved game.\n")
+		else
+			output.add("Failed to read saved game.\n")
 		end
-		output.add("Failed to read saved game.\n")
 	else
 		output.add("No saved game found.\n")
 	end

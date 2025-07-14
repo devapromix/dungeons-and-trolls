@@ -7,6 +7,7 @@ local command_aliases = {
 	help = "help",
 	h = "help",
 	commands = "help",
+	gender = "gender",
 	intro = "intro",
 	new = "new",
 	load = "load",
@@ -14,12 +15,14 @@ local command_aliases = {
 	about = "about",
 	quit = "quit",
 	status = "status",
+	char = "status",
 	c = "status",
 	skills = "skills",
 	time = "time",
 	items = "items",
 	i = "items",
 	map = "map",
+	name = "name",
 	gear = "gear",
 	spells = "spells",
 	eat = "eat",
@@ -204,7 +207,7 @@ end
 
 function commands.handle_info_commands(cmd, command_parts, player, map_data, config, game_time, skills, output, player_module)
 	if cmd == "status" then
-		player_module.draw_status(player)
+		command_status.exec(command_parts, player, player_module)
 	elseif cmd == "skills" then
 		command_skills.exec(skills)
 	elseif cmd == "time" then
@@ -214,6 +217,10 @@ function commands.handle_info_commands(cmd, command_parts, player, map_data, con
 		command_items.exec(player, player_module, items)
 	elseif cmd == "map" then
 		map.draw()
+	elseif cmd == "gender" then
+		return command_gender.exec(command_parts, player, player_module)
+	elseif cmd == "name" then
+		return command_name.exec(command_parts, player)
 	elseif cmd == "gear" then
 		return command_gear.exec(command_parts, player, player_module)
 	elseif cmd == "spells" then
