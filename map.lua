@@ -184,12 +184,10 @@ function map.initialize_game(locations_data)
 						end
 					end
 				end
-				if location_data and objects_data and objects_data.objects then
-					for _, obj in ipairs(objects_data.objects) do
-						if obj.locations and table.contains(obj.locations, symbol) then
-							if math.random() < obj.chance then
-								world.objects[y][x][obj.name] = 1
-							end
+				if location_data and location_data.objects then
+					for _, obj in ipairs(location_data.objects) do
+						if math.random() <= obj.chance then
+							world.objects[y][x][obj.name] = 1
 						end
 					end
 				end

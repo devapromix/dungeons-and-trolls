@@ -9,7 +9,6 @@
         {"name": "Water Bottle", "chance": 0.5, "quantity": [1, 3]}
       ],
 	  "objects": [
-	    {"name": "Fountain", "chance": 1.0}
 	  ],
       "effects": { "thirst": 0.5, "hunger": 0.5, "fatigue": 0.5 },
       "passable": true,
@@ -39,7 +38,9 @@
         {"name": "Firewood", "chance": 0.7, "quantity": [1, 3]},
         {"name": "Healing Potion", "chance": 0.2, "quantity": [1, 1]}
       ],
-	  "objects": [],
+	  "objects": [
+	    {"name": "Fountain", "chance": 1.0}
+	  ],
       "effects": { "thirst": 1, "hunger": 0.5, "fatigue": 1 },
       "passable": true,
       "special": false,
@@ -65,7 +66,9 @@
         {"name": "Watermelon", "chance": 0.1, "quantity": [1, 2]},
         {"name": "Water Bottle", "chance": 0.3, "quantity": [1, 2]}
       ],
-	  "objects": [],
+	  "objects": [
+	    {"name": "Fountain", "chance": 1.0}
+	  ],
       "effects": { "thirst": 0.75, "hunger": 0.4, "fatigue": 0.8 },
       "passable": true,
       "special": false,
@@ -90,7 +93,9 @@
         {"name": "Watermelon", "chance": 0.1, "quantity": [1, 1]},
         {"name": "Water Bottle", "chance": 0.2, "quantity": [1, 2]}
       ],
-	  "objects": [],
+	  "objects": [
+	    {"name": "Fountain", "chance": 1.0}
+	  ],
       "effects": { "thirst": 1.25, "hunger": 0.5, "fatigue": 1 },
       "passable": true,
       "special": false,
@@ -114,7 +119,9 @@
         {"name": "Strawberry", "chance": 0.1, "quantity": [1, 3]},
         {"name": "Water Bottle", "chance": 0.1, "quantity": [1, 1]}
       ],
-	  "objects": [],
+	  "objects": [
+	    {"name": "Fountain", "chance": 1.0}
+	  ],
       "effects": { "thirst": 1.5, "hunger": 0.5, "fatigue": 1 },
       "passable": true,
       "special": false,
@@ -139,7 +146,9 @@
         {"name": "Firewood", "chance": 0.4, "quantity": [1, 2]},
         {"name": "Water Bottle", "chance": 0.2, "quantity": [1, 2]}
       ],
-	  "objects": [],
+	  "objects": [
+	    {"name": "Fountain", "chance": 1.0}
+	  ],
       "effects": { "thirst": 2, "hunger": 0.6, "fatigue": 1.2 },
       "passable": true,
       "special": false,
@@ -160,7 +169,9 @@
       "items": [
         {"name": "Water Bottle", "chance": 0.15, "quantity": [1, 1]}
       ],
-	  "objects": [],
+	  "objects": [
+	    {"name": "Fountain", "chance": 1.0}
+	  ],
       "effects": { "thirst": 2.5, "hunger": 0.8, "fatigue": 1.5 },
       "passable": true,
       "special": false,
