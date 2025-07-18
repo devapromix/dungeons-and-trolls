@@ -1,6 +1,7 @@
 require "import"
 
 function love.load()
+	math.randomseed(os.time())
 	items_data = items.load_items()
 	locations_data = map.load_locations()
 	enemies_data = enemies.load_enemies()
