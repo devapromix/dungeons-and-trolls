@@ -7,6 +7,7 @@ local command_aliases = {
 	help = "help",
 	h = "help",
 	commands = "help",
+	tutorial = "tutorial",
 	gender = "gender",
 	intro = "intro",
 	new = "new",
@@ -169,6 +170,8 @@ end
 function commands.handle_game_commands(cmd, command_parts, player, output)
 	if cmd == "help" then
 		game.help()
+	elseif cmd == "tutorial" then
+		command_tutorial.exec()
 	elseif cmd == "intro" then
 		game.intro()
 		output.add("\n")
