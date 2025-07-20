@@ -5,7 +5,22 @@ Enter the mysterious Troll Dungeon, a dark and dangerous maze hidden deep underg
 
 Tutorial and First Steps:
 
-Each new monster is unique, and knowing their abilities is essential for survival. You can examine monsters you encounter.
+Welcome to the game of Dungeons and Trolls!
+
+In this text-based game, you must enter commands after the '>' symbol and the blinking cursor. Start with the command `help` to see a list of all available commands.
+
+The game begins when the hero arrives in the land of Elvion, near the village of Dork. Type `map` to view the map. Try to find the village by wandering around. In the village, you'll find a tavern where you can rest and prepare for your next journey. There are also various shops and a forge. You can sell or buy items to aid you in your adventures.
+
+Now try to find the entrance to the dungeon. Use the command `down` to enter it or `up` to exit. Your goal is to find the Sword of Dawn and defeat the Troll King. The game doesn't end after you destroy evil — you can keep exploring the world.
+
+To view your character's full stats (attributes, health, mana level, etc.), use the command `status`. For all your skills, type `skills`. To show your backpack contents, use `items`, and for equipped gear, use `gear`.
+
+To attack enemies — and yes, you *will* encounter them — use the `kill` command. Combat is automatic. If you can't defeat the enemy, you'll retreat. After battle, you’ll often need to recover with the `rest` command.
+
+You have only one life in this game. If you die, start a new game with the `new` command.
+
+Good luck! You're going to need it.
+
 
 
 Status of the game:

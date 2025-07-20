@@ -1,10 +1,11 @@
 Commands:
 help (or h, commands) - Show this help.                         north (or n) - Move player north.
-about - Show information about game.                            south (or s) - Move player south.
+tutorial - Tutorial and first steps.                            south (or s) - Move player south.
 new - Starts a new game.                                        east (or e) - Move player east.
 save - Saves a game.                                            west (or w) - Move player west.
 load - Loads a saved game.                                      up (or u) - Climb up to the surface.
 map - Display the game map.                                     down (or d) - Descend into the underworld.
+about - Show information about game.
 name <name> - Hero's name.                                      gender <female|male> – Set the hero’s gender.
 intro - Show intro.                                             train <attribute> - Train an attribute.
 status (or char, c) - Display player's stats.                   examine <slot|item|enemy> - Inspect an item or enemy.
