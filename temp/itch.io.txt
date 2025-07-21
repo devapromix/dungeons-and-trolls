@@ -2,10 +2,7 @@ About the Game:
 
 Enter the mysterious Troll Dungeon, a dark and dangerous maze hidden deep underground. Legends speak of the Sword of Dawn, a powerful artifact guarded by ancient magic and deadly creatures. As the brave hero, you must navigate traps, solve puzzles, and face the troll guardians to claim the sword. Only by wielding the Sword of Dawn can you defeat the final evil and win the game.
 
-
 Tutorial and First Steps:
-
-Welcome to the game of Dungeons and Trolls!
 
 In this text-based game, you must enter commands after the '>' symbol and the blinking cursor. Start with the command `help` to see a list of all available commands.
 
@@ -19,32 +16,28 @@ To attack enemies — and yes, you *will* encounter them — use the `kill` comm
 
 You have only one life in this game. If you die, start a new game with the `new` command.
 
-Good luck! You're going to need it.
-
-
-
 Status of the game:
+
 Dungeons and Trolls is currently in active development. You will receive regular updates that include bug fixes, new content, mechanics, and various improvements. My goal is to release an update every 3-4 months.
 
-
 Features:
-- Fully procedurally-generated world
-- Permadeath
-- Turn-based gameplay
-- 10 monsters
-- 53+ items
-- Artifacts
-- Cooking
-- Fishing
-- Repairing weapons and armor
-- Descriptions for every item and monster
-- Examine items and monsters
-- Music and sound FX
 
+Fully procedurally-generated world
+Permadeath
+Turn-based gameplay
+10 monsters
+53+ items
+Artifacts
+Cooking
+Fishing
+Repairing weapons and armor
+Descriptions for every item and monster
+Examine items and monsters
+Music and sound FX
 
 Install instructions:
-Game works "out of box" - download the zip file and extract it,
-Enter the EXE file and run to begin.
 
+Game works "out of box" - download the zip file and extract it
+Enter the EXE file and run to begin.
 
 Best wishes!

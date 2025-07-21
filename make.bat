@@ -1,6 +1,6 @@
 "c:\Program Files\WinRAR\winrar.exe" a -afzip -r dat.love "assets" "game" "commands" "libraries" "states"
 "c:\Program Files\WinRAR\winrar.exe" a -afzip dat.love *.lua
-move dat.love distr
+copy dat.love distr
 copy "assets\icons\game.ico" distr
 copy README.txt distr
 cd distr
@@ -13,4 +13,5 @@ del *.ico
 del *.txt
 cd ..
 rename dat.zip dungeons-and-trolls-windows.zip
+rename dat.love dungeons-and-trolls-windows.love
 pause

@@ -10,7 +10,7 @@ Now try to find the entrance to the dungeon. Use the command `down` to enter it 
 
 To view your character's full stats (attributes, health, mana level, etc.), use the command `status`. For all your skills, type `skills`. To show your backpack contents, use `items`, and for equipped gear, use `gear`.
 
-To attack enemies — and yes, you *will* encounter them — use the `kill` command. Combat is automatic. If you can't defeat the enemy, you'll retreat. After battle, you’ll often need to recover with the `rest` command.
+To attack enemies — and yes, you will encounter them — use the `kill` command. Combat is automatic. If you can't defeat the enemy, you'll retreat. After battle, you’ll often need to recover with the `rest` command.
 
 You have only one life in this game. If you die, start a new game with the `new` command.
 
