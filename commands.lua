@@ -22,6 +22,7 @@ local command_aliases = {
 	time = "time",
 	items = "items",
 	i = "items",
+	inv = "items",
 	map = "map",
 	name = "name",
 	gear = "gear",

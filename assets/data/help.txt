@@ -15,7 +15,7 @@ rest - Rest to restore health and mana.                         drink <item> - D
 time - Displays the current time.                               pick [quantity] <item> - Pick up an item.
 light - Light a fire.                                           drop [quantity] <item> - Drop an item.
 look - Displays the current location.                           kill <enemy> - Attack an enemy to engage in combat.
-items (or i) - Display player's inventory and gold.             volume <level> - Set the audio volume (0 to 10).
+items (or i, inv) - Display player's inventory and gold.        volume <level> - Set the audio volume (0 to 10).
 recipes - Display player's known recipes.                       cook <recipe> - Cook a recipe if conditions are met.
 fish - Try to catch a fish.                                     gear - Show currently worn equipment.
 equip <item> - Equip an item.                                   unequip <slot|item> - Remove an equipped item.
