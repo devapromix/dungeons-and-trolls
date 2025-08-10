@@ -50,4 +50,5 @@ function love.conf (t)
 	t.window.width = window.width
 	t.window.height = window.height
 	t.window.icon = "assets/icons/game.png"
+	love.filesystem.setRequirePath("?.lua;?/init.lua;src/?.lua")
 end
